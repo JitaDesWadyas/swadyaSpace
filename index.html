@@ -1,0 +1,1128 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <title>Weekend a Bucarest – Itinerario Boys Trip</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Leaflet (mappa interattiva) -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""
+  />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <style>
+    /* ===== RESET BASIC ===== */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      background: radial-gradient(circle at top, #2d2d3a 0, #090910 55%, #000 100%);
+      color: #f5f5f5;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.5;
+    }
+    a {
+      color: #ff4b5c;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+
+    /* ===== LAYOUT ===== */
+    .wrapper {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 2rem 1.2rem 4rem;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 2rem;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      padding-bottom: 1.5rem;
+    }
+    header h1 {
+      font-size: 2.6rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #ff4b5c;
+      text-shadow: 0 0 8px rgba(255, 75, 92, 0.7);
+    }
+    header p {
+      margin-top: 0.5rem;
+      font-size: 0.95rem;
+      color: #cfcfcf;
+    }
+    header .tagline {
+      margin-top: 0.8rem;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: #a0a0a0;
+    }
+
+    /* ===== NAV ===== */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: linear-gradient(90deg, rgba(10,10,16,0.96), rgba(30,30,40,0.96));
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      backdrop-filter: blur(6px);
+    }
+    nav ul {
+      list-style: none;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+      justify-content: center;
+      padding: 0.7rem 0.8rem;
+    }
+    nav a {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      padding: 0.35rem 0.9rem;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.18);
+      color: #f5f5f5;
+      transition: all 0.15s ease-out;
+    }
+    nav a:hover {
+      background: #ff4b5c;
+      border-color: #ff4b5c;
+      color: #fff;
+      text-decoration: none;
+      box-shadow: 0 0 12px rgba(255,75,92,0.7);
+    }
+	
+	.nav-toggle {
+	  display: none;
+	  background: none;
+	  border: 1px solid rgba(255,255,255,0.35);
+	  border-radius: 999px;
+	  color: #f5f5f5;
+	  padding: 0.35rem 0.9rem;
+	  font-size: 0.9rem;
+	  letter-spacing: 0.16em;
+	  text-transform: uppercase;
+	  cursor: pointer;
+	}
+
+	/* Effetto hover */
+	.nav-toggle:hover {
+	  background: #ff4b5c;
+	  border-color: #ff4b5c;
+	  box-shadow: 0 0 10px rgba(255,75,92,0.6);
+	}
+
+	@media (max-width: 768px) {
+	  /* Mostra il bottone, nasconde il menu di default */
+	  .nav-toggle {
+		display: inline-block;
+		margin: 0.3rem 0.8rem;
+	  }
+
+	  nav ul {
+		display: none;              /* nascosto di default su mobile */
+		flex-direction: column;
+		width: 100%;
+		padding: 0.5rem 0.9rem 0.9rem;
+		gap: 0.4rem;
+		border-top: 1px solid rgba(255,255,255,0.1);
+		background: linear-gradient(180deg, rgba(10,10,16,0.98), rgba(10,10,16,0.95));
+	  }
+
+	  nav.nav-open ul {
+		display: flex;              /* quando nav ha la classe nav-open, ul scende */
+	  }
+
+	  nav a {
+		width: 100%;
+		text-align: left;
+	  }
+	}
+
+
+    /* ===== SEZIONI GIORNI ===== */
+    section {
+      margin-top: 3rem;
+    }
+    section h2 {
+      font-size: 1.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      margin-bottom: 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    section h2 span.day-label {
+      padding: 0.15rem 0.6rem;
+      border-radius: 4px;
+      background: rgba(255,255,255,0.06);
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: #c4c4c4;
+    }
+
+    .day-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 2fr) minmax(0, 1.4fr);
+      gap: 1.8rem;
+      align-items: flex-start;
+    }
+    @media (max-width: 900px) {
+      .day-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .card {
+      background: radial-gradient(circle at top, #181824 0, #0b0b10 60%);
+      border-radius: 12px;
+      padding: 1.2rem 1.3rem;
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: 0 14px 45px rgba(0,0,0,0.6);
+      margin-bottom: 1.1rem;
+    }
+    .card h3 {
+      font-size: 1.1rem;
+      margin-bottom: 0.4rem;
+      text-transform: uppercase;
+      letter-spacing: 0.13em;
+      color: #ff9f9f;
+    }
+    .time-tag {
+      display: inline-block;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: #c1c1c1;
+      padding: 0.18rem 0.6rem;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.18);
+      margin-bottom: 0.4rem;
+    }
+    .card p {
+      font-size: 0.9rem;
+      margin-bottom: 0.4rem;
+      color: #e0e0e0;
+    }
+    .card ul {
+      margin-left: 1.1rem;
+      margin-top: 0.3rem;
+      font-size: 0.9rem;
+    }
+    .card li + li {
+      margin-top: 0.25rem;
+    }
+
+    .card-links {
+      margin-top: 0.4rem;
+      font-size: 0.85rem;
+    }
+    .card-links a {
+      margin-right: 0.6rem;
+      border-bottom: 1px dashed rgba(255,75,92,0.5);
+    }
+
+    .card img {
+      width: 100%;
+      border-radius: 9px;
+      margin-top: 0.6rem;
+      display: block;
+      border: 1px solid rgba(255,255,255,0.18);
+    }
+
+    /* ===== NIGHTLIFE / CLUB LIST ===== */
+    .club-groups {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 1.1rem;
+      margin-top: 0.8rem;
+    }
+    .club-group {
+      background: linear-gradient(145deg, #18141b, #0b090e);
+      border-radius: 10px;
+      padding: 0.9rem 1rem;
+      border: 1px solid rgba(255,255,255,0.16);
+    }
+    .club-group h4 {
+      font-size: 0.95rem;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: #ffd0d0;
+      margin-bottom: 0.3rem;
+    }
+    .club-group p {
+      font-size: 0.85rem;
+      color: #d8d8d8;
+      margin-bottom: 0.2rem;
+    }
+    .club-list {
+      font-size: 0.85rem;
+      margin-left: 1rem;
+    }
+    .club-list li {
+      margin-bottom: 0.2rem;
+    }
+
+    /* ===== FAST FOOD ===== */
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      margin-top: 0.4rem;
+    }
+    .chip {
+      font-size: 0.8rem;
+      padding: 0.2rem 0.7rem;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.18);
+      color: #f5f5f5;
+      white-space: nowrap;
+    }
+
+    /* ===== MAPPA ===== */
+    #map-container {
+      margin-top: 3rem;
+    }
+    #map {
+      width: 100%;
+      height: 380px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.18);
+      box-shadow: 0 14px 45px rgba(0,0,0,0.7);
+      overflow: hidden;
+    }
+    .map-caption {
+      margin-top: 0.4rem;
+      font-size: 0.85rem;
+      color: #c8c8c8;
+    }
+
+    /* ===== FOOTER ===== */
+    footer {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid rgba(255,255,255,0.12);
+      font-size: 0.8rem;
+      color: #a0a0a0;
+    }
+	
+	/* =========================================
+	   OVERRIDE: TIPOGRAFIA + SPAZI PIÙ GRANDI
+	   ========================================= */
+	body {
+	  font-size: 16px;        /* prima era più piccolo */
+	  line-height: 1.6;       /* più aria tra le righe */
+	}
+
+	/* Testo base nelle card */
+	.card p,
+	.card li {
+	  font-size: 1.12rem;     /* ~15–16px */
+	}
+
+	/* Titoli più leggibili */
+	header h1 {
+	  font-size: 2.8rem;
+	}
+
+	section h2 {
+	  font-size: 2rem;
+	}
+
+	.card h3 {
+	  font-size: 1.35rem;
+	}
+
+	/* Nav più leggibile */
+	nav a {
+	  font-size: 0.95rem;
+	  padding: 0.45rem 1rem;
+	}
+
+	/* Tag orari più leggibili */
+	.time-tag {
+	  font-size: 0.85rem;
+	  padding: 0.25rem 0.7rem;
+	}
+
+	/* Chips cibo, ecc. */
+	.chip {
+	  font-size: 0.9rem;
+	  padding: 0.25rem 0.8rem;
+	}
+
+	/* Un filo di respiro in più dentro le card */
+	.card {
+	  padding: 1.4rem 1.5rem;
+	}
+
+	/* Mobile: un po’ più comodo anche il menu */
+	@media (max-width: 768px) {
+	  .nav-toggle {
+		font-size: 0.95rem;
+		padding: 0.45rem 1rem;
+	  }
+
+	  nav ul {
+		padding: 0.7rem 1rem 1rem;
+	  }
+	}
+
+  </style>
+</head>
+<body>
+
+<nav>
+  <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="main-nav">
+    ☰ Menu
+  </button>
+
+  <ul id="main-nav">
+    <li><a href="#day1">Venerdì • Arrivo &amp; Old Town</a></li>
+    <li><a href="#day2">Sabato • Shooting &amp; Therme</a></li>
+    <li><a href="#day3">Domenica • Chill, burger, sigari</a></li>
+    <li><a href="#day4">Lunedì • Ultimo giro &amp; rientro</a></li>
+    <li><a href="#clubs">Club: scelte</a></li>
+    <li><a href="#food">Cibo &amp; Fast Food</a></li>
+    <li><a href="#map-container">Mappa</a></li>
+  </ul>
+</nav>
+
+
+<div class="wrapper">
+  <header>
+    <h1>Bucarest Boys Trip</h1>
+    <p>3 notti (ven–lun) tra Est Europa, armi, terme, skybar, burger e sigari.</p>
+    <p class="tagline">Old Town • Shooting Range • Therme • Skybar • Club • Cigar Lounge</p>
+  </header>
+
+  <!-- ===================== GIORNO 1 ===================== -->
+  <section id="day1">
+    <h2><span class="day-label">Giorno 1 – Venerdì</span> Arrivo, Old Town & Skybar</h2>
+
+    <div class="day-grid">
+      <div>
+        <div class="card">
+          <div class="time-tag">Mattina • Volo Italia → Bucarest</div>
+          <h3>Partenza da Bergamo / Milano</h3>
+          <p>
+            Volo diretto mattutino (Ryanair / Wizz) da Bergamo o Milano verso Otopeni.
+            Durata ~2h 15. In febbraio un A/R prenotato con un minimo di anticipo sta
+            spesso tra 60–120 € a testa, a seconda dei giorni e dell’anticipo.
+          </p>
+          <p>
+            Atterri verso metà mattina / pranzo, Uber fino al centro (20–25 min).
+          </p>
+          <div class="card-links">
+            <a href="https://www.skyscanner.net/routes/bgy/otp/milan-bergamo-to-bucharest-otopeni.html" target="_blank">Skyscanner BGY → OTP</a>
+            <a href="https://www.ryanair.com" target="_blank">Ryanair</a>
+            <a href="https://wizzair.com" target="_blank">Wizz Air</a>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="time-tag">Pomeriggio • Check-in & primo cibo</div>
+          <h3>Appartamento in Old Town</h3>
+          <p>
+            Base consigliata: appartamento in zona Old Town / Universitate / Piața Romană.
+            Via Booking / Airbnb trovi appartamenti per gruppi (6–8 persone) tra 80–150 €/notte
+            totali se prenotate per tempo. Zona giusta per muovervi a piedi e in Uber.
+          </p>
+          <ul>
+            <li><a href="https://www.booking.com/hotel/ro/bucharest-old-town-apartments.html" target="_blank">Bucharest Old Town Apartments</a></li>
+            <li><a href="https://www.booking.com/hotel/ro/la-fattoria-amp-restaurant.html" target="_blank">Old Town Boutique Hotel</a></li>
+            <li><a href="https://www.airbnb.com/old-town-bucharest-romania/stays" target="_blank">Airbnb – Old Town</a></li>
+          </ul>
+          <p style="margin-top:0.4rem;">
+            Pranzo veloce: qualcosa che non avete a Verona:
+          </p>
+          <div class="chip-row">
+            <span class="chip">Spartan (gyro/greco fast food)</span>
+            <span class="chip">Taco Bell (mall / food court)</span>
+            <span class="chip">Cartofisserie (patatine fatte bene)</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="time-tag">Tardo pomeriggio • Old Town</div>
+          <h3>Giro Lipscani & Cărturești Carusel</h3>
+          <p>
+            Primo giro nell’Old Town: strade Lipscani/Stavropoleos, CEC Palace, atmosfera
+            est europea, palazzi un po’ fatiscenti e un po’ restaurati. Foto, caffè, prima
+            birra e orientamento.
+          </p>
+          <ul>
+            <li>
+              <b>Cărturești Carusel</b> – libreria spettacolare a più piani, perfetta per qualche foto e
+              un caffè al piano alto.
+            </li>
+            <li>
+              Passaggi <b>Macca–Vilacrosse</b> – gallerie coperte con bar e luci gialle, vibe “Old Europe”.
+            </li>
+          </ul>
+          <div class="card-links">
+            <a href="https://www.carucubere.ro/en/home/" target="_blank">CEC / Caru’ cu Bere</a>
+            <a href="https://carturesti.ro/librarii/carturesti-carusel-1833" target="_blank">Cărturești Carusel</a>
+          </div>
+         <!-- Updated image link for Caru’ cu Bere. Use full-size image from Wikimedia Commons that is accessible and not a thumbnail. -->
+         <img src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Edificio_caru_%27cu_bere,_01.JPG"
+               alt="Caru’ cu Bere e palazzi in Old Town, Bucarest">
+        </div>
+
+        <div class="card">
+          <div class="time-tag">Sera • Cena & Skybar</div>
+          <h3>Caru’ cu Bere + Skybar</h3>
+          <p>
+            Cena tipica forte per entrare nel mood:
+          </p>
+          <ul>
+            <li><b>Caru’ cu Bere</b> (storico, gotico, molto scenografico) – sarmale, mici, birra locale.</li>
+            <li>In alternativa: <b>Hanu’ lui Manuc</b> (vecchia locanda con cortile enorme).</li>
+          </ul>
+          <p>
+            Dopo cena, salite su uno skybar:
+          </p>
+          <ul>
+            <li><b>Nomad Skybar</b> – rooftop in pieno centro, vista sui tetti e musica.</li>
+            <li><b>Amethyst SkyBar</b> – più hotel-style, ma panorama notevole.</li>
+          </ul>
+          <div class="card-links">
+            <a href="https://www.carucubere.ro/en/home/" target="_blank">Caru’ cu Bere</a>
+            <a href="https://nomadskybar.ro/" target="_blank">Nomad Skybar</a>
+          </div>
+          <!-- Updated Nomad Skybar photo from the official site. This image shows the interior/terrace and is served directly from nomadskybar.ro. -->
+          <img src="https://nomadskybar.ro/wp-content/uploads/2020/09/FADE-7.jpg"
+               alt="Nomad Skybar, rooftop a Bucarest">
+        </div>
+      </div>
+
+      <div>
+        <div class="card">
+          <div class="time-tag">Notte • Prima uscita</div>
+          <h3>Club – Scelta sul posto</h3>
+          <p>
+            Prima serata: tenetevi flessibili. Andate a seconda di quanto siete cotti dal viaggio.
+          </p>
+          <div class="club-groups">
+            <div class="club-group">
+              <h4>Commerciale / “big show”</h4>
+              <ul class="club-list">
+                <li>
+                  <b>Face Club</b> – grosso, scenico, pubblico più “tirato”, budget più alto.
+                  <br><a href="https://www.faceclubbucharest.com/" target="_blank">Sito Face Club</a>
+                </li>
+                <li>
+                  <b>Bamboo</b> (se attivo) – vecchia istituzione, da verificare stato attuale.
+                </li>
+              </ul>
+            </div>
+            <div class="club-group">
+              <h4>Centralissimo / mainstream</h4>
+              <ul class="club-list">
+                <li>
+                  <b>Club Mono</b> – musica mainstream, centrale, abbastanza turist-friendly.
+                  <br><a href="https://clubmono.ro/" target="_blank">Sito Club Mono</a>
+                </li>
+                <li>
+                  <b>Nook Club</b> – altra opzione in centro, da valutare in base agli eventi.
+                </li>
+              </ul>
+            </div>
+            <div class="club-group">
+              <h4>Underground / alternativo</h4>
+              <ul class="club-list">
+                <li>
+                  <b>Control Club</b> – live, alternative, pubblico misto; recensioni recenti un po’
+                  contrastanti su prezzi e servizio, ma può valere se quella sera c’è un evento forte.
+                </li>
+              </ul>
+            </div>
+          </div>
+          <p style="margin-top:0.5rem;">
+            Tattica: prima drink allo skybar / bar, poi decidete sul momento guardando Instagram/Facebook dei club
+            per vedere dove c’è l’evento migliore quella notte.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== GIORNO 2 ===================== -->
+  <section id="day2">
+    <h2><span class="day-label">Giorno 2 – Sabato</span> Shooting Range & Therme (modalità party)</h2>
+
+    <div class="day-grid">
+      <div>
+        <div class="card">
+          <div class="time-tag">Mattina • Adrenalina</div>
+          <h3>Bucharest Shooting Club</h3>
+          <p>
+            Uber fino al poligono (<b>Bucharest Shooting Club</b>): sessione con istruttore, armi vere
+            (AK-47, Glock, fucili a pompa ecc.), tutto in sicurezza, perfetto per un gruppo di amici.
+          </p>
+          <ul>
+            <li>Pacchetti tipici: 3–5 armi a testa con tot colpi, ~60–100 € a persona.</li>
+            <li>Serve prenotare prima, basta carta d’identità; per turisti è legale e pensato apposta.</li>
+          </ul>
+          <div class="card-links">
+            <a href="https://bucharestshootingclub.com/" target="_blank">Bucharest Shooting Club</a>
+            <a href="https://www.tripadvisor.com/Attraction_Review-g26580271-d10283535-Reviews-Bucharest_Shooting_Club-Joita_Giurgiu_County_Southern_Romania.html" target="_blank">Recensioni TripAdvisor</a>
+          </div>
+          <!-- Updated Bucharest Shooting Club image. Using a high-quality image from the official site showing a Kalashnikov on a range table. -->
+          <img src="https://bucharestshootingclub.com/sites/default/files/styles/header_m/public/media/image/bucharest-shooting-range-with-kalashnikov-shooting.webp"
+               alt="Bucharest Shooting Club, AK-47">
+        </div>
+
+        <div class="card">
+          <div class="time-tag">Pranzo • Tipico</div>
+          <h3>Vatra / Hanu’ lui Manuc</h3>
+          <p>
+            Tornate in centro e fate un pranzo serio di cucina rumena:
+          </p>
+          <ul>
+            <li><b>Vatra</b> – rumeno classico, meno turistico, porzioni oneste.</li>
+            <li><b>Hanu’ lui Manuc</b> – cortile interno molto scenico, pieno di gruppi.</li>
+          </ul>
+          <p>
+            Qui vi fate il pieno di carne e carbo prima di andare alle terme.
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="time-tag">Pomeriggio & sera • Relax & festa</div>
+          <h3>Therme București – versione “serata”</h3>
+          <p>
+            Uber ~25–30 minuti verso <b>Therme București</b>, il mega complesso termale/spa.  
+            Piscine indoor/outdoor, acqua calda, saune, bar in piscina, musica. Nel weekend sera
+            l’atmosfera è a metà tra spa e club.
+          </p>
+          <ul>
+            <li>Biglietto 3/4 ore o full: indicativamente 30–45 € a persona secondo area.</li>
+            <li>Tenete costume, ciabatte; potete mangiare dentro senza dover uscire.</li>
+            <li>Ideale se volete bere qualcosa ma non fare subito la seconda nottatona in discoteca.</li>
+          </ul>
+          <div class="card-links">
+            <a href="https://therme.ro/en" target="_blank">Therme București – sito ufficiale</a>
+          </div>
+          <!-- Updated Therme București image. Use full-sized file from Wikimedia Commons to avoid thumbnail issues. -->
+          <img src="https://upload.wikimedia.org/wikipedia/commons/e/e1/ThermeBucuresti.jpg"
+               alt="Therme București, complesso termale">
+        </div>
+      </div>
+
+      <div>
+        <div class="card">
+          <div class="time-tag">Opzione alternativa • Pomeriggio</div>
+          <h3>Luogo “dark” / abbandonato ma turistico</h3>
+          <p>
+            Se un pezzo del gruppo vuole cultura più “dark”:
+          </p>
+          <ul>
+            <li><b>Fortul 13 Jilava</b> – ex prigione politica, visita guidata pesantuccia ma molto forte.</li>
+            <li><b>Mogoșoaia Palace</b> – se preferite qualcosa di più soft e “reale”.</li>
+          </ul>
+          <p>
+            Queste opzioni le metti in piedi con tour organizzato o taxi + guida.  
+            Onestamente, per un weekend corto, io terrei come extra solo se siete
+            tutti gasati per qualcosa di molto “storia pesante”.
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="time-tag">Notte • Dopo Therme</div>
+          <h3>Birre tranquille o secondo giro club</h3>
+          <p>
+            Dopo le terme potete:
+          </p>
+          <ul>
+            <li>Tornare in centro, birre tranquille in Old Town / narghilè.</li>
+            <li>Se avete ancora energia, un secondo giro in uno dei club della lista (Face / Mono / Nook).</li>
+          </ul>
+          <p>
+            Non ha senso pianificare un club fisso qui: decidete sul momento in base alla stanchezza e a quanto avete bevuto in piscina.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== GIORNO 3 ===================== -->
+  <section id="day3">
+    <h2><span class="day-label">Giorno 3 – Domenica</span> Chill, parco, burger & cigar lounge</h2>
+
+    <div class="day-grid">
+      <div>
+        <div class="card">
+          <div class="time-tag">Mattina • Detox</div>
+          <h3>Parco + brunch</h3>
+          <p>
+            Domenica mattina la prendete comoda:
+          </p>
+          <ul>
+            <li><b>Parco Cișmigiu</b> – centrale, con laghetto, ideale per smaltire la sera prima.</li>
+            <li>Oppure <b>Herastrau / King Michael I Park</b> – più grande, zona nord, vicino a bar e locali carini.</li>
+          </ul>
+          <p>
+            Brunch/caffè in zona: locali moderni tipo <b>Frudisiac</b>, <b>Origo</b>, o quello che trovate vicino all’appartamento.
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="time-tag">Pomeriggio • Cose “solo lì”</div>
+          <h3>Vacărești o libreria / gallerie</h3>
+          <p>
+            A seconda del meteo:
+          </p>
+          <ul>
+            <li><b>Parcul Natural Văcărești</b> – “delta urbano” dentro la città, se volete qualcosa di strano/naturale.</li>
+            <li>Oppure vi tenete su <b>Cărturești Carusel</b> + gallerie Macca–Vilacrosse se il giorno 1 l’avete fatto di corsa.</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <div class="time-tag">Sera • Burger & sigari</div>
+          <h3>Bossman’s Burgr Factory & El Unico</h3>
+          <p>
+            Cena “cicciona” con burger che non avete a Verona:
+          </p>
+          <ul>
+            <li><b>Bossman’s Burgr Factory</b> – Bulevardul Dacia 20, burger belli carichi.</li>
+            <li>Se siete ancora curiosi: un altro giro da Spartan / Taco Bell per cibo da hangover.</li>
+          </ul>
+          <p>
+            Dopo cena:
+          </p>
+          <ul>
+            <li><b>El Unico Cigar Lounge</b> – zona Primăverii; sigari seri, whisky/rum e chiusura da signori.</li>
+          </ul>
+          <div class="card-links">
+            <a href="https://burgrfactory.ro/" target="_blank">Bossman’s Burgr Factory</a>
+            <a href="https://www.facebook.com/ElUnicoCigarLounge/" target="_blank">El Unico Cigar Lounge</a>
+          </div>
+          <!-- Updated burger photo for Bossman’s Burgr Factory. Using a high-quality burger image from Unsplash that is accessible. -->
+          <img src="https://images.unsplash.com/photo-1550547660-d9450f859349"
+               alt="Burger da Bossman’s Burgr Factory">
+        </div>
+      </div>
+
+      <div>
+        <div class="card">
+          <div class="time-tag">Notte • Ultime birre</div>
+          <h3>Old Town / bar tranquilli</h3>
+          <p>
+            Ultima vera notte. Non per forza discoteca; potete girare:
+          </p>
+          <ul>
+            <li>Pub e bar in Lipscani (ce ne sono a raffica, scegliete lì).</li>
+            <li>Shisha lounge (Ganesha, ecc.) se vi va il narghilè.</li>
+          </ul>
+          <p>
+            Qui l’obiettivo è chiudere il weekend in modo rilassato, non morire di hangover il lunedì.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== GIORNO 4 ===================== -->
+  <section id="day4">
+    <h2><span class="day-label">Giorno 4 – Lunedì</span> Brunch, ultimi giri & rientro</h2>
+
+    <div class="day-grid">
+      <div>
+        <div class="card">
+          <div class="time-tag">Mattina • Check-out soft</div>
+          <h3>Ultimo giro in centro</h3>
+          <p>
+            Check-out intorno alle 10–11. Lasciate eventualmente i bagagli in struttura.
+            Ultimi giri:
+          </p>
+          <ul>
+            <li>Shopping leggero (souvenir, alcol locali, tabacchi).</li>
+            <li>Un pranzo veloce in Old Town o fast food (Spartan / Taco Bell / Cartofisserie).</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <div class="time-tag">Pomeriggio • Ritorno</div>
+          <h3>Transfer aeroporto & volo</h3>
+          <p>
+            Uber verso Otopeni (considera 30–40 min col traffico + anticipo per sicurezza).
+            Volo di rientro nel pomeriggio per tornare a Verona/Bergamo in serata.
+          </p>
+        </div>
+      </div>
+
+      <div>
+        <div class="card">
+          <div class="time-tag">Note pratiche</div>
+          <h3>Soldi, meteo, permessi</h3>
+          <ul>
+            <li><b>Meteo febbraio:</b> aspettati freddo vero: 0° / -5°, possibile neve. Giacca seria, guanti, scarpe decenti.</li>
+            <li><b>Pagamenti:</b> quasi tutto con carta; tieni un po’ di lei cash.</li>
+            <li><b>Permessi lavoro:</b> venerdì + lunedì mezza/una giornata se vuoi stare tranquillo con orari voli.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== CLUB SECTION RIASSUNTIVA ===================== -->
+  <section id="clubs">
+    <h2><span class="day-label">Nightlife</span> Club & discoteche – scelta sul posto</h2>
+
+    <div class="card">
+      <p>
+        In pratica: arrivate, guardate eventi e social, e scegliete la sera stessa.  
+        Qui sotto la panoramica secca:
+      </p>
+
+      <div class="club-groups">
+        <div class="club-group">
+          <h4>1) Commerciali / Lusso</h4>
+          <ul class="club-list">
+            <li>
+              <b>Face Club</b> – grosso, luci, show, gente tirata.  
+              Zona Piața Presei Libere, taxi/uber necessario.  
+              Drink e tavoli possono costare parecchio, ma esperienza “big club”.
+            </li>
+            <li>
+              <b>Bamboo</b> – da verificare sempre lo stato attuale e recensioni recenti.
+            </li>
+          </ul>
+        </div>
+        <div class="club-group">
+          <h4>2) Centrali / Turist-friendly</h4>
+          <ul class="club-list">
+            <li>
+              <b>Club Mono</b> – vicino Universitate, musica mainstream, ambiente misto
+              locali/turisti. Buona base se volete qualcosa di non troppo “esclusivo”.
+            </li>
+            <li>
+              <b>Nook Club</b> – altra opzione in centro; valutate in base a serata e recensioni aggiornate.
+            </li>
+          </ul>
+        </div>
+        <div class="club-group">
+          <h4>3) Alternative / Live / Underground</h4>
+          <ul class="club-list">
+            <li>
+              <b>Control Club</b> – concerti, elettronica/indie; posto storico.  
+              Pro: vibe diversa dalla solita disco.  
+              Contro: recensioni recenti un po’ altalenanti su servizio e prezzi; da usare se vi interessa uno show specifico.
+            </li>
+          </ul>
+        </div>
+        <div class="club-group">
+          <h4>4) Skybar come pre-serata</h4>
+          <ul class="club-list">
+            <li><b>Nomad Skybar</b> – Old Town, molto scenico, perfetto per iniziare.</li>
+            <li><b>Amethyst</b> / <b>NOR</b> – più eleganti, vista sulla città, prezzi un filo più alti ma sempre abbordabili rispetto alle città dell’ovest.</li>
+          </ul>
+        </div>
+      </div>
+
+      <p style="margin-top:0.7rem;">
+        Budget ragionevole per una notte di club (senza tavolo VIP): ingresso + 3–4 drink
+        intorno ai 25–50 € a testa, a seconda del locale.
+      </p>
+    </div>
+  </section>
+
+  <!-- ===================== CIBO & FAST FOOD ===================== -->
+  <section id="food">
+    <h2><span class="day-label">Cibo</span> Tipico, burger & fast food “solo lì”</h2>
+
+    <div class="card">
+      <h3>Tipico rumeno</h3>
+      <ul>
+        <li>
+          <b>Caru’ cu Bere</b> – storico, gotico, super scenografico.  
+          Piatti da prendere: <i>mici</i> (salsiccette grigliate), <i>sarmale</i> (involtini
+          di cavolo ripieni), birra della casa.
+        </li>
+        <li>
+          <b>Hanu’ lui Manuc</b> – cortile enorme, vibe locanda.  
+          Ottimo per gruppi, porzioni abbondanti, atmosfera molto “est”.
+        </li>
+        <li>
+          <b>Vatra</b> – meno turistico, più “osteria rumena”, sempre in centro.
+        </li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>Burger & roba un po’ più “americana”</h3>
+      <ul>
+        <li>
+          <b>Bossman’s Burgr Factory (Dacia 20)</b> – burger carichi, locale urban;
+          non è la solita catena che hai sotto casa.
+        </li>
+        <li>
+          <b>Burgeria Stirbei</b> – altra burgeria locale, spesso consigliata dai rumeni.
+        </li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>Fast food “solo lì” o comunque poco comuni da voi</h3>
+      <ul>
+        <li>
+          <b>Spartan</b> – catena rumena ispirata al greco (gyros, pita, carne con salse proprie).  
+          Perfetta per pranzi rapidi o goduria post-serata.
+        </li>
+        <li>
+          <b>Taco Bell Romania</b> – sì, è una catena USA, ma in Italia praticamente non ce l’hai.
+          A Bucarest ne trovi diversi (Mega Mall, ParkLake, Plaza Romania ecc.).  
+          Ottimo per un pranzo sbrigativo di gruppo.
+        </li>
+        <li>
+          <b>Cartofisserie</b> – posto focalizzato su patatine serie, non roba da autogrill.
+        </li>
+        <li>
+          <b>EggsMania</b> – fast food di uova, panini, crêpes; perfetto per colazioni/brunch.
+        </li>
+      </ul>
+      <p style="margin-top:0.4rem;">
+        Con questo mix, in 3 giorni vi fate: tradizionale rumeno, burger locali, fast food
+        che non avete a Verona, e zero sbatti a cercare lì.
+      </p>
+    </div>
+  </section>
+
+  <!-- ===================== MAPPA ===================== -->
+  <section id="map-container">
+    <h2><span class="day-label">Mappa</span> Punti chiave del weekend</h2>
+
+    <div id="map"></div>
+    <p class="map-caption">
+      Segnaposti indicativi: Old Town / base, Therme, uno Spartan e un punto “burger”.
+      La mappa è interattiva: puoi zoomare, spostarti e usarla come riferimento.
+    </p>
+  </section>
+
+  <footer>
+    <p>
+      Itinerario generico per febbraio (ven–lun). Prezzi e orari possono cambiare, ma gli ordini di grandezza sono realistici:
+      voli low cost 60–120 € A/R, appartamenti in centro 80–150 €/notte per il gruppo,
+      mangiare/bere 40–60 €/giorno a testa se non esagerate coi superalcolici di lusso.
+    </p>
+  </footer>
+</div>
+
+<script>
+  // Mappa Leaflet con tutti i punti del weekend
+  window.addEventListener('load', function () {
+    if (typeof L === 'undefined') {
+      console.error('Leaflet non è caricato (L undefined). Controlla lo script CDN.');
+      return;
+    }
+
+    // Centro su Bucarest
+    const map = L.map('map').setView([44.44, 26.09], 12.3);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 18,
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    // Punti chiave dell’itinerario (coordinate indicative, vanno bene per farsi un’idea)
+    const pois = [
+      // BASE / OLD TOWN / ALLOGGIO
+      {
+        name: "Old Town / Caru’ cu Bere",
+        coords: [44.4321, 26.0981],
+        text: "<b>Old Town / Caru’ cu Bere</b><br>Base della zona: ristoranti tipici & bar."
+      },
+      {
+        name: "Piața Universității",
+        coords: [44.4344, 26.1026],
+        text: "<b>Piața Universității</b><br>Zona centrale perfetta per appartamenti e hotel."
+      },
+      {
+        name: "Cărturești Carusel",
+        coords: [44.4327, 26.0989],
+        text: "<b>Cărturești Carusel</b><br>Libreria scenografica a più piani, foto e caffè."
+      },
+
+      // CIBO TIPICO
+      {
+        name: "Caru’ cu Bere (ristorante tipico)",
+        coords: [44.4321, 26.0981],
+        text: "<b>Caru’ cu Bere</b><br>Storico ristorante rumeno, interni gotici, piatti tipici."
+      },
+      {
+        name: "Hanu’ lui Manuc",
+        coords: [44.4309, 26.0997],
+        text: "<b>Hanu’ lui Manuc</b><br>Vecchia locanda con grande cortile, cucina rumena."
+      },
+      {
+        name: "Vatra (ristorante rumeno)",
+        coords: [44.4355, 26.0973],
+        text: "<b>Vatra</b><br>Cucina rumena più tranquilla e meno turistica."
+      },
+
+      // BURGER / FAST FOOD PARTICOLARI
+      {
+        name: "Bossman’s Burgr Factory – Dacia 20",
+        coords: [44.4470, 26.0940],
+        text: "<b>Bossman’s Burgr Factory</b><br>Burger ciccioni per la domenica sera."
+      },
+      {
+        name: "Burgeria Stirbei",
+        coords: [44.4405, 26.0867],
+        text: "<b>Burgeria Stirbei</b><br>Altra burgeria locale apprezzata dai rumeni."
+      },
+      {
+        name: "Spartan (fast food rumeno, es. Calea Văcărești)",
+        coords: [44.3970, 26.1300],
+        text: "<b>Spartan</b><br>Catena rumena stile gyros, perfetta per pranzo o post-serata."
+      },
+      {
+        name: "Taco Bell – Mega Mall",
+        coords: [44.4380, 26.1590],
+        text: "<b>Taco Bell Mega Mall</b><br>Fast food messicano in mall, per pranzo veloce."
+      },
+      {
+        name: "Cartofisserie",
+        coords: [44.4375, 26.0980],
+        text: "<b>Cartofisserie</b><br>Fast food focalizzato sulle patatine fatte bene."
+      },
+      {
+        name: "EggsMania (indicativo)",
+        coords: [44.4450, 26.1030],
+        text: "<b>EggsMania</b><br>Panini/crepes a base uova, ottimo per colazioni e brunch."
+      },
+
+      // PARCHI / NATURA / CHILL
+      {
+        name: "Parc Cișmigiu",
+        coords: [44.4351, 26.0905],
+        text: "<b>Parc Cișmigiu</b><br>Parco centrale, laghetto, passeggiata detox."
+      },
+      {
+        name: "Herastrau / King Michael I Park",
+        coords: [44.4702, 26.0830],
+        text: "<b>Parco Herăstrău</b><br>Grande parco a nord, vicino a bar e ristoranti."
+      },
+      {
+        name: "Parcul Natural Văcărești",
+        coords: [44.4025, 26.1330],
+        text: "<b>Văcărești Nature Park</b><br>“Delta urbano” di Bucarest, natura in mezzo alla città."
+      },
+
+      // RELAX / SPA / TERME / SIGARI
+      {
+        name: "Therme București",
+        coords: [44.6051, 26.0854],
+        text: "<b>Therme București</b><br>Spa gigantesca: piscine, saune, bar, serata a tema."
+      },
+      {
+        name: "El Unico Cigar Lounge (Primăverii)",
+        coords: [44.4660, 26.0940],
+        text: "<b>El Unico Cigar Lounge</b><br>Cigar lounge per sigari e whisky la domenica sera."
+      },
+
+      // SKYBAR / ROOFTOP
+      {
+        name: "Nomad Skybar",
+        coords: [44.4325, 26.1005],
+        text: "<b>Nomad Skybar</b><br>Rooftop in Old Town, perfetto per la prima sera."
+      },
+      {
+        name: "NOR Sky Casual Restaurant",
+        coords: [44.4812, 26.0814],
+        text: "<b>NOR Sky Casual</b><br>Skybar/ristorante in alto, vista su tutta la città."
+      },
+      {
+        name: "Amethyst SkyBar (indicativo)",
+        coords: [44.4418, 26.0865],
+        text: "<b>Amethyst SkyBar</b><br>Skybar d’hotel con vista e cocktail."
+      },
+
+      // CLUB / NIGHTLIFE
+      {
+        name: "Face Club Bucharest",
+        coords: [44.4778, 26.0666],
+        text: "<b>Face Club</b><br>Club commerciale grande, show e ambiente più “lussuoso”."
+      },
+      {
+        name: "Club Mono",
+        coords: [44.4370, 26.1005],
+        text: "<b>Club Mono</b><br>Club centrale, musica mainstream, turist-friendly."
+      },
+      {
+        name: "Nook Club (indicativo centro)",
+        coords: [44.4355, 26.1018],
+        text: "<b>Nook Club</b><br>Altro club in centro, da valutare in base agli eventi."
+      },
+      {
+        name: "Control Club",
+        coords: [44.4376, 26.1017],
+        text: "<b>Control Club</b><br>Locale alternativo/underground, buono se c’è il live giusto."
+      },
+
+      // SHOOTING / EXTRA
+      {
+        name: "Bucharest Shooting Club (Joita)",
+        coords: [44.4930, 25.8530],
+        text: "<b>Bucharest Shooting Club</b><br>Poligono con AK, pistole ecc. Transfer da Bucarest."
+      },
+
+      // TRASPORTO
+      {
+        name: "Aeroporto Otopeni (OTP)",
+        coords: [44.5710, 26.0850],
+        text: "<b>Aeroporto Otopeni</b><br>Arrivo e partenza del weekend."
+      }
+    ];
+
+    pois.forEach(poi => {
+      L.marker(poi.coords).addTo(map).bindPopup(poi.text);
+    });
+  });
+</script>
+
+
+<script>
+  // --- TOGGLE MENU MOBILE ---
+  document.addEventListener('DOMContentLoaded', function () {
+    const nav = document.querySelector('nav');
+    const toggleBtn = document.querySelector('.nav-toggle');
+
+    if (!nav || !toggleBtn) return;
+
+    toggleBtn.addEventListener('click', function () {
+      const isOpen = nav.classList.toggle('nav-open');
+      toggleBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    });
+
+    // Chiudi il menu quando clicchi su un link
+    const navLinks = document.querySelectorAll('#main-nav a');
+    navLinks.forEach(link => {
+      link.addEventListener('click', function () {
+        nav.classList.remove('nav-open');
+        toggleBtn.setAttribute('aria-expanded', 'false');
+      });
+    });
+  });
+</script>
+
+
+
+</body>
+</html>
