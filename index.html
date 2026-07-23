@@ -4,251 +4,190 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#080b12">
-  <meta name="description" content="Lo spazio di JitaDesWadyas: progetti e viaggi.">
-  <title>Lo spazio di JitaDesWadyas</title>
+  <meta name="description" content="SwadyaSpace: raccolta privata dei viaggi di JitaDesWadyas.">
+  <title>SwadyaSpace · Viaggi</title>
   <style>
     :root {
       --bg: #080b12;
       --panel: #111722;
-      --panel-2: #171f2d;
       --text: #f5f0e8;
       --muted: #aeb6c3;
       --amber: #f4b942;
-      --line: rgba(255,255,255,.12);
+      --line: rgba(255,255,255,.13);
       --shadow: 0 22px 70px rgba(0,0,0,.42);
     }
+
     * { box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
+
     body {
       min-height: 100vh;
       margin: 0;
       color: var(--text);
       background:
-        radial-gradient(circle at 17% 18%, rgba(244,185,66,.12), transparent 22rem),
-        radial-gradient(circle at 82% 12%, rgba(91,124,191,.12), transparent 25rem),
+        radial-gradient(circle at 16% 12%, rgba(244,185,66,.12), transparent 25rem),
+        radial-gradient(circle at 84% 14%, rgba(72,104,175,.12), transparent 28rem),
         var(--bg);
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      line-height: 1.55;
-      overflow-x: hidden;
     }
+
     body::before {
       content: "";
       position: fixed;
       inset: 0;
       pointer-events: none;
-      opacity: .46;
+      opacity: .42;
       background-image:
-        radial-gradient(circle, rgba(255,255,255,.8) 0 1px, transparent 1.2px),
-        radial-gradient(circle, rgba(255,255,255,.42) 0 1px, transparent 1.2px);
-      background-size: 72px 72px, 118px 118px;
-      background-position: 0 0, 31px 18px;
-      mask-image: linear-gradient(to bottom, black, transparent 82%);
+        radial-gradient(circle, rgba(255,255,255,.75) 0 1px, transparent 1.2px),
+        radial-gradient(circle, rgba(255,255,255,.36) 0 1px, transparent 1.2px);
+      background-size: 76px 76px, 124px 124px;
+      background-position: 0 0, 37px 21px;
+      mask-image: linear-gradient(to bottom, black, transparent 85%);
     }
-    a { color: inherit; }
-    button { font: inherit; }
+
     .shell {
       position: relative;
-      width: min(1020px, calc(100% - 32px));
+      width: min(980px, calc(100% - 32px));
       margin: 0 auto;
-      padding: 72px 0 60px;
+      padding: 64px 0 48px;
     }
+
     .eyebrow {
-      margin: 0 0 14px;
+      margin: 0 0 12px;
       color: var(--amber);
       font-size: .78rem;
       font-weight: 900;
       letter-spacing: .18em;
       text-transform: uppercase;
     }
+
     h1 {
-      max-width: 760px;
       margin: 0;
-      font-size: clamp(3rem, 9vw, 6.6rem);
-      line-height: .94;
-      letter-spacing: -.06em;
+      font-size: clamp(3.4rem, 10vw, 7.2rem);
+      line-height: .9;
+      letter-spacing: -.065em;
     }
+
     .intro {
-      max-width: 620px;
-      margin: 22px 0 0;
+      margin: 20px 0 0;
       color: var(--muted);
-      font-size: clamp(1.02rem, 2.2vw, 1.22rem);
+      font-size: clamp(1rem, 2.2vw, 1.2rem);
     }
-    .choices {
+
+    .trips {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 18px;
-      margin-top: 46px;
+      margin-top: 44px;
     }
-    .choice {
+
+    .trip {
+      position: relative;
       display: flex;
-      min-height: 210px;
-      padding: 25px;
+      min-height: 280px;
+      padding: 26px;
       flex-direction: column;
       justify-content: space-between;
+      overflow: hidden;
       color: var(--text);
-      text-align: left;
       text-decoration: none;
-      background: rgba(17,23,34,.9);
+      background: rgba(17,23,34,.92);
       border: 1px solid var(--line);
-      border-radius: 18px;
+      border-radius: 20px;
       box-shadow: var(--shadow);
-      cursor: pointer;
       transition: transform .18s ease, border-color .18s ease, background .18s ease;
     }
-    .choice:hover,
-    .choice:focus-visible {
+
+    .trip::after {
+      content: "";
+      position: absolute;
+      width: 210px;
+      height: 210px;
+      right: -85px;
+      top: -85px;
+      border-radius: 50%;
+      background: rgba(244,185,66,.07);
+    }
+
+    .trip:hover,
+    .trip:focus-visible {
       transform: translateY(-4px);
       border-color: rgba(244,185,66,.58);
-      background: var(--panel-2);
+      background: #171f2d;
       outline: none;
     }
-    .choice-icon {
-      display: grid;
-      width: 54px;
-      height: 54px;
-      place-items: center;
-      border: 1px solid rgba(244,185,66,.32);
-      border-radius: 14px;
-      background: rgba(244,185,66,.08);
-      font-size: 1.55rem;
+
+    .flag {
+      position: relative;
+      z-index: 1;
+      font-size: 2.5rem;
     }
-    .choice strong {
-      display: block;
-      margin-top: 28px;
-      font-size: clamp(1.35rem, 3vw, 2rem);
-      letter-spacing: -.025em;
+
+    .trip h2 {
+      position: relative;
+      z-index: 1;
+      margin: 0;
+      font-size: clamp(1.65rem, 4vw, 2.5rem);
+      line-height: 1.05;
+      letter-spacing: -.04em;
     }
-    .choice span:last-child {
-      display: block;
-      margin-top: 8px;
+
+    .trip p {
+      position: relative;
+      z-index: 1;
+      margin: 10px 0 0;
       color: var(--muted);
+      line-height: 1.55;
     }
-    .choice .arrow {
+
+    .open {
+      position: relative;
+      z-index: 1;
+      display: block;
+      margin-top: 22px;
       color: var(--amber);
       font-weight: 900;
     }
-    .panel {
-      display: none;
-      margin-top: 22px;
-      padding: 26px;
-      background: rgba(17,23,34,.94);
-      border: 1px solid var(--line);
-      border-radius: 18px;
-      box-shadow: var(--shadow);
-    }
-    .panel.is-open { display: block; animation: reveal .22s ease-out; }
-    @keyframes reveal { from { opacity: 0; transform: translateY(-8px); } }
-    .panel h2 {
-      margin: 0 0 8px;
-      font-size: clamp(1.6rem, 4vw, 2.4rem);
-      letter-spacing: -.04em;
-    }
-    .panel-lead { margin: 0 0 22px; color: var(--muted); }
-    .project-list,
-    .trip-list {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 12px;
-    }
-    .project,
-    .trip {
-      padding: 17px;
-      background: rgba(255,255,255,.035);
-      border: 1px solid var(--line);
-      border-radius: 12px;
-    }
-    .project strong,
-    .trip strong { display: block; font-size: 1.05rem; }
-    .project span,
-    .trip span { display: block; margin-top: 4px; color: var(--muted); font-size: .92rem; }
-    .trip {
-      text-decoration: none;
-      transition: border-color .16s ease, transform .16s ease;
-    }
-    .trip:hover,
-    .trip:focus-visible {
-      transform: translateY(-2px);
-      border-color: rgba(244,185,66,.55);
-      outline: none;
-    }
-    .trip b { color: var(--amber); }
+
     footer {
-      margin-top: 42px;
+      margin-top: 38px;
       color: #7f8998;
-      font-size: .85rem;
+      font-size: .84rem;
     }
+
     @media (max-width: 720px) {
-      .shell { padding-top: 48px; }
-      .choices,
-      .project-list,
-      .trip-list { grid-template-columns: 1fr; }
-      .choice { min-height: 185px; }
-      .panel { padding: 20px; }
+      .shell { padding-top: 44px; }
+      .trips { grid-template-columns: 1fr; margin-top: 34px; }
+      .trip { min-height: 235px; }
     }
   </style>
 </head>
 <body>
   <main class="shell">
     <p class="eyebrow">SwadyaSpace</p>
-    <h1>Lo spazio di JitaDesWadyas.</h1>
-    <p class="intro">Una porta per i miei progetti e una per le pagine private. Scegli quella giusta.</p>
+    <h1>Viaggi.</h1>
+    <p class="intro">Programmi, mappe, costi, cibo e preparazione pratica.</p>
 
-    <div class="choices" aria-label="Scegli dove andare">
-      <button class="choice" type="button" data-panel="projects" aria-expanded="false">
-        <span class="choice-icon" aria-hidden="true">↩</span>
-        <span>
-          <strong>Sono capitato qui per sbaglio</strong>
-          <span>Vai ai miei altri progetti <span class="arrow">→</span></span>
-        </span>
-      </button>
+    <section class="trips" aria-label="Viaggi disponibili">
+      <a class="trip" href="china.html">
+        <span class="flag" aria-hidden="true">🇨🇳</span>
+        <div>
+          <h2>Cina 2027</h2>
+          <p>Hong Kong, Shenzhen, Macao, Xi’an e Pechino. Quattordici giorni tra vita quotidiana, tecnologia, cucina, Esercito di Terracotta e Muraglia Cinese.</p>
+          <span class="open">Apri il viaggio →</span>
+        </div>
+      </a>
 
-      <button class="choice" type="button" data-panel="private" aria-expanded="false">
-        <span class="choice-icon" aria-hidden="true">✦</span>
-        <span>
-          <strong>Andiamo nello spazio privato</strong>
-          <span>Apri viaggi e pagine personali <span class="arrow">→</span></span>
-        </span>
-      </button>
-    </div>
-
-    <section class="panel" id="projects" aria-labelledby="projects-title">
-      <h2 id="projects-title">Vai ai miei altri progetti.</h2>
-      <p class="panel-lead">Qui non c’è molto da vedere. Le cose serie sono queste:</p>
-      <div class="project-list">
-        <div class="project"><strong>JitaDiSwadya</strong><span>Canzoni che raccontano storie.</span></div>
-        <div class="project"><strong>E POI?</strong><span>Gioco sociale di narrazione con carte.</span></div>
-        <div class="project"><strong>FEIM: On The Table</strong><span>Compagno digitale per campagne fisiche.</span></div>
-        <div class="project"><strong>REVALIS</strong><span>Avventura roguelike dentro i sogni.</span></div>
-        <div class="project"><strong>FEIM Worlds</strong><span>Motore open source per mondi 2D.</span></div>
-        <div class="project"><strong>Stories in Swadya</strong><span>Scene semplici da muovere mentre racconto.</span></div>
-      </div>
-    </section>
-
-    <section class="panel" id="private" aria-labelledby="private-title">
-      <h2 id="private-title">Spazio privato.</h2>
-      <p class="panel-lead">Viaggi preparati bene, senza il solito elenco copiato da una guida.</p>
-      <div class="trip-list">
-        <a class="trip" href="china.html"><strong>🇨🇳 Cina del Sud 2027</strong><span>Due settimane tra città, natura, negozi, cibo e vita normale. <b>Apri →</b></span></a>
-        <a class="trip" href="bucharest.html"><strong>🇷🇴 Bucarest Boys Trip</strong><span>Il viaggio originale tra città, terme, cibo e serate. <b>Apri →</b></span></a>
-      </div>
+      <a class="trip" href="bucharest.html">
+        <span class="flag" aria-hidden="true">🇷🇴</span>
+        <div>
+          <h2>Bucarest</h2>
+          <p>Il viaggio originale con programma, terme, cibo, città e serate.</p>
+          <span class="open">Apri il viaggio →</span>
+        </div>
+      </a>
     </section>
 
     <footer>JitaDesWadyas · SwadyaSpace</footer>
   </main>
-
-  <script>
-    const buttons = [...document.querySelectorAll('[data-panel]')];
-    buttons.forEach(button => button.addEventListener('click', () => {
-      const target = document.getElementById(button.dataset.panel);
-      const wasOpen = target.classList.contains('is-open');
-      document.querySelectorAll('.panel').forEach(panel => panel.classList.remove('is-open'));
-      buttons.forEach(item => item.setAttribute('aria-expanded', 'false'));
-      if (!wasOpen) {
-        target.classList.add('is-open');
-        button.setAttribute('aria-expanded', 'true');
-        setTimeout(() => target.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 40);
-      }
-    }));
-  </script>
 </body>
 </html>
