@@ -3,294 +3,252 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#0a0908">
-  <meta name="description" content="SwadyaSpace: progetti, viaggi e pagine pubbliche di JitaDesWadyas.">
-  <title>SwadyaSpace — progetti, viaggi e pagine</title>
+  <meta name="theme-color" content="#080b12">
+  <meta name="description" content="Lo spazio di JitaDesWadyas: progetti e viaggi.">
+  <title>Lo spazio di JitaDesWadyas</title>
   <style>
     :root {
-      --bg: #0a0908;
-      --panel: #13110f;
-      --panel-2: #1a1713;
-      --paper: #f0e4cf;
-      --muted: #b7aa96;
+      --bg: #080b12;
+      --panel: #111722;
+      --panel-2: #171f2d;
+      --text: #f5f0e8;
+      --muted: #aeb6c3;
       --amber: #f4b942;
-      --red: #c7352f;
-      --line: rgba(240, 228, 207, .14);
+      --line: rgba(255,255,255,.12);
+      --shadow: 0 22px 70px rgba(0,0,0,.42);
     }
     * { box-sizing: border-box; }
     html { scroll-behavior: smooth; }
     body {
+      min-height: 100vh;
       margin: 0;
-      color: var(--paper);
+      color: var(--text);
       background:
-        linear-gradient(rgba(255,255,255,.018) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,.018) 1px, transparent 1px),
+        radial-gradient(circle at 17% 18%, rgba(244,185,66,.12), transparent 22rem),
+        radial-gradient(circle at 82% 12%, rgba(91,124,191,.12), transparent 25rem),
         var(--bg);
-      background-size: 32px 32px;
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       line-height: 1.55;
+      overflow-x: hidden;
+    }
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: .46;
+      background-image:
+        radial-gradient(circle, rgba(255,255,255,.8) 0 1px, transparent 1.2px),
+        radial-gradient(circle, rgba(255,255,255,.42) 0 1px, transparent 1.2px);
+      background-size: 72px 72px, 118px 118px;
+      background-position: 0 0, 31px 18px;
+      mask-image: linear-gradient(to bottom, black, transparent 82%);
     }
     a { color: inherit; }
-    .shell { width: min(1120px, calc(100% - 32px)); margin: 0 auto; }
-    .topbar {
-      position: sticky;
-      top: 0;
-      z-index: 10;
-      border-bottom: 1px solid var(--line);
-      background: rgba(10, 9, 8, .93);
-      backdrop-filter: blur(12px);
-    }
-    .topbar-inner {
-      min-height: 62px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 20px;
-    }
-    .brand {
-      text-decoration: none;
-      font-weight: 900;
-      letter-spacing: .08em;
-      text-transform: uppercase;
-    }
-    .brand span { color: var(--amber); }
-    .top-links { display: flex; gap: 16px; flex-wrap: wrap; }
-    .top-links a {
-      color: var(--muted);
-      text-decoration: none;
-      font-size: .9rem;
-    }
-    .top-links a:hover { color: var(--paper); }
-    .hero {
-      min-height: 72vh;
-      display: grid;
-      align-items: center;
-      padding: 76px 0 54px;
-      border-bottom: 1px solid var(--line);
-    }
-    .hero-grid {
-      display: grid;
-      grid-template-columns: minmax(0, 1.35fr) minmax(280px, .65fr);
-      gap: 48px;
-      align-items: end;
+    button { font: inherit; }
+    .shell {
+      position: relative;
+      width: min(1020px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 72px 0 60px;
     }
     .eyebrow {
+      margin: 0 0 14px;
       color: var(--amber);
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: .18em;
       font-size: .78rem;
+      font-weight: 900;
+      letter-spacing: .18em;
+      text-transform: uppercase;
     }
     h1 {
-      max-width: 820px;
-      margin: 14px 0 20px;
-      font-size: clamp(3.4rem, 9vw, 7.8rem);
-      line-height: .88;
-      letter-spacing: -.065em;
-    }
-    .lead {
-      max-width: 730px;
+      max-width: 760px;
       margin: 0;
-      font-size: clamp(1.15rem, 2.4vw, 1.65rem);
-      color: #d8cbb8;
+      font-size: clamp(3rem, 9vw, 6.6rem);
+      line-height: .94;
+      letter-spacing: -.06em;
     }
-    .hero-note {
-      border-left: 4px solid var(--red);
-      padding: 18px 0 18px 22px;
+    .intro {
+      max-width: 620px;
+      margin: 22px 0 0;
       color: var(--muted);
-      font-size: 1rem;
+      font-size: clamp(1.02rem, 2.2vw, 1.22rem);
     }
-    .hero-note strong { color: var(--paper); display: block; margin-bottom: 5px; }
-    .actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 30px; }
-    .button {
-      display: inline-flex;
-      min-height: 48px;
-      align-items: center;
-      justify-content: center;
-      padding: 0 18px;
-      border: 1px solid var(--line);
-      background: var(--paper);
-      color: #16110c;
-      text-decoration: none;
-      font-weight: 850;
-    }
-    .button.secondary { background: transparent; color: var(--paper); }
-    .button:hover { transform: translateY(-1px); }
-    section { padding: 72px 0; border-bottom: 1px solid var(--line); }
-    .section-head {
+    .choices {
       display: grid;
-      grid-template-columns: .6fr 1.4fr;
-      gap: 32px;
-      margin-bottom: 32px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+      margin-top: 46px;
     }
-    .section-head h2 { margin: 0; font-size: clamp(2rem, 4vw, 3.5rem); letter-spacing: -.04em; }
-    .section-head p { margin: 6px 0 0; color: var(--muted); max-width: 650px; }
-    .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-    .card {
-      min-height: 280px;
+    .choice {
       display: flex;
+      min-height: 210px;
+      padding: 25px;
       flex-direction: column;
-      padding: 24px;
-      border: 1px solid var(--line);
-      background: var(--panel);
+      justify-content: space-between;
+      color: var(--text);
+      text-align: left;
       text-decoration: none;
+      background: rgba(17,23,34,.9);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      cursor: pointer;
       transition: transform .18s ease, border-color .18s ease, background .18s ease;
     }
-    .card:hover { transform: translateY(-4px); border-color: rgba(244,185,66,.65); background: var(--panel-2); }
-    .card .tag { color: var(--amber); font-size: .75rem; font-weight: 900; text-transform: uppercase; letter-spacing: .14em; }
-    .card h3 { margin: 18px 0 10px; font-size: 1.65rem; line-height: 1.05; }
-    .card p { margin: 0; color: var(--muted); }
-    .card .go { margin-top: auto; padding-top: 24px; font-weight: 850; color: var(--paper); }
-    .card.featured {
-      grid-column: span 2;
-      min-height: 360px;
-      background: #17100d;
-      border-color: rgba(199,53,47,.45);
-      position: relative;
-      overflow: hidden;
+    .choice:hover,
+    .choice:focus-visible {
+      transform: translateY(-4px);
+      border-color: rgba(244,185,66,.58);
+      background: var(--panel-2);
+      outline: none;
     }
-    .card.featured::after {
-      content: "中国";
-      position: absolute;
-      right: 20px;
-      bottom: -24px;
-      font-family: "Noto Serif SC", "Songti SC", serif;
-      font-size: clamp(7rem, 18vw, 13rem);
-      line-height: 1;
-      color: rgba(199,53,47,.12);
-      pointer-events: none;
-    }
-    .card.featured h3 { font-size: clamp(2.2rem, 5vw, 4.2rem); max-width: 620px; }
-    .card.featured p { max-width: 650px; font-size: 1.05rem; }
-    .mini-list { display: grid; gap: 12px; }
-    .mini-row {
+    .choice-icon {
       display: grid;
-      grid-template-columns: 150px 1fr;
-      gap: 20px;
-      padding: 20px 0;
-      border-top: 1px solid var(--line);
+      width: 54px;
+      height: 54px;
+      place-items: center;
+      border: 1px solid rgba(244,185,66,.32);
+      border-radius: 14px;
+      background: rgba(244,185,66,.08);
+      font-size: 1.55rem;
     }
-    .mini-row:first-child { border-top: 0; }
-    .mini-row strong { color: var(--amber); }
-    .mini-row p { margin: 0; color: var(--muted); }
-    footer { padding: 32px 0 50px; color: var(--muted); font-size: .9rem; }
-    @media (max-width: 820px) {
-      .hero-grid, .section-head { grid-template-columns: 1fr; }
-      .hero { min-height: auto; }
-      .grid { grid-template-columns: 1fr; }
-      .card.featured { grid-column: auto; }
-      .top-links a:not(:last-child) { display: none; }
+    .choice strong {
+      display: block;
+      margin-top: 28px;
+      font-size: clamp(1.35rem, 3vw, 2rem);
+      letter-spacing: -.025em;
     }
-    @media (max-width: 520px) {
-      .shell { width: min(100% - 22px, 1120px); }
-      .hero { padding-top: 58px; }
-      h1 { font-size: 3.6rem; }
-      section { padding: 52px 0; }
-      .mini-row { grid-template-columns: 1fr; gap: 4px; }
-      .card { min-height: 250px; }
+    .choice span:last-child {
+      display: block;
+      margin-top: 8px;
+      color: var(--muted);
+    }
+    .choice .arrow {
+      color: var(--amber);
+      font-weight: 900;
+    }
+    .panel {
+      display: none;
+      margin-top: 22px;
+      padding: 26px;
+      background: rgba(17,23,34,.94);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+    }
+    .panel.is-open { display: block; animation: reveal .22s ease-out; }
+    @keyframes reveal { from { opacity: 0; transform: translateY(-8px); } }
+    .panel h2 {
+      margin: 0 0 8px;
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      letter-spacing: -.04em;
+    }
+    .panel-lead { margin: 0 0 22px; color: var(--muted); }
+    .project-list,
+    .trip-list {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .project,
+    .trip {
+      padding: 17px;
+      background: rgba(255,255,255,.035);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+    }
+    .project strong,
+    .trip strong { display: block; font-size: 1.05rem; }
+    .project span,
+    .trip span { display: block; margin-top: 4px; color: var(--muted); font-size: .92rem; }
+    .trip {
+      text-decoration: none;
+      transition: border-color .16s ease, transform .16s ease;
+    }
+    .trip:hover,
+    .trip:focus-visible {
+      transform: translateY(-2px);
+      border-color: rgba(244,185,66,.55);
+      outline: none;
+    }
+    .trip b { color: var(--amber); }
+    footer {
+      margin-top: 42px;
+      color: #7f8998;
+      font-size: .85rem;
+    }
+    @media (max-width: 720px) {
+      .shell { padding-top: 48px; }
+      .choices,
+      .project-list,
+      .trip-list { grid-template-columns: 1fr; }
+      .choice { min-height: 185px; }
+      .panel { padding: 20px; }
     }
   </style>
 </head>
 <body>
-  <nav class="topbar" aria-label="Navigazione principale">
-    <div class="shell topbar-inner">
-      <a class="brand" href="./">Swadya<span>Space</span></a>
-      <div class="top-links">
-        <a href="#progetti">Progetti</a>
-        <a href="#pagine">Pagine</a>
-        <a href="https://github.com/JitaDesWadyas" target="_blank" rel="noreferrer">GitHub ↗</a>
-      </div>
+  <main class="shell">
+    <p class="eyebrow">SwadyaSpace</p>
+    <h1>Lo spazio di JitaDesWadyas.</h1>
+    <p class="intro">Una porta per i miei progetti e una per le pagine private. Scegli quella giusta.</p>
+
+    <div class="choices" aria-label="Scegli dove andare">
+      <button class="choice" type="button" data-panel="projects" aria-expanded="false">
+        <span class="choice-icon" aria-hidden="true">↩</span>
+        <span>
+          <strong>Sono capitato qui per sbaglio</strong>
+          <span>Vai ai miei altri progetti <span class="arrow">→</span></span>
+        </span>
+      </button>
+
+      <button class="choice" type="button" data-panel="private" aria-expanded="false">
+        <span class="choice-icon" aria-hidden="true">✦</span>
+        <span>
+          <strong>Andiamo nello spazio privato</strong>
+          <span>Apri viaggi e pagine personali <span class="arrow">→</span></span>
+        </span>
+      </button>
     </div>
-  </nav>
 
-  <main>
-    <header class="hero">
-      <div class="shell hero-grid">
-        <div>
-          <div class="eyebrow">Pagine pubbliche di JitaDesWadyas</div>
-          <h1>Uno spazio per cose che non stanno nello stesso sito.</h1>
-          <p class="lead">Viaggi organizzati fin troppo bene, progetti, esperimenti e pagine che voglio poter tenere online senza trasformarle in un altro social.</p>
-          <div class="actions">
-            <a class="button" href="#progetti">Guarda prima i progetti</a>
-            <a class="button secondary" href="#pagine">Vai alle pagine</a>
-          </div>
-        </div>
-        <aside class="hero-note">
-          <strong>Se non mi conosci, parti dalle cose su cui provo a guadagnare.</strong>
-          Poi puoi perderti nei viaggi, nelle guide e nelle altre pagine strane. È un ordine sensato.
-        </aside>
-      </div>
-    </header>
-
-    <section id="progetti">
-      <div class="shell">
-        <div class="section-head">
-          <h2>Progetti da provare</h2>
-          <p>Le cose più importanti non sono nascoste dietro una biografia infinita. Aprile, capisci cosa faccio e, se ti piacciono, condividile.</p>
-        </div>
-        <div class="grid">
-          <a class="card" href="https://jitadeswadyas.github.io/storia52/" target="_blank" rel="noreferrer">
-            <span class="tag">Gioco di storie</span>
-            <h3>E POI?</h3>
-            <p>Un gioco sociale con un mazzo normale: giochi una carta, imponi una scena e provi a portare la storia verso il tuo obiettivo segreto.</p>
-            <span class="go">Apri il gioco ↗</span>
-          </a>
-          <a class="card" href="https://feim-ott.onrender.com/" target="_blank" rel="noreferrer">
-            <span class="tag">Tabletop companion</span>
-            <h3>FEIM: On The Table</h3>
-            <p>Mappe, combattimento e strumenti per giocare storie da tavolo senza dover entrare nel solito mondo da manuale enorme.</p>
-            <span class="go">Apri FEIM OTT ↗</span>
-          </a>
-          <a class="card" href="https://github.com/JitaDesWadyas" target="_blank" rel="noreferrer">
-            <span class="tag">Codice e prototipi</span>
-            <h3>GitHub</h3>
-            <p>Repository, web app, giochi e idee ancora in costruzione. Alcune sono finite, altre fanno finta.</p>
-            <span class="go">Vedi i repository ↗</span>
-          </a>
-        </div>
+    <section class="panel" id="projects" aria-labelledby="projects-title">
+      <h2 id="projects-title">Vai ai miei altri progetti.</h2>
+      <p class="panel-lead">Qui non c’è molto da vedere. Le cose serie sono queste:</p>
+      <div class="project-list">
+        <div class="project"><strong>JitaDiSwadya</strong><span>Canzoni che raccontano storie.</span></div>
+        <div class="project"><strong>E POI?</strong><span>Gioco sociale di narrazione con carte.</span></div>
+        <div class="project"><strong>FEIM: On The Table</strong><span>Compagno digitale per campagne fisiche.</span></div>
+        <div class="project"><strong>REVALIS</strong><span>Avventura roguelike dentro i sogni.</span></div>
+        <div class="project"><strong>FEIM Worlds</strong><span>Motore open source per mondi 2D.</span></div>
+        <div class="project"><strong>Stories in Swadya</strong><span>Scene semplici da muovere mentre racconto.</span></div>
       </div>
     </section>
 
-    <section id="pagine">
-      <div class="shell">
-        <div class="section-head">
-          <h2>Pagine nello spazio</h2>
-          <p>Ogni pagina può avere un’identità propria. SwadyaSpace è il corridoio che le tiene insieme, non un template che le rende tutte uguali.</p>
-        </div>
-        <div class="grid">
-          <a class="card featured" href="china.html">
-            <span class="tag">Nuovo · 6–20 novembre 2027</span>
-            <h3>Cina del Sud — viaggio dei quattro</h3>
-            <p>Hong Kong, Shenzhen, Guangzhou, Foshan, Yangshuo e Macao: città vissute davvero, supermercati, elettronica, bar, natura, treni, budget, app, mappe e frasario con pronuncia.</p>
-            <span class="go">Apri la guida completa →</span>
-          </a>
-          <a class="card" href="bucharest.html">
-            <span class="tag">Archivio viaggio</span>
-            <h3>Bucarest Boys Trip</h3>
-            <p>Il vecchio itinerario tra Old Town, poligono, Therme, burger, skybar, club e costi divisi per quattro.</p>
-            <span class="go">Apri Bucarest →</span>
-          </a>
-        </div>
+    <section class="panel" id="private" aria-labelledby="private-title">
+      <h2 id="private-title">Spazio privato.</h2>
+      <p class="panel-lead">Viaggi preparati bene, senza il solito elenco copiato da una guida.</p>
+      <div class="trip-list">
+        <a class="trip" href="china.html"><strong>🇨🇳 Cina del Sud 2027</strong><span>Due settimane tra città, natura, negozi, cibo e vita normale. <b>Apri →</b></span></a>
+        <a class="trip" href="bucharest.html"><strong>🇷🇴 Bucarest Boys Trip</strong><span>Il viaggio originale tra città, terme, cibo e serate. <b>Apri →</b></span></a>
       </div>
     </section>
 
-    <section>
-      <div class="shell">
-        <div class="section-head">
-          <h2>Come funziona</h2>
-          <p>Niente login e niente feed. Le pagine restano linkabili, leggibili e facili da aggiornare senza dover rifare tutto il sito.</p>
-        </div>
-        <div class="mini-list">
-          <div class="mini-row"><strong>Una home sola</strong><p>La porta d’ingresso resta qui, mentre ogni progetto o guida ha la propria pagina HTML.</p></div>
-          <div class="mini-row"><strong>Zero rumore</strong><p>Nessun cookie banner inventato, tracker o animazione pesante. Solo contenuto e link utili.</p></div>
-          <div class="mini-row"><strong>Pubblico davvero</strong><p>Puoi mandare direttamente il link della pagina che serve senza spiegare il resto del sito.</p></div>
-        </div>
-      </div>
-    </section>
+    <footer>JitaDesWadyas · SwadyaSpace</footer>
   </main>
 
-  <footer>
-    <div class="shell">SwadyaSpace · JitaDesWadyas · pagine pubbliche, progetti e viaggi.</div>
-  </footer>
+  <script>
+    const buttons = [...document.querySelectorAll('[data-panel]')];
+    buttons.forEach(button => button.addEventListener('click', () => {
+      const target = document.getElementById(button.dataset.panel);
+      const wasOpen = target.classList.contains('is-open');
+      document.querySelectorAll('.panel').forEach(panel => panel.classList.remove('is-open'));
+      buttons.forEach(item => item.setAttribute('aria-expanded', 'false'));
+      if (!wasOpen) {
+        target.classList.add('is-open');
+        button.setAttribute('aria-expanded', 'true');
+        setTimeout(() => target.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 40);
+      }
+    }));
+  </script>
 </body>
 </html>

@@ -1,0 +1,1 @@
+window.CHINA_DATA={imgs:{},days:[],routeCards:[],phrases:[],mapPoints:[],routeCoords:[],gallery:[]};
