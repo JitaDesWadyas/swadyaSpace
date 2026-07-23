@@ -1,48 +1,192 @@
 <!doctype html>
 <html lang="it">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#8d171c">
-<meta name="description" content="Guida operativa di 14 giorni in Cina per quattro persone: Hong Kong, Shenzhen, Macao, Xi’an e Pechino, con alloggi economici, mappe, cibo, SIM e attività precise.">
-<meta property="og:title" content="Cina 2027 — viaggio dei quattro">
-<meta property="og:description" content="Itinerario di 14 giorni con prezzi-obiettivo su piattaforme cinesi, due mappe interattive, cibo, hotel, app, SIM, Muraglia ed Esercito di Terracotta.">
-<meta property="og:image" content="https://commons.wikimedia.org/wiki/Special:FilePath/Hong%20Kong%20Skyline%20viewed%20from%20Victoria%20Peak.jpg?width=2000">
-<title>Cina 2027 — SwadyaSpace</title>
-<link rel="preconnect" href="https://commons.wikimedia.org">
-<link rel="preconnect" href="https://tile.openstreetmap.org">
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
-<link rel="stylesheet" href="china.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#8d171c">
+  <meta name="description" content="China 2027: app operativa offline per itinerario, GPS, hotel, cibo, frasi, bagagli e meteo.">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="china-icon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://unpkg.com">
+  <link rel="preconnect" href="https://tile.openstreetmap.org">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
+  <link rel="stylesheet" href="china.css">
+  <title>Cina 2027 · SwadyaSpace</title>
 </head>
 <body>
-<a class="skip-link" href="#main">Vai al contenuto</a>
-<header class="topbar"><div class="shell topbar-inner"><a class="brand" href="index.html">SwadyaSpace <small>/ Cina</small></a><button class="menu-toggle" type="button" aria-expanded="false" aria-controls="main-nav">☰ Indice</button><nav class="nav" id="main-nav"><a href="#riassunto">Riassunto</a><a href="#percorso">Percorso</a><a href="#mappa">Mappa</a><a href="#itinerario">14 giorni</a><a href="#alternative">Alternative</a><a href="#pratico">Prima di partire</a><a href="#budget">Budget</a><a href="#frasi">Frasi</a></nav></div></header>
-<section class="hero"><img class="hero-photo" src="https://commons.wikimedia.org/wiki/Special:FilePath/Hong%20Kong%20Skyline%20viewed%20from%20Victoria%20Peak.jpg?width=2000" alt="Skyline di Hong Kong vista da Victoria Peak"><div class="shell hero-content"><p class="eyebrow">Viaggio dei quattro · sabato 6 → sabato 20 novembre 2027 · 14 giorni</p><h1>Cina.<br>Viverla, non spuntarla.</h1><p class="hero-lead"><strong>Hong Kong, Shenzhen, Macao, Xi’an e Pechino.</strong> Metropoli, vita quotidiana, tecnologia, cucina regionale, Esercito di Terracotta e Muraglia Cinese in un itinerario multi-city.</p><div class="hero-chips"><span class="hero-chip">👥 4 persone</span><span class="hero-chip">🗓 14 giorni</span><span class="hero-chip">💶 budget verificabile</span><span class="hero-chip">✈️ volo multi-city</span><span class="hero-chip">🏨 piattaforme cinesi</span><span class="hero-chip">🍜 cibo preciso</span></div><div class="hero-actions"><a class="button button-primary" href="#itinerario">Apri l’itinerario</a><a class="button button-secondary" href="#mappa-operativa">Punti precisi</a><a class="button button-secondary" href="#alloggi-reali">Dove dormire</a><button class="button button-secondary" onclick="window.print()">Stampa / PDF</button></div></div></section>
-<div class="toc-wrap"><div class="shell toc"><a href="#riassunto">⚡ In 60 secondi</a><a href="#percorso">🧭 Tappe</a><a href="#mappa">🗺 Rotta</a><a href="#hong-kong">🌃 Hong Kong</a><a href="#shenzhen">🤖 Shenzhen</a><a href="#macao">🎴 Macao</a><a href="#xian">🏺 Xi’an</a><a href="#beijing">🏯 Pechino</a><a href="#alternative">🔀 Alternative</a><a href="#cibo">🍜 Cibo</a><a href="#acquisti">🛍 Acquisti</a><a href="#pratico">📱 App</a><a href="#budget">💶 Budget</a><a href="#checklist">✅ Checklist</a><a href="#frasi">🗣 Frasi</a><a href="#fonti">🔎 Fonti</a></div></div>
-<main id="main">
-<section class="section shell" id="riassunto"><div class="section-head"><div><p class="section-kicker">Prima di leggere tutto</p><h2>Il viaggio in 60 secondi.</h2></div><p class="section-intro">Un itinerario di 14 giorni che unisce <strong>sud moderno e nord storico</strong>, senza tornare inutilmente al punto di partenza.</p></div><div id="snapshot-grid" class="snapshot-grid"></div><div class="notice">⚠️ <p><strong>Visto e regole 2027 da ricontrollare.</strong> Verificare fonti ufficiali prima di comprare voli non rimborsabili.</p></div><div id="summary-box"></div></section>
-<section class="section shell" id="percorso"><div class="section-head"><div><p class="section-kicker">Percorso multi-city</p><h2>Cinque tappe, una direzione.</h2></div><p class="section-intro">Ingresso da Hong Kong, passaggio nel sud, volo verso Xi’an, treno per Pechino e rientro diretto in Italia.</p></div><div id="route-grid" class="route-grid"></div></section>
-<section class="section shell" id="mappa"><div class="section-head"><div><p class="section-kicker">Mappa interattiva</p><h2>La rotta completa.</h2></div><p class="section-intro">La linea mostra l’ordine del viaggio; la mappa operativa più sotto contiene hotel, cibo, trasporti e attività precise.</p></div><div class="map-shell"><div class="map-toolbar"><button class="map-filter is-active" data-map-filter="all">Tutto</button><button class="map-filter" data-map-filter="route">Tappe</button><button class="map-filter" data-map-filter="nature">Natura</button><button class="map-filter" data-map-filter="shopping">Acquisti</button><button class="map-filter" data-map-filter="food">Cibo</button><button class="map-filter" data-map-filter="culture">Cultura</button><button class="map-filter" data-map-filter="night">Sera</button><button class="map-filter" id="fit-route">Centra percorso</button></div><div id="trip-map"></div><div class="map-legend"><span><i style="background:#981c22"></i>Tappa</span><span><i style="background:#2f7d65"></i>Natura</span><span><i style="background:#3f69a8"></i>Acquisti</span><span><i style="background:#d18127"></i>Cibo</span><span><i style="background:#7b4ba5"></i>Cultura</span><span><i style="background:#29202e"></i>Sera</span></div></div></section>
-<section class="chapter shell" id="itinerario"><div class="chapter-banner"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/The%20Great%20Wall%20of%20China%20at%20Jinshanling-edit.jpg?width=1400" alt="Grande Muraglia a Jinshanling"><div class="chapter-copy"><p class="section-kicker">Piano principale</p><h2>14 giorni, giorno per giorno.</h2><p>Ogni giornata ha un nucleo, collegamenti e margine reale. <strong>Le grandi classiche fanno parte del percorso.</strong></p></div></div><div id="days" class="days"></div></section>
-<section class="section shell"><div class="section-head"><div><p class="section-kicker">Immagini del percorso</p><h2>La Cina che stiamo scegliendo.</h2></div><p class="section-intro">Tocca qualsiasi foto per aprirla grande.</p></div><div id="gallery" class="gallery"></div></section>
-<section class="section shell" id="alternative"><div class="section-head"><div><p class="section-kicker">Alternative ragionate</p><h2>Cosa sostituire.</h2></div><p class="section-intro">Ogni opzione indica giorni, trasferimenti e tappe da eliminare.</p></div><div id="alternatives" class="option-grid"></div></section>
-<section class="section shell" id="cibo"><div class="section-head"><div><p class="section-kicker">Mangiare senza improvvisare male</p><h2>Cibo, birra e supermercati.</h2></div><p class="section-intro">Una base rapida, seguita dalla guida dettagliata con foto, ingredienti e luoghi precisi.</p></div><div id="food-grid" class="practical-grid"></div></section>
-<section class="section shell" id="acquisti"><div class="section-head"><div><p class="section-kicker">Comprare bene</p><h2>Cosa portare e cosa comprare lì.</h2></div><p class="section-intro"><strong>Provare, confrontare, fotografare il modello e pagare solo quando funziona.</strong></p></div><div id="shopping-grid" class="practical-grid"></div></section>
-<section class="section shell" id="pratico"><div class="section-head"><div><p class="section-kicker">Telefono pronto</p><h2>App, SIM, pagamenti e trasporti.</h2></div><p class="section-intro">Il telefono è infrastruttura, ma servono anche due carte, contanti, screenshot e indirizzi cinesi.</p></div><div id="apps" class="app-grid"></div><div class="notice">📌 <p><strong>Uber non è la base nella Cina continentale.</strong> Usare DiDi; sul posto Amap è più utile di Google Maps.</p></div><div id="practical-details"></div></section>
-<section class="section shell" id="budget"><div class="section-head"><div><p class="section-kicker">Stima a persona</p><h2>Budget aggiornato.</h2></div><p class="section-intro">Gli alloggi usano fasce-obiettivo da piattaforme cinesi; volo interno e treno sono inclusi.</p></div><div class="budget-tabs"><button class="budget-tab" data-budget="low">Tirato</button><button class="budget-tab is-active" data-budget="mid">Realistico</button><button class="budget-tab" data-budget="high">Comodo</button></div><div class="budget-panel"><div class="budget-total"><div><span id="budget-label">Scenario realistico</span><p id="budget-description"></p></div><strong id="budget-total"></strong></div><table class="budget-table" id="budget-table"></table></div><p class="fineprint">Acquisti, gioco d’azzardo, alcol pesante e nightlife costosa non inclusi.</p></section>
-<section class="section shell" id="checklist"><div class="section-head"><div><p class="section-kicker">Salvata sul telefono</p><h2>Checklist prima di partire.</h2></div><p class="section-intro">Le spunte restano su questo dispositivo.</p></div><div id="checklist-grid" class="checklist"></div><div class="progress"><div class="progress-bar" id="progress-bar"></div></div><strong id="progress-label">0%</strong></section>
-<section class="section shell" id="frasi"><div class="section-head"><div><p class="section-kicker">Mandarino utile</p><h2>Frasi, birra e parole divertenti.</h2></div><p class="section-intro"><strong>Ascolta</strong> usa la voce del telefono; Translate è il backup.</p></div><div class="phrase-tools"><input class="phrase-search" id="phrase-search" type="search" placeholder="Cerca: birra, bagno, verdure, prezzo…"><strong id="phrase-count"></strong></div><div class="table-wrap"><table class="phrase-table"><thead><tr><th>Cinese + pinyin</th><th>Significato</th><th>Pronuncia</th></tr></thead><tbody id="phrase-body"></tbody></table></div><div class="notice">😅 <p><strong>牛逼 (niúbī)</strong> significa “assurdo/fortissimo”, ma è slang volgare: solo tra amici.</p></div></section>
-<section class="section shell" id="fonti"><div class="section-head"><div><p class="section-kicker">Da ricontrollare nel 2027</p><h2>Fonti e metodo.</h2></div><p class="section-intro">Regole, orari, collegamenti e prezzi vanno riverificati vicino alla partenza.</p></div><ul class="sources"><li><a href="https://it.china-embassy.gov.cn/ita/lqgz/" target="_blank" rel="noopener">Ambasciata cinese in Italia</a></li><li><a href="https://www.immd.gov.hk/eng/services/visas/visit_transit.html" target="_blank" rel="noopener">Hong Kong Immigration</a></li><li><a href="https://www.gov.mo/en/services/ps-1474/" target="_blank" rel="noopener">Macao Government</a></li><li><a href="https://www.12306.cn/en/index.html" target="_blank" rel="noopener">China Railway 12306</a></li><li><a href="https://www.reddit.com/r/travelchina/" target="_blank" rel="noopener">Reddit r/travelchina</a></li><li><a href="https://www.reddit.com/r/chinatravel/" target="_blank" rel="noopener">Reddit r/chinatravel</a></li><li><a href="https://www.discoverhongkong.com/" target="_blank" rel="noopener">Hong Kong Tourism Board</a></li><li><a href="https://www.macaotourism.gov.mo/en/" target="_blank" rel="noopener">Macao Tourism</a></li></ul><p class="fineprint">Foto da Wikimedia Commons; autori e licenze nelle pagine originali. Mappe OpenStreetMap.</p></section>
-</main>
-<footer><div class="shell"><strong>SwadyaSpace · Cina 2027</strong><p>Guida operativa privata per quattro persone.</p></div></footer>
-<dialog class="lightbox" id="lightbox"><button class="lightbox-close" aria-label="Chiudi">×</button><img src="" alt=""></dialog>
-<noscript><p class="shell notice">Questa guida usa JavaScript per itinerario, mappe, budget e frasario.</p></noscript>
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
-<script src="china-data.js"></script>
-<script src="china-images.js"></script>
-<script src="china-days-1.js"></script>
-<script src="china-days-2.js"></script>
-<script src="china-more.js"></script>
-<script src="china.js"></script>
-<script src="china-detail.js"></script>
-</body></html>
+  <a class="skip-link" href="#main">Vai al contenuto</a>
+  <header class="app-header">
+    <a class="app-brand" href="index.html"><span>中国</span><b>Cina 2027</b></a>
+    <div class="header-actions">
+      <span class="status-pill" id="networkStatus">Online</span>
+      <button class="icon-button" id="installButton" type="button" hidden>Installa</button>
+      <button class="icon-button" id="offlineButton" type="button">Offline</button>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero app-shell" id="home">
+      <div class="hero-copy">
+        <p class="kicker">6–20 novembre 2027 · quattro persone · 14 giorni</p>
+        <h1>Una sola pagina per <em>sopravvivere</em> e divertirsi.</h1>
+        <p>Hong Kong → Shenzhen → Macao → Xi’an → Pechino. Itinerario, GPS, mappe, alloggi, cibo, frasi cinesi, bagagli, meteo e preparazione offline.</p>
+        <div class="hero-actions">
+          <button class="primary-button" data-jump="days">Apri i 14 giorni</button>
+          <button class="secondary-button" id="nearestHero">Cosa ho vicino?</button>
+          <button class="secondary-button danger" data-jump="emergency">Emergenza</button>
+        </div>
+      </div>
+      <div class="hero-stats" id="heroStats"></div>
+    </section>
+
+    <section class="quickbar app-shell" aria-label="Azioni rapide">
+      <button data-jump="map">📍 Mappa e GPS</button>
+      <button data-jump="stays">🏨 Dormire</button>
+      <button data-jump="food">🥢 Mangiare</button>
+      <button data-jump="packing">🎒 Valigia</button>
+      <button data-jump="phrases">🗣 Parla cinese</button>
+    </section>
+
+    <section class="app-section app-shell" id="days">
+      <div class="section-heading">
+        <div><p class="kicker">Piano principale</p><h2>14 giorni, senza contenuti ripetuti.</h2></div>
+        <p>Ogni giornata rimanda ai punti, ai piatti e agli strumenti approfonditi nelle sezioni dedicate.</p>
+      </div>
+      <div class="day-list" id="dayList"></div>
+    </section>
+
+    <section class="app-section app-shell" id="map">
+      <div class="section-heading">
+        <div><p class="kicker">Una sola mappa</p><h2>Punti, GPS e distanze.</h2></div>
+        <p>Filtra, trova cosa hai vicino e apri il nome cinese direttamente in Amap.</p>
+      </div>
+      <div class="map-tools">
+        <button class="primary-button" id="locateButton">Usa il mio GPS</button>
+        <select id="cityFilter" aria-label="Filtra città"></select>
+        <select id="categoryFilter" aria-label="Filtra categoria"></select>
+        <input id="placeSearch" type="search" placeholder="Cerca luogo, cibo, quartiere…">
+      </div>
+      <div class="map-frame"><div id="tripMap"></div></div>
+      <div class="gps-result" id="gpsResult" hidden></div>
+      <div class="place-list" id="placeList"></div>
+    </section>
+
+    <section class="app-section app-shell" id="stays">
+      <div class="section-heading">
+        <div><p class="kicker">Prezzi da piattaforme cinesi</p><h2>Dormire spendendo poco, senza farsi fregare.</h2></div>
+        <p>Fasce-obiettivo per quattro persone su date comparabili 2026. Inserisci i prezzi veri e l’app calcola il totale.</p>
+      </div>
+      <div class="budget-live">
+        <div><span>Totale inserito</span><strong id="stayTotal">0 €</strong></div>
+        <div><span>A persona</span><strong id="stayPerPerson">0 €</strong></div>
+        <button class="secondary-button" id="resetStayCosts">Azzera prezzi</button>
+      </div>
+      <div class="fold-stack" id="stayList"></div>
+      <details class="master-fold">
+        <summary>Piattaforme, parole da cercare e controllo passaporti</summary>
+        <div class="master-fold-body" id="bookingGuide"></div>
+      </details>
+    </section>
+
+    <section class="app-section app-shell" id="food">
+      <div class="section-heading">
+        <div><p class="kicker">Una scheda per ogni piatto</p><h2>Cosa contiene, dove e quando mangiarlo.</h2></div>
+        <p>Niente seconda lista incompleta: tutti i dettagli sono qui e i giorni rimandano a queste schede.</p>
+      </div>
+      <div class="food-filters" id="foodFilters"></div>
+      <div class="food-grid" id="foodGrid"></div>
+    </section>
+
+    <section class="app-section app-shell" id="transport">
+      <div class="section-heading">
+        <div><p class="kicker">Telefono e spostamenti</p><h2>Mappe, SIM, treni, voli e offline.</h2></div>
+        <p>Procedure operative, link ufficiali e frasi cinesi da mostrare o far pronunciare al telefono.</p>
+      </div>
+      <div class="fold-stack" id="transportList"></div>
+    </section>
+
+    <section class="app-section app-shell" id="packing">
+      <div class="section-heading">
+        <div><p class="kicker">Sud caldo, nord freddo</p><h2>Meteo, vestiti, bagagli e lavanderia.</h2></div>
+        <p>Il viaggio cambia clima: a Hong Kong si può stare in maglietta, sulla Muraglia può servire piumino leggero.</p>
+      </div>
+      <div class="weather-strip" id="weatherStrip"></div>
+      <div class="fold-stack" id="packingList"></div>
+    </section>
+
+    <section class="app-section app-shell" id="periods">
+      <div class="section-heading">
+        <div><p class="kicker">Date alternative</p><h2>Quando conviene davvero partire.</h2></div>
+        <p>Confronto tra meteo, folla, prezzi e compatibilità con l’itinerario nord-sud.</p>
+      </div>
+      <div class="period-grid" id="periodGrid"></div>
+    </section>
+
+    <section class="app-section app-shell" id="alternatives">
+      <div class="section-heading">
+        <div><p class="kicker">Cambi di itinerario</p><h2>Alternative spiegate una sola volta.</h2></div>
+        <p>Ogni opzione indica esattamente cosa sostituire, quante notti richiede e perché sceglierla.</p>
+      </div>
+      <div class="fold-stack" id="alternativeList"></div>
+    </section>
+
+    <section class="app-section app-shell" id="phrases">
+      <div class="section-heading">
+        <div><p class="kicker">Mostra o pronuncia</p><h2>Frasi cinesi per ogni situazione.</h2></div>
+        <p>Ogni frase può essere ingrandita, copiata e letta dal telefono in mandarino.</p>
+      </div>
+      <div class="phrase-composer">
+        <textarea id="customChinese" placeholder="Incolla qui qualunque testo cinese…"></textarea>
+        <button class="primary-button" id="speakCustom">Pronuncia</button>
+        <a class="secondary-button" id="translateCustom" target="_blank" rel="noopener">Traduci online</a>
+      </div>
+      <div class="phrase-grid" id="phraseGrid"></div>
+    </section>
+
+    <section class="app-section app-shell emergency-section" id="emergency">
+      <div class="section-heading">
+        <div><p class="kicker">110 · 120 · 119 · 122</p><h2>Emergenza e documenti.</h2></div>
+        <p>Polizia, ambulanza, vigili del fuoco e incidenti stradali. Il telefono deve restare carico.</p>
+      </div>
+      <div class="emergency-grid" id="emergencyGrid"></div>
+    </section>
+
+    <section class="app-section app-shell" id="checklist">
+      <div class="section-heading">
+        <div><p class="kicker">Salvata sul dispositivo</p><h2>Checklist finale.</h2></div>
+        <p>Le spunte restano disponibili anche offline.</p>
+      </div>
+      <div class="progress-row"><div class="progress-track"><span id="progressBar"></span></div><strong id="progressLabel">0%</strong></div>
+      <div class="check-grid" id="checkGrid"></div>
+    </section>
+
+    <section class="sources app-shell">
+      <details>
+        <summary>Fonti, limiti e ultimo controllo</summary>
+        <div id="sourceList"></div>
+      </details>
+    </section>
+  </main>
+
+  <nav class="bottom-nav" aria-label="Navigazione principale">
+    <button data-jump="home">⌂<span>Home</span></button>
+    <button data-jump="days">14<span>Giorni</span></button>
+    <button data-jump="map">◎<span>GPS</span></button>
+    <button data-jump="food">碗<span>Cibo</span></button>
+    <button data-jump="phrases">说<span>Parla</span></button>
+  </nav>
+
+  <dialog class="speak-dialog" id="speakDialog">
+    <button class="dialog-close" id="closeSpeak" aria-label="Chiudi">×</button>
+    <p id="speakLabel"></p>
+    <div class="speak-cn" id="speakText"></div>
+    <div class="dialog-actions">
+      <button class="primary-button" id="dialogSpeak">▶ Pronuncia</button>
+      <button class="secondary-button" id="dialogCopy">Copia</button>
+    </div>
+  </dialog>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+  <script src="china-detail.js"></script>
+</body>
+</html>
