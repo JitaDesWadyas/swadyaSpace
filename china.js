@@ -5,6 +5,50 @@
   const esc = (v='') => String(v).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const image = (src, alt, caption='', cls='') => `<figure class="${cls}" data-lightbox><img loading="lazy" src="${src}" alt="${esc(alt)}" onerror="this.closest('figure').classList.add('image-error')">${caption?`<figcaption>${esc(caption)}</figcaption>`:''}</figure>`;
 
+  // Patch contenuti e layout mobile: il viaggio è sabato→sabato, quindi 14 giorni reali.
+  D.imgs.great_wall = 'https://commons.wikimedia.org/wiki/Special:FilePath/The%20Great%20Wall%20of%20China%20at%20Jinshanling-edit.jpg?width=1400';
+  D.imgs.terracotta = 'https://commons.wikimedia.org/wiki/Special:FilePath/Terracotta%20Army%2C%20View%20of%20Pit%201.jpg?width=1400';
+
+  const day14 = D.days.find(d => d.n === 14);
+  if (day14) {
+    day14.date = 'Ven 19 → Sab 20 nov';
+    day14.lead = 'Ultima fase del viaggio: Macao, rientro ordinato verso Hong Kong e volo del sabato.';
+    day14.items = [
+      'Trasferimento verso <strong>Macao</strong> via traghetto o Zhuhai, scegliendo il collegamento più semplice disponibile nel 2027.',
+      'Centro storico: <strong>Senado Square, Ruins of St. Paul’s e vie laterali</strong>; Cotai solo se vi incuriosisce davvero.',
+      'Rientro e notte a <strong>Hong Kong o vicino all’aeroporto</strong>. Sabato 20: solo volo, bagagli e margine ampio.'
+    ];
+    day14.side = 'Hong Kong, Macao e Cina continentale hanno controlli separati. Il sabato 20 è compreso nel giorno finale di rientro: il piano resta di 14 giorni.';
+  }
+  D.days = D.days.filter(d => d.n !== 15);
+  const airportPoint = D.mapPoints.find(p => p.name === 'Hong Kong Airport');
+  if (airportPoint) airportPoint.day = '1/14';
+
+  const mobileTextFix = document.createElement('style');
+  mobileTextFix.textContent = `
+    .day-content{min-width:0;word-break:normal;overflow-wrap:break-word}
+    .day-content li{display:block!important;position:relative;min-width:0;padding-left:31px;word-break:normal;overflow-wrap:break-word}
+    .day-content li::before{position:absolute;left:2px;top:.42em;transform:none!important}
+    .day-content li strong{display:inline;white-space:normal;word-break:normal}
+    @media(max-width:760px){.day-content li{padding-left:28px}}
+  `;
+  document.head.appendChild(mobileTextFix);
+
+  const itineraryNav = $('#main-nav a[href="#itinerario"]');
+  if (itineraryNav) itineraryNav.textContent = '14 giorni';
+  const durationChip = $$('.hero-chip').find(el => el.textContent.includes('15 giorni'));
+  if (durationChip) durationChip.textContent = '🗓 14 giorni';
+  const itineraryTitle = $('#itinerario .chapter-copy h2');
+  if (itineraryTitle) itineraryTitle.textContent = '14 giorni, giorno per giorno.';
+  const eyebrow = $('.eyebrow');
+  if (eyebrow && !eyebrow.textContent.includes('14 giorni')) eyebrow.textContent += ' · 14 giorni';
+  const summaryIntro = $('#riassunto .section-intro');
+  if (summaryIntro) summaryIntro.innerHTML = 'Il piano principale resta compatto nel sud: <strong>meno voli interni, più tempo vissuto</strong>. Le grandi classiche — <strong>Muraglia Cinese</strong> ed <strong>Esercito di Terracotta</strong> — sono incluse sotto come vera versione alternativa del viaggio.';
+  const alternativesTitle = $('#alternative .section-head h2');
+  if (alternativesTitle) alternativesTitle.textContent = 'Cina classica e altre alternative.';
+  const alternativesIntro = $('#alternative .section-intro');
+  if (alternativesIntro) alternativesIntro.innerHTML = '<strong>Pechino + Muraglia</strong> e <strong>Xi’an + Esercito di Terracotta</strong> non sono dimenticate: richiedono però di sostituire una parte del sud, non di aggiungerle sopra a tutto.';
+
   const menuButton=$('.menu-toggle'), nav=$('#main-nav');
   menuButton.addEventListener('click',()=>{const open=nav.classList.toggle('is-open');menuButton.setAttribute('aria-expanded',String(open));document.body.classList.toggle('menu-open',open)});
   $$('#main-nav a').forEach(a=>a.addEventListener('click',()=>{nav.classList.remove('is-open');menuButton.setAttribute('aria-expanded','false');document.body.classList.remove('menu-open')}));
@@ -37,11 +81,12 @@
   $('#gallery').innerHTML = D.gallery.map(g=>image(D.imgs[g[0]],g[1],g[1])).join('');
 
   const alternatives = [
+    ['great_wall','Pechino + Muraglia Cinese','La versione più classica: Pechino, Città Proibita e una sezione più tranquilla della Muraglia. Per farla bene servono circa 4–5 giorni e va sostituito un blocco del sud.','Versione classica',''],
+    ['terracotta','Xi’an + Esercito di Terracotta','L’altra grande classica. Xi’an richiede un volo o un treno lungo: ha senso insieme a Pechino, togliendo Guangzhou/Foshan oppure parte di Shenzhen.','Versione classica',''],
     ['ys_karst','Zhangjiajie','Fortissima, ma lontana. Ha senso solo sostituendo Yangshuo, non aggiungendola.','Alternativa vera',''],
     ['hk_2019','Shanghai','Altra grande metropoli e altro volo interno. In questo piano duplica parte dell’effetto urbano.','Lasciare fuori','no'],
     ['dapeng14','Sanya','Mare tropicale, ma richiede un volo e clima favorevole. Sostituirebbe Dapeng e un blocco città.','Solo se volete mare',''],
     ['macau3','Kaiping Diaolou','Coerente geograficamente: torri rurali e campagna del Guangdong, ma serve un giorno dedicato.','Buon extra',''],
-    ['hk_peak','Pechino + Muraglia','Merita un viaggio proprio. Per farla bene servono almeno 4–5 giorni e un volo interno.','Altro viaggio','no'],
     ['macau4','Zhuhai','Facile da collegare a Macao, ma meno diversa di Yangshuo. Utile come notte economica.','Jolly logistico','']
   ];
   $('#alternatives').innerHTML = alternatives.map(a=>`<article class="option-card">${image(D.imgs[a[0]],a[1])}<div><h3>${a[1]}</h3><p>${a[2]}</p><span class="verdict ${a[4]}">${a[3]}</span></div></article>`).join('');
@@ -140,7 +185,10 @@
   $$('.speak-btn').forEach(b=>b.addEventListener('click',()=>{if(!('speechSynthesis'in window)){window.open(translateBase+encodeURIComponent(b.dataset.text));return}speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(b.dataset.text);u.lang='zh-CN';u.rate=.78;u.voice=voices.find(v=>v.lang.toLowerCase()==='zh-cn')||voices.find(v=>v.lang.toLowerCase().startsWith('zh'))||null;speechSynthesis.speak(u)}));
 
   const dialog=$('#lightbox'), dialogImg=$('#lightbox img');
-  $$('[data-lightbox]').forEach(f=>f.addEventListener('click',()=>{const img=$('img',f);if(!img||f.classList.contains('image-error'))return;dialogImg.src=img.src;dialogImg.alt=img.alt;dialog.showModal()}));
+  function wireLightbox(){
+    $$('[data-lightbox]').forEach(f=>f.addEventListener('click',()=>{const img=$('img',f);if(!img||f.classList.contains('image-error'))return;dialogImg.src=img.src;dialogImg.alt=img.alt;dialog.showModal()}));
+  }
+  wireLightbox();
   $('#lightbox button').addEventListener('click',()=>dialog.close());
   dialog.addEventListener('click',e=>{if(e.target===dialog)dialog.close()});
 })();
