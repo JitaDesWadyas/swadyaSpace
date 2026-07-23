@@ -1,0 +1,13 @@
+{
+  "name": "Cina 2027 · SwadyaSpace",
+  "short_name": "Cina 2027",
+  "description": "Itinerario operativo offline con GPS, mappe, hotel, cibo, frasi e checklist.",
+  "start_url": "./china.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f2eadf",
+  "theme_color": "#8d171c",
+  "icons": [
+    {"src":"china-icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}
+  ]
+}
