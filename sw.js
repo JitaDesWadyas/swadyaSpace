@@ -1,4 +1,4 @@
-const VERSION='china-app-v1';
+const VERSION='china-app-v2';
 const SHELL=['./china.html','./china.css','./china-detail.js','./manifest.webmanifest','./china-icon.svg'];
 self.addEventListener('install',event=>{event.waitUntil(caches.open(VERSION).then(cache=>cache.addAll(SHELL)).then(()=>self.skipWaiting()))});
 self.addEventListener('activate',event=>{event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==VERSION).map(k=>caches.delete(k)))).then(()=>self.clients.claim()))});
@@ -8,7 +8,7 @@ self.addEventListener('fetch',event=>{
     const copy=response.clone();
     caches.open(VERSION).then(cache=>cache.put(event.request,copy)).catch(()=>{});
     return response;
-  }).catch(()=>caches.match('./china.html'))));
+  }).catch(()=>event.request.mode==='navigate'?caches.match('./china.html'):Response.error())));
 });
 self.addEventListener('message',event=>{
   if(event.data?.type!=='CACHE_URLS')return;
