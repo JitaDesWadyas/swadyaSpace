@@ -3,54 +3,67 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#8d171c">
-  <meta name="description" content="China 2027: app operativa offline per itinerario, GPS, hotel, cibo, frasi, bagagli e meteo.">
+  <meta name="theme-color" content="#7f1218">
+  <meta name="description" content="Cina 2027: guida visuale e app offline con itinerario, GPS, hotel, cibo, traduttore, bagagli e meteo.">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="china-icon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://unpkg.com">
   <link rel="preconnect" href="https://tile.openstreetmap.org">
+  <link rel="preconnect" href="https://commons.wikimedia.org">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
   <link rel="stylesheet" href="china.css">
   <title>Cina 2027 · SwadyaSpace</title>
 </head>
 <body>
   <a class="skip-link" href="#main">Vai al contenuto</a>
+
   <header class="app-header">
-    <a class="app-brand" href="index.html"><span>中国</span><b>Cina 2027</b></a>
+    <a class="app-brand" href="index.html" aria-label="Torna a SwadyaSpace">
+      <span class="seal">中国</span>
+      <span><b>Cina 2027</b><small>SwadyaSpace</small></span>
+    </a>
     <div class="header-actions">
       <span class="status-pill" id="networkStatus">Online</span>
       <button class="icon-button" id="installButton" type="button" hidden>Installa</button>
-      <button class="icon-button" id="offlineButton" type="button">Offline</button>
+      <button class="icon-button" id="offlineButton" type="button">Salva offline</button>
     </div>
   </header>
 
   <main id="main">
-    <section class="hero app-shell" id="home">
-      <div class="hero-copy">
-        <p class="kicker">6–20 novembre 2027 · quattro persone · 14 giorni</p>
-        <h1>Una sola pagina per <em>sopravvivere</em> e divertirsi.</h1>
-        <p>Hong Kong → Shenzhen → Macao → Xi’an → Pechino. Itinerario, GPS, mappe, alloggi, cibo, frasi cinesi, bagagli, meteo e preparazione offline.</p>
-        <div class="hero-actions">
-          <button class="primary-button" data-jump="days">Apri i 14 giorni</button>
-          <button class="secondary-button" id="nearestHero">Cosa ho vicino?</button>
-          <button class="secondary-button danger" data-jump="emergency">Emergenza</button>
+    <section class="hero" id="home">
+      <div class="hero-photo" data-photo></div>
+      <div class="hero-overlay"></div>
+      <div class="hero-inner app-shell">
+        <div class="hero-copy">
+          <p class="hero-chinese">中国 · 香港 · 深圳 · 澳门 · 西安 · 北京</p>
+          <p class="kicker light">6–20 novembre 2027 · quattro persone · 14 giorni</p>
+          <h1>Cina.<br><em>Da vivere davvero.</em></h1>
+          <p>Un viaggio visuale e operativo: ogni giornata ha immagini, punti precisi, cibo, frasi da pronunciare, GPS e alternative concrete.</p>
+          <div class="hero-actions">
+            <button class="primary-button gold" data-jump="days">Apri i 14 giorni</button>
+            <button class="secondary-button glass" id="nearestHero">Cosa ho vicino?</button>
+            <button class="secondary-button glass" data-jump="translator">Traduttore</button>
+          </div>
         </div>
+        <div class="hero-stats" id="heroStats"></div>
       </div>
-      <div class="hero-stats" id="heroStats"></div>
     </section>
 
-    <section class="quickbar app-shell" aria-label="Azioni rapide">
+    <nav class="quickbar app-shell" aria-label="Azioni rapide">
+      <button data-jump="route">🧭 Percorso</button>
+      <button data-jump="days">🗓 Giorni</button>
       <button data-jump="map">📍 Mappa e GPS</button>
       <button data-jump="stays">🏨 Dormire</button>
       <button data-jump="food">🥢 Mangiare</button>
+      <button data-jump="translator">说 Traduttore</button>
       <button data-jump="packing">🎒 Valigia</button>
-      <button data-jump="phrases">🗣 Parla cinese</button>
-    </section>
+      <button data-jump="emergency">🆘 Emergenza</button>
+    </nav>
 
     <section class="app-section app-shell" id="days">
       <div class="section-heading">
-        <div><p class="kicker">Piano principale</p><h2>14 giorni, senza contenuti ripetuti.</h2></div>
-        <p>Ogni giornata rimanda ai punti, ai piatti e agli strumenti approfonditi nelle sezioni dedicate.</p>
+        <div><p class="kicker">Piano principale</p><h2>14 giorni, con immagini e link utili.</h2></div>
+        <p>Apri solo il giorno che serve. Ogni punto porta alla mappa e può essere pronunciato in cinese.</p>
       </div>
       <div class="day-list" id="dayList"></div>
     </section>
@@ -58,7 +71,7 @@
     <section class="app-section app-shell" id="map">
       <div class="section-heading">
         <div><p class="kicker">Una sola mappa</p><h2>Punti, GPS e distanze.</h2></div>
-        <p>Filtra, trova cosa hai vicino e apri il nome cinese direttamente in Amap.</p>
+        <p>Filtra per città o categoria, trova cosa hai vicino e apri il nome cinese direttamente in Amap.</p>
       </div>
       <div class="map-tools">
         <button class="primary-button" id="locateButton">Usa il mio GPS</button>
@@ -73,8 +86,8 @@
 
     <section class="app-section app-shell" id="stays">
       <div class="section-heading">
-        <div><p class="kicker">Prezzi da piattaforme cinesi</p><h2>Dormire spendendo poco, senza farsi fregare.</h2></div>
-        <p>Fasce-obiettivo per quattro persone su date comparabili 2026. Inserisci i prezzi veri e l’app calcola il totale.</p>
+        <div><p class="kicker">Piattaforme cinesi, non solo Booking</p><h2>Dormire bene spendendo poco.</h2></div>
+        <p>Zone precise, collegamenti alla metro e campi per salvare le offerte realmente trovate.</p>
       </div>
       <div class="budget-live">
         <div><span>Totale inserito</span><strong id="stayTotal">0 €</strong></div>
@@ -90,25 +103,60 @@
 
     <section class="app-section app-shell" id="food">
       <div class="section-heading">
-        <div><p class="kicker">Una scheda per ogni piatto</p><h2>Cosa contiene, dove e quando mangiarlo.</h2></div>
-        <p>Niente seconda lista incompleta: tutti i dettagli sono qui e i giorni rimandano a queste schede.</p>
+        <div><p class="kicker">Una sola guida gastronomica</p><h2>Foto vere, ingredienti e posto giusto.</h2></div>
+        <p>I giorni rimandano qui: nessuna seconda lista incompleta e nessuna foto di città usata come cibo.</p>
       </div>
       <div class="food-filters" id="foodFilters"></div>
       <div class="food-grid" id="foodGrid"></div>
     </section>
 
+    <section class="app-section translator-section" id="translator">
+      <div class="app-shell">
+        <div class="section-heading translator-heading">
+          <div><p class="kicker light">Traduttore operativo</p><h2>Scrivi in italiano, mostra e fai parlare il telefono.</h2></div>
+          <p>Online prova a tradurre direttamente; offline suggerisce la frase salvata più vicina.</p>
+        </div>
+        <div class="translator-grid">
+          <div class="translator-panel">
+            <label for="italianInput">Italiano</label>
+            <textarea id="italianInput" placeholder="Es. Siamo quattro e vogliamo andare a questo hotel…"></textarea>
+            <div class="translator-actions">
+              <button class="primary-button gold" id="translateNow">Traduci in cinese</button>
+              <button class="secondary-button glass" id="dictateItalian" type="button">🎙 Dettatura</button>
+              <button class="secondary-button glass" id="clearTranslation" type="button">Pulisci</button>
+            </div>
+          </div>
+          <div class="translator-panel result-panel">
+            <span class="result-label">Cinese semplificato</span>
+            <div class="translation-output" id="translationOutput">译文</div>
+            <p id="translationNote">La traduzione apparirà qui.</p>
+            <div class="translator-actions">
+              <button class="primary-button gold" id="speakTranslation" type="button">▶ Pronuncia</button>
+              <button class="secondary-button glass" id="showTranslation" type="button">Mostra grande</button>
+              <button class="secondary-button glass" id="copyTranslation" type="button">Copia</button>
+              <a class="secondary-button glass" id="translateFallback" target="_blank" rel="noopener">Google Translate</a>
+            </div>
+          </div>
+        </div>
+        <details class="translator-phrases">
+          <summary>Frasi rapide già pronte</summary>
+          <div class="phrase-groups" id="phraseGrid"></div>
+        </details>
+      </div>
+    </section>
+
     <section class="app-section app-shell" id="transport">
       <div class="section-heading">
-        <div><p class="kicker">Telefono e spostamenti</p><h2>Mappe, SIM, treni, voli e offline.</h2></div>
-        <p>Procedure operative, link ufficiali e frasi cinesi da mostrare o far pronunciare al telefono.</p>
+        <div><p class="kicker">Telefono e spostamenti</p><h2>SIM, mappe, treni, voli e offline.</h2></div>
+        <p>Procedure operative, link ufficiali e frasi da mostrare solo quando servono.</p>
       </div>
       <div class="fold-stack" id="transportList"></div>
     </section>
 
     <section class="app-section app-shell" id="packing">
       <div class="section-heading">
-        <div><p class="kicker">Sud caldo, nord freddo</p><h2>Meteo, vestiti, bagagli e lavanderia.</h2></div>
-        <p>Il viaggio cambia clima: a Hong Kong si può stare in maglietta, sulla Muraglia può servire piumino leggero.</p>
+        <div><p class="kicker">Sud mite, nord freddo</p><h2>Meteo, vestiti, bagagli e lavanderia.</h2></div>
+        <p>Il viaggio cambia clima: la valigia deve funzionare a Hong Kong e sulla Muraglia.</p>
       </div>
       <div class="weather-strip" id="weatherStrip"></div>
       <div class="fold-stack" id="packingList"></div>
@@ -124,29 +172,16 @@
 
     <section class="app-section app-shell" id="alternatives">
       <div class="section-heading">
-        <div><p class="kicker">Cambi di itinerario</p><h2>Alternative spiegate una sola volta.</h2></div>
-        <p>Ogni opzione indica esattamente cosa sostituire, quante notti richiede e perché sceglierla.</p>
+        <div><p class="kicker">Cambi di itinerario</p><h2>Alternative visuali, senza duplicati.</h2></div>
+        <p>Montagne “Avatar”, Yangshuo, Shanghai e Sanya compaiono una volta sola, con lo scambio necessario.</p>
       </div>
-      <div class="fold-stack" id="alternativeList"></div>
-    </section>
-
-    <section class="app-section app-shell" id="phrases">
-      <div class="section-heading">
-        <div><p class="kicker">Mostra o pronuncia</p><h2>Frasi cinesi per ogni situazione.</h2></div>
-        <p>Ogni frase può essere ingrandita, copiata e letta dal telefono in mandarino.</p>
-      </div>
-      <div class="phrase-composer">
-        <textarea id="customChinese" placeholder="Incolla qui qualunque testo cinese…"></textarea>
-        <button class="primary-button" id="speakCustom">Pronuncia</button>
-        <a class="secondary-button" id="translateCustom" target="_blank" rel="noopener">Traduci online</a>
-      </div>
-      <div class="phrase-grid" id="phraseGrid"></div>
+      <div class="alternative-grid" id="alternativeList"></div>
     </section>
 
     <section class="app-section app-shell emergency-section" id="emergency">
       <div class="section-heading">
         <div><p class="kicker">110 · 120 · 119 · 122</p><h2>Emergenza e documenti.</h2></div>
-        <p>Polizia, ambulanza, vigili del fuoco e incidenti stradali. Il telefono deve restare carico.</p>
+        <p>Mostra la frase grande o falla pronunciare. Il telefono deve restare carico.</p>
       </div>
       <div class="emergency-grid" id="emergencyGrid"></div>
     </section>
@@ -162,7 +197,7 @@
 
     <section class="sources app-shell">
       <details>
-        <summary>Fonti, limiti e ultimo controllo</summary>
+        <summary>Fonti, crediti immagini, limiti e ultimo controllo</summary>
         <div id="sourceList"></div>
       </details>
     </section>
@@ -173,7 +208,7 @@
     <button data-jump="days">14<span>Giorni</span></button>
     <button data-jump="map">◎<span>GPS</span></button>
     <button data-jump="food">碗<span>Cibo</span></button>
-    <button data-jump="phrases">说<span>Parla</span></button>
+    <button data-jump="translator">说<span>Parla</span></button>
   </nav>
 
   <dialog class="speak-dialog" id="speakDialog">
@@ -186,7 +221,17 @@
     </div>
   </dialog>
 
+  <dialog class="image-dialog" id="imageDialog">
+    <button class="dialog-close" id="closeImage" aria-label="Chiudi">×</button>
+    <img id="imageDialogImage" src="" alt="">
+    <p id="imageDialogCaption"></p>
+  </dialog>
+
+  <div hidden aria-hidden="true"><textarea id="customChinese"></textarea><button id="speakCustom"></button><a id="translateCustom"></a></div>
+
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
   <script src="china-detail.js"></script>
+  <script src="china-polish.js"></script>
+  <script>document.querySelector('.visual-route')?.setAttribute('id','route')</script>
 </body>
 </html>
