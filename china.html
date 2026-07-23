@@ -1,0 +1,884 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#9f1d20">
+  <meta name="description" content="Guida completa per un viaggio economico di due settimane nella Cina del Sud: Hong Kong, Shenzhen, Guangzhou, Foshan, Yangshuo e Macao.">
+  <meta property="og:title" content="Cina del Sud 2027 — viaggio dei quattro">
+  <meta property="og:description" content="Itinerario, budget, app, mappe, cibo, natura, acquisti e frasario audio per 6–20 novembre 2027.">
+  <title>Cina del Sud 2027 — SwadyaSpace</title>
+  <style>
+    :root {
+      --ink: #17120f;
+      --ink-2: #29201a;
+      --paper: #f4ead8;
+      --paper-2: #eadbc3;
+      --red: #a91f24;
+      --red-dark: #721419;
+      --gold: #b88a34;
+      --jade: #2f6757;
+      --muted: #74675b;
+      --line: rgba(79, 55, 39, .18);
+      --white-line: rgba(255,255,255,.16);
+      --shadow: 0 16px 48px rgba(35, 20, 12, .12);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; scroll-padding-top: 84px; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 18px 18px, rgba(129, 82, 42, .045) 1.5px, transparent 1.7px),
+        var(--paper);
+      background-size: 36px 36px;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans SC", sans-serif;
+      line-height: 1.62;
+    }
+    a { color: var(--red-dark); text-underline-offset: 3px; }
+    button, input { font: inherit; }
+    .shell { width: min(1180px, calc(100% - 34px)); margin: 0 auto; }
+    .skip-link { position: fixed; left: 10px; top: -60px; z-index: 100; background: white; padding: 10px; }
+    .skip-link:focus { top: 10px; }
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      color: #fff9ed;
+      background: rgba(104, 18, 22, .96);
+      border-bottom: 1px solid rgba(255,255,255,.18);
+      box-shadow: 0 5px 24px rgba(61, 8, 10, .16);
+    }
+    .topbar-inner {
+      min-height: 66px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+    }
+    .brand { color: white; text-decoration: none; font-weight: 950; letter-spacing: .08em; text-transform: uppercase; }
+    .brand small { opacity: .7; font-weight: 750; }
+    .menu-toggle {
+      display: none;
+      color: white;
+      border: 1px solid rgba(255,255,255,.35);
+      background: transparent;
+      min-height: 42px;
+      padding: 0 13px;
+      cursor: pointer;
+    }
+    .nav-links { display: flex; gap: 15px; align-items: center; }
+    .nav-links a { color: #fff9ed; text-decoration: none; font-size: .86rem; font-weight: 800; }
+    .nav-links a:hover { text-decoration: underline; }
+    .hero {
+      position: relative;
+      overflow: hidden;
+      color: #fff9ed;
+      background: var(--red);
+      border-bottom: 8px solid var(--gold);
+    }
+    .hero::before {
+      content: "中國";
+      position: absolute;
+      right: -34px;
+      top: -55px;
+      color: rgba(255,255,255,.07);
+      font-family: "Noto Serif SC", "Songti SC", serif;
+      font-size: clamp(14rem, 33vw, 31rem);
+      line-height: 1;
+      writing-mode: vertical-rl;
+      pointer-events: none;
+    }
+    .hero-grid {
+      position: relative;
+      min-height: 650px;
+      display: grid;
+      grid-template-columns: minmax(0, 1.25fr) minmax(300px, .75fr);
+      gap: 52px;
+      align-items: center;
+      padding: 74px 0 62px;
+    }
+    .kicker { font-size: .8rem; font-weight: 900; letter-spacing: .18em; text-transform: uppercase; color: #f5d49a; }
+    h1 { margin: 16px 0 22px; font-size: clamp(3.3rem, 8vw, 7rem); line-height: .92; letter-spacing: -.06em; }
+    .hero .lead { max-width: 760px; margin: 0; font-size: clamp(1.13rem, 2vw, 1.48rem); color: #f5e8d2; }
+    .route-line { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 26px; }
+    .route-line span { border: 1px solid rgba(255,255,255,.34); padding: 8px 11px; background: rgba(75, 4, 7, .14); font-size: .87rem; font-weight: 850; }
+    .seal-card {
+      max-width: 380px;
+      justify-self: end;
+      padding: 26px;
+      border: 1px solid rgba(255,255,255,.32);
+      background: rgba(75, 4, 7, .2);
+      box-shadow: 12px 12px 0 rgba(84, 10, 12, .26);
+    }
+    .seal { width: 74px; height: 74px; display: grid; place-items: center; margin-bottom: 20px; border: 4px double #f2d8a6; color: #f2d8a6; font-family: "Noto Serif SC", serif; font-size: 2rem; font-weight: 900; }
+    .seal-card strong { display: block; font-size: 1.15rem; }
+    .seal-card p { margin: 8px 0 0; color: #f0dcc0; }
+    .hero-actions { display: flex; gap: 11px; flex-wrap: wrap; margin-top: 30px; }
+    .button {
+      display: inline-flex;
+      min-height: 48px;
+      align-items: center;
+      justify-content: center;
+      padding: 0 17px;
+      border: 1px solid currentColor;
+      background: #fff6e6;
+      color: var(--red-dark);
+      text-decoration: none;
+      font-weight: 900;
+      cursor: pointer;
+    }
+    .button.secondary { background: transparent; color: #fff9ed; }
+    .button.dark { color: #fff9ed; background: var(--ink); border-color: var(--ink); }
+    .button.small { min-height: 38px; padding: 0 11px; font-size: .82rem; }
+    .button:hover { transform: translateY(-1px); }
+    .status-strip { background: #221c17; color: #f8edda; }
+    .status-grid { display: grid; grid-template-columns: repeat(4, 1fr); }
+    .status-item { padding: 19px 22px; border-left: 1px solid var(--white-line); }
+    .status-item:first-child { border-left: 0; }
+    .status-item small { display: block; color: #c8b79f; text-transform: uppercase; letter-spacing: .12em; font-size: .69rem; font-weight: 850; }
+    .status-item strong { display: block; margin-top: 5px; font-size: 1rem; }
+    section { padding: 74px 0; border-bottom: 1px solid var(--line); }
+    .section-head { display: grid; grid-template-columns: .62fr 1.38fr; gap: 38px; margin-bottom: 34px; }
+    .section-head .number { color: var(--red); font-weight: 950; letter-spacing: .1em; }
+    .section-head h2 { margin: 5px 0 0; font-size: clamp(2rem, 4.5vw, 4rem); line-height: 1; letter-spacing: -.045em; }
+    .section-head p { max-width: 700px; margin: 6px 0 0; color: var(--muted); font-size: 1.04rem; }
+    .warning {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 16px;
+      align-items: start;
+      padding: 20px;
+      border: 1px solid rgba(169,31,36,.35);
+      border-left: 6px solid var(--red);
+      background: #fff6e7;
+      box-shadow: var(--shadow);
+    }
+    .warning .icon { font-size: 1.5rem; }
+    .warning strong { display: block; margin-bottom: 5px; }
+    .warning p { margin: 0; color: #5f5044; }
+    .principles { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-top: 25px; }
+    .principle { padding: 20px; border-top: 5px solid var(--red); background: #fff9ef; box-shadow: var(--shadow); }
+    .principle strong { display: block; margin-bottom: 7px; }
+    .principle p { margin: 0; color: var(--muted); font-size: .92rem; }
+    .route-board { margin-top: 26px; padding: 24px; background: var(--ink); color: #fff8e9; box-shadow: var(--shadow); }
+    .route-board h3 { margin: 0 0 18px; }
+    .route-steps { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; }
+    .route-step { position: relative; padding: 14px 12px; border: 1px solid var(--white-line); min-height: 104px; }
+    .route-step small { color: #cdbba4; display: block; }
+    .route-step strong { display: block; margin-top: 6px; }
+    .route-step em { display: block; color: #e1bd72; margin-top: 5px; font-style: normal; font-size: .79rem; }
+    .itinerary { display: grid; gap: 15px; }
+    .day {
+      display: grid;
+      grid-template-columns: 132px minmax(0, 1fr) 280px;
+      gap: 22px;
+      padding: 22px;
+      border: 1px solid var(--line);
+      background: #fffaf1;
+      box-shadow: 0 8px 25px rgba(52, 32, 20, .07);
+    }
+    .day-date { color: var(--red); font-weight: 950; text-transform: uppercase; letter-spacing: .08em; }
+    .day-date span { display: block; color: var(--muted); font-weight: 750; font-size: .78rem; letter-spacing: .06em; }
+    .day h3 { margin: 0 0 7px; font-size: 1.35rem; }
+    .day p { margin: 0; color: #66574c; }
+    .day ul { margin: 10px 0 0; padding-left: 19px; color: #594b40; }
+    .day-side { padding-left: 20px; border-left: 1px solid var(--line); }
+    .day-side strong { display: block; font-size: .82rem; color: var(--jade); text-transform: uppercase; letter-spacing: .1em; }
+    .day-side p { margin-top: 5px; font-size: .9rem; }
+    .chips { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 11px; }
+    .chip { display: inline-flex; align-items: center; min-height: 31px; padding: 0 9px; border: 1px solid var(--line); background: var(--paper); color: #58493e; text-decoration: none; font-size: .78rem; font-weight: 800; }
+    .budget-picker { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+    .budget-picker button { min-height: 42px; padding: 0 14px; border: 1px solid var(--line); background: #fff9ef; cursor: pointer; font-weight: 850; }
+    .budget-picker button.active { color: white; background: var(--red); border-color: var(--red); }
+    .budget-layout { display: grid; grid-template-columns: .72fr 1.28fr; gap: 18px; }
+    .budget-total { padding: 28px; color: white; background: var(--red-dark); box-shadow: var(--shadow); }
+    .budget-total small { display: block; color: #efd8ba; text-transform: uppercase; letter-spacing: .1em; }
+    .budget-total strong { display: block; margin: 8px 0; font-size: clamp(2.8rem, 6vw, 5rem); line-height: 1; }
+    .budget-total p { color: #f3dfc5; margin: 0; }
+    .budget-table { width: 100%; border-collapse: collapse; background: #fffaf2; box-shadow: var(--shadow); }
+    .budget-table th, .budget-table td { padding: 15px 16px; border-bottom: 1px solid var(--line); text-align: left; }
+    .budget-table th { color: var(--muted); font-size: .74rem; text-transform: uppercase; letter-spacing: .1em; }
+    .budget-table td:last-child { font-weight: 900; color: var(--red-dark); }
+    .budget-note { margin-top: 16px; color: var(--muted); }
+    .options { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
+    details.option { border: 1px solid var(--line); background: #fffaf2; box-shadow: 0 8px 25px rgba(52, 32, 20, .06); }
+    details.option summary { cursor: pointer; list-style: none; padding: 20px; font-weight: 950; font-size: 1.12rem; }
+    details.option summary::-webkit-details-marker { display: none; }
+    details.option summary::after { content: "+"; float: right; color: var(--red); font-size: 1.5rem; }
+    details.option[open] summary::after { content: "−"; }
+    .option-body { padding: 0 20px 20px; color: var(--muted); }
+    .option-body strong { color: var(--ink); }
+    .app-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .app { padding: 21px; border: 1px solid var(--line); background: #fffaf2; }
+    .app .app-name { display: flex; align-items: center; gap: 10px; }
+    .app .app-icon { width: 36px; height: 36px; display: grid; place-items: center; color: white; background: var(--red); font-weight: 950; }
+    .app h3 { margin: 0; font-size: 1.08rem; }
+    .app p { margin: 9px 0 0; color: var(--muted); font-size: .91rem; }
+    .app .priority { display: inline-block; margin-top: 12px; color: var(--jade); font-weight: 900; font-size: .75rem; text-transform: uppercase; letter-spacing: .1em; }
+    .checklist-wrap { display: grid; grid-template-columns: 280px 1fr; gap: 18px; }
+    .progress-card { position: sticky; top: 88px; align-self: start; padding: 23px; color: white; background: var(--ink); }
+    .progress-card strong { font-size: 2.4rem; }
+    .progress-track { height: 8px; margin: 13px 0; background: rgba(255,255,255,.15); overflow: hidden; }
+    .progress-bar { height: 100%; width: 0; background: #dcae55; transition: width .2s ease; }
+    .progress-card p { color: #cdbda7; margin: 0; font-size: .9rem; }
+    .check-groups { display: grid; gap: 14px; }
+    .check-group { padding: 20px; border: 1px solid var(--line); background: #fffaf2; }
+    .check-group h3 { margin: 0 0 10px; }
+    .check-item { display: grid; grid-template-columns: 24px 1fr; gap: 10px; align-items: start; padding: 9px 0; border-top: 1px dashed var(--line); cursor: pointer; }
+    .check-item:first-of-type { border-top: 0; }
+    .check-item input { margin-top: 5px; accent-color: var(--red); }
+    .check-item span { color: #5f5146; }
+    .places { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .place { display: flex; flex-direction: column; min-height: 250px; padding: 20px; border: 1px solid var(--line); background: #fffaf2; }
+    .place .city { color: var(--red); text-transform: uppercase; letter-spacing: .12em; font-size: .72rem; font-weight: 950; }
+    .place h3 { margin: 10px 0 7px; }
+    .place p { margin: 0; color: var(--muted); font-size: .91rem; }
+    .place-links { display: flex; flex-wrap: wrap; gap: 7px; margin-top: auto; padding-top: 18px; }
+    .place-links a, .copy-btn { min-height: 34px; display: inline-flex; align-items: center; padding: 0 9px; border: 1px solid var(--line); background: var(--paper); color: var(--ink); text-decoration: none; font-size: .76rem; font-weight: 850; cursor: pointer; }
+    .food-layout { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+    .food-card { padding: 22px; background: #fffaf2; border: 1px solid var(--line); }
+    .food-card h3 { margin: 0 0 10px; }
+    .food-card ul { margin: 0; padding-left: 19px; color: var(--muted); }
+    .food-card li + li { margin-top: 7px; }
+    .buy-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .buy-card { padding: 21px; background: #fffaf2; border-top: 5px solid var(--gold); box-shadow: var(--shadow); }
+    .buy-card h3 { margin: 0 0 9px; }
+    .buy-card ul { margin: 0; padding-left: 18px; color: var(--muted); }
+    .buy-card li + li { margin-top: 7px; }
+    .phrase-toolbar { display: flex; justify-content: space-between; gap: 15px; align-items: center; margin-bottom: 15px; }
+    .phrase-toolbar input { width: min(420px, 100%); min-height: 44px; border: 1px solid var(--line); background: #fffaf2; padding: 0 13px; }
+    .phrase-table-wrap { overflow-x: auto; border: 1px solid var(--line); background: #fffaf2; }
+    .phrase-table { width: 100%; min-width: 780px; border-collapse: collapse; }
+    .phrase-table th, .phrase-table td { padding: 13px 14px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: middle; }
+    .phrase-table th { font-size: .72rem; text-transform: uppercase; letter-spacing: .1em; color: var(--muted); background: #eadbc4; }
+    .phrase-cn { font-family: "Noto Serif SC", "Songti SC", serif; font-size: 1.25rem; font-weight: 850; white-space: nowrap; }
+    .phrase-actions { display: flex; gap: 6px; }
+    .speak-btn, .translate-link { min-height: 34px; display: inline-flex; align-items: center; justify-content: center; padding: 0 9px; border: 1px solid var(--line); background: var(--paper); color: var(--ink); text-decoration: none; cursor: pointer; font-size: .76rem; font-weight: 850; white-space: nowrap; }
+    .source-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .source-card { padding: 20px; border: 1px solid var(--line); background: #fffaf2; }
+    .source-card h3 { margin: 0 0 10px; }
+    .source-card ul { margin: 0; padding-left: 18px; }
+    .source-card li + li { margin-top: 8px; }
+    .source-card a { font-size: .9rem; }
+    .footer { color: #d7c6ad; background: var(--ink); padding: 38px 0 48px; }
+    .footer-grid { display: grid; grid-template-columns: 1fr auto; gap: 25px; align-items: end; }
+    .footer p { margin: 6px 0 0; color: #bcae9b; max-width: 760px; }
+    .footer a { color: #f1d49a; }
+    .back-top { position: fixed; right: 16px; bottom: 16px; width: 46px; height: 46px; display: grid; place-items: center; border: 0; color: white; background: var(--red); cursor: pointer; box-shadow: 0 8px 24px rgba(62,10,12,.25); }
+    @media (max-width: 980px) {
+      .hero-grid, .section-head, .budget-layout, .checklist-wrap { grid-template-columns: 1fr; }
+      .seal-card { justify-self: start; }
+      .status-grid { grid-template-columns: repeat(2, 1fr); }
+      .status-item:nth-child(3) { border-left: 0; border-top: 1px solid var(--white-line); }
+      .status-item:nth-child(4) { border-top: 1px solid var(--white-line); }
+      .principles, .route-steps { grid-template-columns: repeat(2, 1fr); }
+      .day { grid-template-columns: 105px 1fr; }
+      .day-side { grid-column: 2; padding: 13px 0 0; border-left: 0; border-top: 1px solid var(--line); }
+      .app-grid, .places, .buy-grid, .source-grid { grid-template-columns: repeat(2, 1fr); }
+      .progress-card { position: static; }
+    }
+    @media (max-width: 720px) {
+      .menu-toggle { display: inline-flex; align-items: center; }
+      .nav-links { display: none; position: absolute; left: 0; right: 0; top: 66px; padding: 15px 17px 20px; flex-direction: column; align-items: stretch; background: var(--red-dark); border-top: 1px solid rgba(255,255,255,.18); }
+      .topbar.open .nav-links { display: flex; }
+      .hero-grid { min-height: auto; padding: 56px 0 48px; }
+      .hero::before { opacity: .65; }
+      .status-grid, .principles, .route-steps, .options, .app-grid, .places, .food-layout, .buy-grid, .source-grid { grid-template-columns: 1fr; }
+      .status-item { border-left: 0; border-top: 1px solid var(--white-line); }
+      .status-item:first-child { border-top: 0; }
+      .day { grid-template-columns: 1fr; padding: 18px; }
+      .day-side { grid-column: auto; }
+      .phrase-toolbar { align-items: stretch; flex-direction: column; }
+      .footer-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 480px) {
+      .shell { width: min(100% - 22px, 1180px); }
+      h1 { font-size: 3.45rem; }
+      section { padding: 56px 0; }
+      .route-board { padding: 16px; }
+      .seal-card { box-shadow: 7px 7px 0 rgba(84,10,12,.26); }
+    }
+    @media print {
+      .topbar, .back-top, .hero-actions, .menu-toggle, .phrase-actions, .place-links, .budget-picker { display: none !important; }
+      body { background: white; }
+      .hero { color: black; background: white; border: 0; }
+      .hero .lead, .seal-card p { color: #333; }
+      .seal-card { border-color: #333; box-shadow: none; }
+      section { padding: 26px 0; }
+      .day, .app, .place, .food-card, .buy-card, .source-card { break-inside: avoid; box-shadow: none; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#contenuto">Vai al contenuto</a>
+  <nav class="topbar" aria-label="Navigazione pagina">
+    <div class="shell topbar-inner">
+      <a class="brand" href="index.html">SwadyaSpace <small>/ Cina</small></a>
+      <button class="menu-toggle" type="button" aria-expanded="false">☰ Menu</button>
+      <div class="nav-links">
+        <a href="#scelta">Perché questo giro</a>
+        <a href="#itinerario">Itinerario</a>
+        <a href="#budget">Budget</a>
+        <a href="#pratica">App e preparazione</a>
+        <a href="#posti">Mappe</a>
+        <a href="#frasi">Frasario</a>
+      </div>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <div class="shell hero-grid">
+      <div>
+        <div class="kicker">Boys trip · quattro persone · due settimane</div>
+        <h1>Cina del Sud<br>6–20 novembre 2027</h1>
+        <p class="lead">Non una corsa per mettere bandierine. Si vive in città diverse, si entra nei supermercati, si mangia dove mangiano gli altri, si gira tra elettronica e quartieri, poi si esce verso spiagge, colline carsiche, fiumi e paesi.</p>
+        <div class="route-line" aria-label="Tappe principali">
+          <span>Hong Kong</span><span>Shenzhen</span><span>Dapeng</span><span>Guangzhou</span><span>Foshan</span><span>Yangshuo</span><span>Macao</span>
+        </div>
+        <div class="hero-actions">
+          <a class="button" href="#itinerario">Vedi i 15 giorni</a>
+          <a class="button secondary" href="#checklist">Apri la checklist</a>
+        </div>
+      </div>
+      <aside class="seal-card">
+        <div class="seal" aria-hidden="true">行</div>
+        <strong>La scelta netta</strong>
+        <p>Per voi ha più senso il sud: meno trasferimenti assurdi, più vita quotidiana, tecnologia, cibo cantonese, mare e natura. Shanghai, Sanya e Muraglia restano moduli alternativi, non tappe infilate a forza.</p>
+      </aside>
+    </div>
+  </header>
+
+  <div class="status-strip">
+    <div class="shell status-grid">
+      <div class="status-item"><small>Date consigliate</small><strong>sab 6 → sab 20 novembre 2027</strong></div>
+      <div class="status-item"><small>Ritmo</small><strong>4 basi + gite, niente volo interno</strong></div>
+      <div class="status-item"><small>Budget realistico</small><strong>1.250–1.500 € a persona</strong></div>
+      <div class="status-item"><small>Stato documenti</small><strong>visto 2027 ancora da verificare</strong></div>
+    </div>
+  </div>
+
+  <main id="contenuto">
+    <section id="scelta">
+      <div class="shell">
+        <div class="section-head">
+          <div><span class="number">01</span><h2>Perché proprio questo giro</h2></div>
+          <p>Gli itinerari delle agenzie attraversano mezza Cina in due settimane. Le esperienze recenti dei viaggiatori premiano invece Hong Kong, Shenzhen, Guangzhou/Foshan e Yangshuo come corridoio naturale collegato bene in treno. È più vicino al vostro viaggio di Bucarest: cose forti, ma anche tempo per stare in un posto.</p>
+        </div>
+
+        <div class="warning">
+          <div class="icon">⚠</div>
+          <div>
+            <strong>Il punto che nessun sito serio può fingere di sapere già</strong>
+            <p>Per gli italiani l’esenzione dal visto cinese attuale arriva solo al 31 dicembre 2026. Il viaggio è nel 2027: a gennaio/febbraio 2027 va verificato se sarà prorogata oppure se servirà il visto. Hong Kong e Macao oggi consentono agli italiani soggiorni turistici senza visto fino a 90 giorni, ma vanno ricontrollati anche loro prima di pagare tutto.</p>
+          </div>
+        </div>
+
+        <div class="principles">
+          <article class="principle"><strong>Vivere prima di visitare</strong><p>Ogni base ha almeno un giorno senza monumenti obbligatori: supermercati, quartieri, negozi strani, bar, KTV e passeggiate casuali.</p></article>
+          <article class="principle"><strong>Natura senza parco-gabbia</strong><p>Dapeng per mare e villaggi; Xingping/Yangshuo per fiumi e colline. Le ore più affollate si evitano partendo presto.</p></article>
+          <article class="principle"><strong>Treno, non aeroporto</strong><p>La rotta segue l’alta velocità. Meno controlli, meno ore morte e nessun rischio power bank sui voli interni.</p></article>
+          <article class="principle"><strong>Budget sotto controllo</strong><p>Hong Kong è il punto costoso. Shenzhen diventa la base lunga e conveniente; Guangzhou e Yangshuo restano corte ma sostanziose.</p></article>
+        </div>
+
+        <div class="route-board">
+          <h3>La linea del viaggio</h3>
+          <div class="route-steps">
+            <div class="route-step"><small>3 notti</small><strong>Hong Kong</strong><em>quartieri + isola/natura</em></div>
+            <div class="route-step"><small>4 notti</small><strong>Shenzhen</strong><em>vita moderna + tech</em></div>
+            <div class="route-step"><small>gita</small><strong>Dapeng</strong><em>fortezza + mare</em></div>
+            <div class="route-step"><small>2 notti</small><strong>Guangzhou</strong><em>cibo + Foshan</em></div>
+            <div class="route-step"><small>2 notti</small><strong>Yangshuo</strong><em>fiume + campagne</em></div>
+            <div class="route-step"><small>finale</small><strong>Macao → HKG</strong><em>giornata lineare</em></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="itinerario">
+      <div class="shell">
+        <div class="section-head">
+          <div><span class="number">02</span><h2>Itinerario giorno per giorno</h2></div>
+          <p>Le date sono scelte per stare fuori dalla Golden Week e trovare in genere temperature più vivibili nel sud. Il calendario ufficiale delle festività cinesi 2027 non è ancora pubblicato: prima di prenotare treni e attrazioni va comunque controllato.</p>
+        </div>
+
+        <div class="itinerary">
+          <article class="day">
+            <div class="day-date">Giorno 1<span>Sab 6 nov</span></div>
+            <div><h3>Italia → Hong Kong</h3><p>Partenza da Milano Malpensa come prima scelta; controllare anche Venezia e Bologna. Cercate un A/R su Hong Kong o un open-jaw che ritorni da Shenzhen/Guangzhou solo se fa davvero risparmiare. Niente coincidenze separate con meno di quattro ore.</p><div class="chips"><a class="chip" href="https://www.google.com/travel/flights" target="_blank" rel="noreferrer">Google Flights</a><a class="chip" href="https://www.skyscanner.it/" target="_blank" rel="noreferrer">Skyscanner</a></div></div>
+            <aside class="day-side"><strong>Obiettivo prezzo</strong><p>600–750 € A/R con bagaglio ragionevole. Sotto 600 è ottimo; sopra 800 aspettate o cambiate combinazione.</p></aside>
+          </article>
+
+          <article class="day">
+            <div class="day-date">Giorno 2<span>Dom 7 nov</span></div>
+            <div><h3>Arrivo: Hong Kong senza correre</h3><p>Check-in sul lato Kowloon, più comodo ed economico di Central. Prima missione: Octopus, 7-Eleven, supermercato e giro tra Jordan, Yau Ma Tei e Temple Street. La prima sera deve farvi capire il posto, non distruggervi.</p><ul><li>Star Ferry al tramonto se avete ancora energia.</li><li>Cena: cha chaan teng, roast meat rice o dim sum semplice.</li></ul></div>
+            <aside class="day-side"><strong>Base</strong><p>Jordan, Mong Kok, Sham Shui Po o Tsuen Wan vicino alla MTR. Evitate una camera sospettosamente economica senza recensioni recenti.</p></aside>
+          </article>
+
+          <article class="day">
+            <div class="day-date">Giorno 3<span>Lun 8 nov</span></div>
+            <div><h3>Hong Kong verticale + quartieri veri</h3><p>Mattina a Sham Shui Po: Apliu Street, negozi di elettronica, mercati e bakery. Pomeriggio verso Central/Sheung Wan; salite al Peak con bus o taxi e fate il Lugard Road loop, più tranquillo del solo punto panoramico. Rientro con tram e Star Ferry.</p></div>
+            <aside class="day-side"><strong>Serata</strong><p>Birra a Tsim Sha Tsui, Mong Kok o Kennedy Town. Lan Kwai Fong solo per vederlo: è facile spendere inutilmente.</p></aside>
+          </article>
+
+          <article class="day">
+            <div class="day-date">Giorno 4<span>Mar 9 nov</span></div>
+            <div><h3>Mare e sentieri a due fermate dalla metropoli</h3><p>Scegliete una sola gita: <b>Dragon’s Back + Big Wave Bay</b> per camminare e vedere il mare, oppure <b>Lamma Island</b> per villaggi, sentiero costiero e pranzo lento. Tornate in città per Mong Kok, sneaker shops, arcades e un KTV se siete ancora vivi.</p></div>
+            <aside class="day-side"><strong>Piano pioggia</strong><p>M+ o Hong Kong Palace Museum non sono il centro del viaggio, ma sono un buon ripiego; in alternativa mall, mercati coperti e cinema.</p></aside>
+          </article>
+
+          <article class="day">
+            <div class="day-date">Giorno 5<span>Mer 10 nov</span></div>
+            <div><h3>Hong Kong → Shenzhen: cambio di mondo in mezz’ora</h3><p>Treno da West Kowloon a Futian o Shenzhen North. Passaporto pronto: si attraversa un confine vero. Check-in a Nanshan/Futian; primo giro a Dongmen/Laojie e visita seria a un Hema/Freshippo o grande supermercato. Comprate snack a caso e fate una cena senza cercare “il ristorante migliore”.</p></div>
+            <aside class="day-side"><strong>Prima di partire</strong><p>Alipay e WeChat già verificati, Amap installata, indirizzo dell’alloggio scritto in cinese e screenshot offline.</p></aside>
+          </article>
+
+          <article class="day">
+            <div class="day-date">Giorno 6<span>Gio 11 nov</span></div>
+            <div><h3>Huaqiangbei: tecnologia, contrattazione e cose inutili</h3><p>Giornata tra SEG, Huaqiang Electronic World e piani specializzati. Prima guardate, poi confrontate almeno tre venditori. I piani superiori costano spesso meno. Nel pomeriggio OCT Loft o UpperHills; sera tra Shuiwei 1368 e Futian per mangiare e bere.</p><ul><li>Non comprate smartphone o SSD “troppo convenienti” senza test e ricevuta.</li><li>Accessori, componenti, luci, tastiere e piccoli gadget sono acquisti più sensati.</li></ul></div>
+            <aside class="day-side"><strong>Frase utile</strong><p>我看过价格了，给我最低价。<br><i>Ho già controllato i prezzi: dammi il prezzo vero.</i></p></aside>
+          </article>
+
+          <article class="day">
+            <div class="day-date">Giorno 7<span>Ven 12 nov</span></div>
+            <div><h3>La Shenzhen che si vive</h3><p>Nantou Ancient City al mattino, poi scegliete tra Dafen Oil Painting Village, Design Society/Sea World o un giro lungo la baia di Shenzhen. Lasciate due ore senza piano per un mall enorme, un negozio Xiaomi/Huawei/DJI, una sala giochi o un bar dove provare a parlare con qualcuno.</p></div>
+            <aside class="day-side"><strong>Notte</strong><p>KTV privato per il gruppo oppure Coco Park se volete una serata più commerciale. Tenete il giorno dopo meno aggressivo.</p></aside>
+          </article>
+
+          <article class="day">
+            <div class="day-date">Giorno 8<span>Sab 13 nov</span></div>
+            <div><h3>Dapeng: fortezza, villaggio e spiaggia</h3><p>Partenza presto con Didi o bus per Dapeng Suocheng. Giro nella fortezza, Dongshan Temple e poi Jiaochangwei. Se il meteo è bello e volete più natura, spostatevi verso Yangmeikeng/Luzui; se è nuvoloso, restate tra paese, costa e ristoranti.</p></div>
+            <aside class="day-side"><strong>Per evitare la massa</strong><p>Arrivo prima delle 9:30, pranzo anticipato e rientro prima dell’ora di punta. Non fate tre spiagge nello stesso giorno.</p></aside>
+          </article>
+
+          <article class="day">
+            <div class="day-date">Giorno 9<span>Dom 14 nov</span></div>
+            <div><h3>Shenzhen → Guangzhou: vecchi quartieri e cibo cantonese</h3><p>Alta velocità per Guangzhou South. Base consigliata: Haizhu Square, Beijing Road o Liwan. Pomeriggio lento tra Yongqingfang, Enning Road, Liwan Lake e Shamian. La sera cercate claypot rice, roast goose, wonton noodles o barbecue cantonese.</p></div>
+            <aside class="day-side"><strong>Regola del cibo</strong><p>Per dim sum e colazioni entrate nei locali pieni di persone anziane. Per il resto, una coda di locali vale più di cinquanta liste SEO.</p></aside>
+          </article>
+
+          <article class="day">
+            <div class="day-date">Giorno 10<span>Lun 15 nov</span></div>
+            <div><h3>Foshan o Shunde: scegliete cultura o fame</h3><p><b>Versione Foshan:</b> Zumiao, Lingnan Tiandi, Nanfeng Ancient Kiln e passeggiata sul fiume. <b>Versione Shunde:</b> giornata quasi interamente dedicata a mangiare: double-skin milk, roast goose, fish dishes, beef hotpot e dessert. Rientro a Guangzhou per una passeggiata sul Pearl River.</p></div>
+            <aside class="day-side"><strong>Scelta per voi</strong><p>Foshan al mattino e Shunde nel pomeriggio solo con un Didi/driver; coi mezzi sceglietene una e godetevela.</p></aside>
+          </article>
+
+          <article class="day">
+            <div class="day-date">Giorno 11<span>Mar 16 nov</span></div>
+            <div><h3>Guangzhou → Xingping/Yangshuo</h3><p>Treno da Guangzhou South a Yangshuo Station, che in realtà è più vicina a Xingping. Dormite a Xingping o in campagna, non obbligatoriamente sulla rumorosa West Street. Nel pomeriggio: centro antico, punto della banconota da 20 yuan e sentiero lungo il Li River.</p></div>
+            <aside class="day-side"><strong>Base migliore</strong><p>Xingping per calma e paesaggio; Yulong River per campagna; Yangshuo town solo se nightlife e servizi contano più del silenzio.</p></aside>
+          </article>
+
+          <article class="day">
+            <div class="day-date">Giorno 12<span>Mer 17 nov</span></div>
+            <div><h3>Fiume Yulong senza trasformarlo in Gardaland</h3><p>Raft al mattino presto, poi e-bike o bici su strade laterali. Evitate il tratto più famoso della Ten-Mile Gallery nelle ore centrali, quando traffico turistico e mezzi elettrici rovinano la calma. Fermatevi in un villaggio per pranzo e lasciate il tramonto libero.</p></div>
+            <aside class="day-side"><strong>Extra sensato</strong><p>Cooking class con mercato locale, tai chi o una piccola escursione. Lo show Impression Liu Sanjie è scenico ma turistico: decidete sul momento.</p></aside>
+          </article>
+
+          <article class="day">
+            <div class="day-date">Giorno 13<span>Gio 18 nov</span></div>
+            <div><h3>Ultima natura e rientro a Shenzhen</h3><p>Alba facoltativa a Xianggong Hill oppure camminata lenta attorno a Xingping. Dopo pranzo, treno per Shenzhen. Ultima notte in zona Nanshan/Shekou: lavanderia, riordino bagagli e cena facile.</p></div>
+            <aside class="day-side"><strong>Perché rientrare oggi</strong><p>Lascia il giorno di Macao lineare e protegge il volo del sabato da un trasferimento lungo dalla campagna.</p></aside>
+          </article>
+
+          <article class="day">
+            <div class="day-date">Giorno 14<span>Ven 19 nov</span></div>
+            <div><h3>Shenzhen → Macao → Hong Kong aeroporto</h3><p>Ferry da Shekou a Macao. Fate Senado Square presto, Rua da Felicidade, St. Lazarus e poi Taipa/Coloane per egg tart e quartieri più tranquilli. La sera attraversate il ponte Hong Kong–Zhuhai–Macao e dormite a Tung Chung o vicino all’aeroporto di Hong Kong.</p><ul><li>I casinò si vedono, ma non meritano l’intera giornata.</li><li>Viaggiate con zaino e bagaglio compatto; le valigie enormi qui diventano odio puro.</li></ul></div>
+            <aside class="day-side"><strong>Versione ancora più economica</strong><p>Saltate Macao, restate a Shenzhen e andate a HKG sabato mattina solo se il volo parte dopo le 16:00. La versione con notte a Tung Chung è più sicura.</p></aside>
+          </article>
+
+          <article class="day">
+            <div class="day-date">Giorno 15<span>Sab 20 nov</span></div>
+            <div><h3>Hong Kong → Italia</h3><p>Airport Express o bus da Tung Chung. Arrivate con almeno tre ore di anticipo. Ultimo acquisto solo dopo aver controllato peso e limiti dei bagagli; non trasformate i souvenir in una tariffa extra da 100 euro.</p></div>
+            <aside class="day-side"><strong>Rientro</strong><p>Con i fusi e i voli notturni potreste arrivare in Italia sabato sera o domenica: controllate bene prima di chiedere ferie.</p></aside>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="budget">
+      <div class="shell">
+        <div class="section-head">
+          <div><span class="number">03</span><h2>Budget onesto, non quello che fa clic</h2></div>
+          <p>Il vecchio preventivo da 100–150 € a testa per tutti gli alloggi è raggiungibile solo facendo quasi tutto da una base molto economica a Shenzhen. Per questo percorso, con Hong Kong e due notti nella natura, la cifra credibile è più alta ma resta bassa per quindici giorni.</p>
+        </div>
+
+        <div class="budget-picker" role="group" aria-label="Scenario budget">
+          <button type="button" data-budget="lean">Tirato</button>
+          <button type="button" data-budget="real" class="active">Realistico</button>
+          <button type="button" data-budget="comfort">Comodo</button>
+        </div>
+        <div class="budget-layout">
+          <div class="budget-total">
+            <small>Totale stimato a persona</small>
+            <strong id="budget-total">1.370 €</strong>
+            <p id="budget-description">Volo comprato bene, camere divise in quattro, cibo locale, attività scelte e nessuna follia nei bar.</p>
+          </div>
+          <table class="budget-table">
+            <thead><tr><th>Voce</th><th>Come tenerla bassa</th><th id="budget-mode-label">Realistico</th></tr></thead>
+            <tbody>
+              <tr><td>Volo A/R</td><td>Alert da MXP/VCE, date fisse ma aeroporti flessibili</td><td data-row="flight">680 €</td></tr>
+              <tr><td>Alloggi</td><td>Shenzhen base lunga, Kowloon/Tsuen Wan a Hong Kong</td><td data-row="stay">260 €</td></tr>
+              <tr><td>Treni, ferry, metro, Didi</td><td>Seconda classe, metro in città, Didi diviso 4</td><td data-row="transport">135 €</td></tr>
+              <tr><td>Cibo e bevande</td><td>Locali locali, supermercati, 1–2 serate più costose</td><td data-row="food">220 €</td></tr>
+              <tr><td>Attività</td><td>Molte passeggiate gratuite, pagate solo ciò che vale</td><td data-row="activities">75 €</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="budget-note"><b>Non incluso:</b> shopping a Huaqiangbei, sigarette/alcol, assicurazione, eventuale visto 2027 e bagaglio extra. Tenete 100–150 € separati come cuscinetto, non come soldi da spendere per forza.</p>
+      </div>
+    </section>
+
+    <section id="varianti">
+      <div class="shell">
+        <div class="section-head">
+          <div><span class="number">04</span><h2>Cose da aggiungere senza rovinare il viaggio</h2></div>
+          <p>Queste non sono tappe da accumulare. Sono sostituzioni complete: si inseriscono solo togliendo giorni altrove.</p>
+        </div>
+        <div class="options">
+          <details class="option"><summary>Sanya — mare tropicale vero</summary><div class="option-body"><p><strong>Quando ha senso:</strong> volete tre giorni di spiaggia calda e trovate un volo interno economico. Novembre è generalmente una buona finestra.</p><p><strong>Cosa togliere:</strong> Guangzhou/Foshan e Macao. Aggiungete 180–350 € tra volo, alloggio e attività.</p><p><strong>Verdetto:</strong> bella, ma trasforma il viaggio in città + resort. Non è la prima scelta per voi.</p></div></details>
+          <details class="option"><summary>Shanghai — la megacittà da cartolina</summary><div class="option-body"><p><strong>Quando ha senso:</strong> trovate un open-jaw Milano → Shanghai e Hong Kong → Milano allo stesso prezzo dell’A/R HKG.</p><p><strong>Cosa togliere:</strong> due giorni Shenzhen e Macao, oppure tutto Guangzhou. Meglio volare/entrare da Shanghai e scendere, non fare andata e ritorno.</p><p><strong>Verdetto:</strong> forte, ma rompe la logica compatta del sud.</p></div></details>
+          <details class="option"><summary>Pechino + Muraglia meno piena</summary><div class="option-body"><p><strong>Scelta corretta:</strong> Jinshanling per camminare e paesaggi, oppure Huanghuacheng per lago e sezioni più naturali. Mutianyu resta più gestibile di Badaling e ha anche lo scivolo.</p><p><strong>Cosa togliere:</strong> Guangzhou, Foshan, Macao e almeno un giorno Shenzhen. Serve volo interno o open-jaw.</p><p><strong>Verdetto:</strong> fatelo solo se uno di voi considera la Muraglia obbligatoria.</p></div></details>
+          <details class="option"><summary>Zhangjiajie — natura spettacolare, ma organizzata</summary><div class="option-body"><p><strong>Pro:</strong> montagne enormi, ponti, sentieri e scenari davvero diversi.</p><p><strong>Contro:</strong> trasferimento lungo, biglietti e navette, molte aree affollate e “parco macchina”.</p><p><strong>Verdetto:</strong> più impressionante di Sanya, meno spontanea di Yangshuo. Sostituisce Guangzhou + Macao.</p></div></details>
+          <details class="option"><summary>Kaiping Diaolou — campagna e torri strane</summary><div class="option-body"><p>Gita o notte da Guangzhou tra villaggi e torri fortificate. Più fuori rotta e meno internazionale di molti classici. Ottima alternativa se Foshan vi sembra troppo urbana.</p></div></details>
+          <details class="option"><summary>Zhuhai — città costiera per rallentare</summary><div class="option-body"><p>Una notte tra Shenzhen e Macao per lungomare, parchi e atmosfera più rilassata. Reddit la cita spesso come sorpresa positiva. Ha senso solo togliendo una notte a Shenzhen.</p></div></details>
+        </div>
+      </div>
+    </section>
+
+    <section id="pratica">
+      <div class="shell">
+        <div class="section-head">
+          <div><span class="number">05</span><h2>Telefono, soldi e trasporti</h2></div>
+          <p>La Cina non è difficile perché mancano i servizi. È difficile se arrivate senza aver preparato le app da cui passano pagamenti, taxi, treni e indirizzi.</p>
+        </div>
+        <div class="app-grid">
+          <article class="app"><div class="app-name"><span class="app-icon">支</span><h3>Alipay</h3></div><p>Prima scelta per pagare, metro e mini-program DiDi. Registrate il numero italiano, verificate il passaporto e collegate almeno due carte prima di partire.</p><span class="priority">Obbligatoria</span></article>
+          <article class="app"><div class="app-name"><span class="app-icon">微</span><h3>WeChat + WeChat Pay</h3></div><p>Backup pagamenti e strumento con cui ristoranti, hotel e persone possono contattarvi. Non contate sui trasferimenti tra privati con carta estera.</p><span class="priority">Obbligatoria</span></article>
+          <article class="app"><div class="app-name"><span class="app-icon">高</span><h3>Amap / Gaode</h3></div><p>Mappe, metro, percorsi e taxi nel mainland. Google Maps è incompleto e spesso fuori posizione. Salvate i nomi in caratteri cinesi.</p><span class="priority">Obbligatoria Android</span></article>
+          <article class="app"><div class="app-name"><span class="app-icon">滴</span><h3>DiDi</h3></div><p>Usatelo dentro Alipay in inglese. Il punto delicato non è pagare, ma scegliere bene il pickup e non dover spiegare al telefono dove siete.</p><span class="priority">Molto utile</span></article>
+          <article class="app"><div class="app-name"><span class="app-icon">铁</span><h3>Railway 12306 / Trip.com</h3></div><p>12306 è ufficiale e accetta passaporti; Trip.com è più semplice e applica commissioni. Fate la verifica documento prima dell’apertura delle vendite.</p><span class="priority">Treni</span></article>
+          <article class="app"><div class="app-name"><span class="app-icon">译</span><h3>Pleco + traduttore</h3></div><p>Pleco funziona bene come dizionario offline. Tenete anche Google Translate offline tramite eSIM/roaming e screenshot delle richieste più importanti.</p><span class="priority">Lingua</span></article>
+          <article class="app"><div class="app-name"><span class="app-icon">网</span><h3>eSIM regionale HK/Cina/Macao</h3></div><p>Una eSIM che instrada il traffico fuori dal mainland mantiene spesso accessibili i servizi occidentali senza configurazioni aggiuntive. Verificate copertura, tethering e politica del provider.</p><span class="priority">Internet</span></article>
+          <article class="app"><div class="app-name"><span class="app-icon">港</span><h3>Octopus</h3></div><p>A Hong Kong è il modo più comodo per MTR, bus, convenience store e piccoli acquisti. Carta fisica oppure versione mobile se il telefono è compatibile.</p><span class="priority">Hong Kong</span></article>
+          <article class="app"><div class="app-name"><span class="app-icon">备</span><h3>Backup reale</h3></div><p>Due carte di circuiti diversi, 500–800 RMB in contanti per il gruppo, power bank, indirizzi offline e una persona con roaming del numero italiano attivo.</p><span class="priority">Non negoziabile</span></article>
+        </div>
+      </div>
+    </section>
+
+    <section id="checklist">
+      <div class="shell">
+        <div class="section-head">
+          <div><span class="number">06</span><h2>Checklist che si salva da sola</h2></div>
+          <p>Spuntate sul telefono. Il progresso resta nel browser di quel dispositivo.</p>
+        </div>
+        <div class="checklist-wrap">
+          <aside class="progress-card"><small>Preparazione completata</small><strong id="progress-label">0%</strong><div class="progress-track"><div class="progress-bar" id="progress-bar"></div></div><p>La checklist non sostituisce il controllo finale delle regole 2027.</p></aside>
+          <div class="check-groups">
+            <div class="check-group"><h3>Documenti e prenotazioni</h3>
+              <label class="check-item"><input type="checkbox" data-check="passport"><span>Passaporto valido e con margine sufficiente oltre il viaggio.</span></label>
+              <label class="check-item"><input type="checkbox" data-check="visa"><span>Verifica ufficiale del visto/esenzione per novembre 2027.</span></label>
+              <label class="check-item"><input type="checkbox" data-check="insurance"><span>Assicurazione medica con rimpatrio e massimali leggibili.</span></label>
+              <label class="check-item"><input type="checkbox" data-check="flight"><span>Volo prenotato con orari compatibili col finale Macao/HKG.</span></label>
+              <label class="check-item"><input type="checkbox" data-check="hotels"><span>Alloggi che dichiarano di accettare ospiti stranieri e registrano il passaporto.</span></label>
+            </div>
+            <div class="check-group"><h3>Telefono e pagamenti</h3>
+              <label class="check-item"><input type="checkbox" data-check="alipay"><span>Alipay verificato con passaporto e due carte testate.</span></label>
+              <label class="check-item"><input type="checkbox" data-check="wechat"><span>WeChat attivo e WeChat Pay configurato come backup.</span></label>
+              <label class="check-item"><input type="checkbox" data-check="esim"><span>eSIM HK/Cina/Macao installata ma non attivata prima del viaggio.</span></label>
+              <label class="check-item"><input type="checkbox" data-check="maps"><span>Amap, Pleco, Trip.com e 12306 installate; indirizzi salvati in cinese.</span></label>
+              <label class="check-item"><input type="checkbox" data-check="cards"><span>Due carte fisiche, PIN ricordati e banca avvisata del viaggio.</span></label>
+            </div>
+            <div class="check-group"><h3>Oggetti</h3>
+              <label class="check-item"><input type="checkbox" data-check="adapter"><span>Adattatore universale compatto e multipresa USB-C.</span></label>
+              <label class="check-item"><input type="checkbox" data-check="powerbank"><span>Power bank sotto 100 Wh, etichetta leggibile; se prevedete voli interni, controllare marchio CCC/3C.</span></label>
+              <label class="check-item"><input type="checkbox" data-check="bag"><span>Zaino o trolley piccolo: Macao e i treni diventano molto più semplici.</span></label>
+              <label class="check-item"><input type="checkbox" data-check="weather"><span>Giacca leggera, strato caldo, scarpe da cammino e protezione pioggia.</span></label>
+              <label class="check-item"><input type="checkbox" data-check="meds"><span>Farmaci personali, ricetta se necessaria, cerotti vesciche e sali reidratanti.</span></label>
+            </div>
+            <div class="check-group"><h3>Ultime 48 ore</h3>
+              <label class="check-item"><input type="checkbox" data-check="screens"><span>Screenshot voli, hotel, indirizzi, biglietti e contatti in cinese.</span></label>
+              <label class="check-item"><input type="checkbox" data-check="dovesiamo"><span>Registrazione su DoveSiamoNelMondo e contatti consolari salvati.</span></label>
+              <label class="check-item"><input type="checkbox" data-check="cash"><span>Piccolo fondo cash separato e diviso tra due persone.</span></label>
+              <label class="check-item"><input type="checkbox" data-check="offline"><span>Mappe/lingue offline e copia documenti disponibile senza internet.</span></label>
+              <label class="check-item"><input type="checkbox" data-check="train"><span>Verifica aperture vendite dei treni e nomi passeggeri identici al passaporto.</span></label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="posti">
+      <div class="shell">
+        <div class="section-head">
+          <div><span class="number">07</span><h2>Punti salvabili sulle mappe</h2></div>
+          <p>Nel mainland aprite prima Amap. Google Maps resta utile per orientarsi prima del viaggio e per Hong Kong/Macao, ma in Cina continentale può essere impreciso. Il pulsante “Copia nome” serve per incollare il posto in Amap, DiDi o Alipay.</p>
+        </div>
+        <div class="places">
+          <article class="place" data-name="深水埗 鸭寮街"><span class="city">Hong Kong</span><h3>Sham Shui Po / Apliu Street</h3><p>Elettronica vecchia e nuova, mercati, piccoli ristoranti e quartiere vissuto.</p><div class="place-links"><a href="https://www.google.com/maps/search/?api=1&query=Sham+Shui+Po+Apliu+Street" target="_blank">Google</a><button class="copy-btn">Copia nome</button></div></article>
+          <article class="place" data-name="龙脊径 Dragon's Back"><span class="city">Hong Kong</span><h3>Dragon’s Back</h3><p>Sentiero accessibile con cresta e mare; finisce bene verso Big Wave Bay.</p><div class="place-links"><a href="https://www.google.com/maps/search/?api=1&query=Dragon%27s+Back+Hong+Kong" target="_blank">Google</a><button class="copy-btn">Copia nome</button></div></article>
+          <article class="place" data-name="南丫岛 Lamma Island"><span class="city">Hong Kong</span><h3>Lamma Island</h3><p>Villaggi, sentiero costiero e pranzo lento lontano dalle torri.</p><div class="place-links"><a href="https://www.google.com/maps/search/?api=1&query=Lamma+Island+Hong+Kong" target="_blank">Google</a><button class="copy-btn">Copia nome</button></div></article>
+
+          <article class="place" data-name="华强北"><span class="city">Shenzhen</span><h3>Huaqiangbei 华强北</h3><p>Il distretto tech. Partite dalla metro Huaqiang North e salite ai piani meno visibili.</p><div class="place-links"><a href="https://www.amap.com/search?query=%E5%8D%8E%E5%BC%BA%E5%8C%97" target="_blank">Amap</a><a href="https://www.google.com/maps/search/?api=1&query=Huaqiangbei+Shenzhen" target="_blank">Google</a><button class="copy-btn">Copia nome</button></div></article>
+          <article class="place" data-name="南头古城"><span class="city">Shenzhen</span><h3>Nantou Ancient City 南头古城</h3><p>Vecchio nucleo recuperato, caffè, botteghe e passaggi stretti nel mezzo della città nuova.</p><div class="place-links"><a href="https://www.amap.com/search?query=%E5%8D%97%E5%A4%B4%E5%8F%A4%E5%9F%8E" target="_blank">Amap</a><button class="copy-btn">Copia nome</button></div></article>
+          <article class="place" data-name="大鹏所城"><span class="city">Shenzhen / Dapeng</span><h3>Dapeng Fortress 大鹏所城</h3><p>Fortezza, paese e punto di partenza giusto per la costa.</p><div class="place-links"><a href="https://www.amap.com/search?query=%E5%A4%A7%E9%B9%8F%E6%89%80%E5%9F%8E" target="_blank">Amap</a><button class="copy-btn">Copia nome</button></div></article>
+          <article class="place" data-name="较场尾"><span class="city">Dapeng</span><h3>Jiaochangwei 较场尾</h3><p>Piccolo lungomare con guesthouse e ristoranti; meglio presto e fuori dai picchi.</p><div class="place-links"><a href="https://www.amap.com/search?query=%E8%BE%83%E5%9C%BA%E5%B0%BE" target="_blank">Amap</a><button class="copy-btn">Copia nome</button></div></article>
+
+          <article class="place" data-name="永庆坊"><span class="city">Guangzhou</span><h3>Yongqingfang 永庆坊</h3><p>Base per Enning Road, Xiguan e una passeggiata nella Guangzhou più vecchia.</p><div class="place-links"><a href="https://www.amap.com/search?query=%E6%B0%B8%E5%BA%86%E5%9D%8A" target="_blank">Amap</a><button class="copy-btn">Copia nome</button></div></article>
+          <article class="place" data-name="沙面岛"><span class="city">Guangzhou</span><h3>Shamian Island 沙面岛</h3><p>Isola pedonale, edifici storici e passeggiata semplice lungo il fiume.</p><div class="place-links"><a href="https://www.amap.com/search?query=%E6%B2%99%E9%9D%A2%E5%B2%9B" target="_blank">Amap</a><button class="copy-btn">Copia nome</button></div></article>
+          <article class="place" data-name="佛山祖庙"><span class="city">Foshan</span><h3>Foshan Ancestral Temple 佛山祖庙</h3><p>Architettura Lingnan, arti marziali e quartiere comodo da esplorare a piedi.</p><div class="place-links"><a href="https://www.amap.com/search?query=%E4%BD%9B%E5%B1%B1%E7%A5%96%E5%BA%99" target="_blank">Amap</a><button class="copy-btn">Copia nome</button></div></article>
+
+          <article class="place" data-name="兴坪古镇"><span class="city">Guangxi</span><h3>Xingping Ancient Town 兴坪古镇</h3><p>Base più calma vicino alla stazione e al paesaggio della banconota da 20 yuan.</p><div class="place-links"><a href="https://www.amap.com/search?query=%E5%85%B4%E5%9D%AA%E5%8F%A4%E9%95%87" target="_blank">Amap</a><button class="copy-btn">Copia nome</button></div></article>
+          <article class="place" data-name="遇龙河"><span class="city">Yangshuo</span><h3>Yulong River 遇龙河</h3><p>Raft, e-bike e campagne. Partite presto e uscite dai percorsi più trafficati.</p><div class="place-links"><a href="https://www.amap.com/search?query=%E9%81%87%E9%BE%99%E6%B2%B3" target="_blank">Amap</a><button class="copy-btn">Copia nome</button></div></article>
+          <article class="place" data-name="相公山"><span class="city">Yangshuo</span><h3>Xianggong Hill 相公山</h3><p>Belvedere rapido ma ripido; andate all’alba solo con meteo decente.</p><div class="place-links"><a href="https://www.amap.com/search?query=%E7%9B%B8%E5%85%AC%E5%B1%B1" target="_blank">Amap</a><button class="copy-btn">Copia nome</button></div></article>
+
+          <article class="place" data-name="澳门福隆新街"><span class="city">Macao</span><h3>Rua da Felicidade 福隆新街</h3><p>Strada storica rossa e bianca, migliore al mattino prima dei gruppi.</p><div class="place-links"><a href="https://www.google.com/maps/search/?api=1&query=Rua+da+Felicidade+Macau" target="_blank">Google</a><button class="copy-btn">Copia nome</button></div></article>
+          <article class="place" data-name="路环市区 Coloane Village"><span class="city">Macao</span><h3>Coloane Village 路环</h3><p>Lungomare, strade tranquille e Lord Stow’s per l’egg tart.</p><div class="place-links"><a href="https://www.google.com/maps/search/?api=1&query=Coloane+Village+Macau" target="_blank">Google</a><button class="copy-btn">Copia nome</button></div></article>
+        </div>
+      </div>
+    </section>
+
+    <section id="cibo">
+      <div class="shell">
+        <div class="section-head">
+          <div><span class="number">08</span><h2>Mangiare, bere e fare la spesa</h2></div>
+          <p>La parte più vostra del viaggio non sarà il ristorante famoso. Sarà entrare in un Hema, Lawson o 7-Eleven e comprare quattro cose incomprensibili da dividere.</p>
+        </div>
+        <div class="food-layout">
+          <article class="food-card"><h3>Cose da cercare</h3><ul><li>Dim sum mattutino, char siu, roast goose e wonton noodles a Guangzhou/Foshan.</li><li>Claypot rice, beef hotpot e double-skin milk.</li><li>Guilin rice noodles nei locali semplici; il beer fish turistico solo se vi incuriosisce davvero.</li><li>Cha chaan teng, pineapple bun, milk tea ed egg tart a Hong Kong/Macao.</li><li>Barbecue cinese, spiedini e hotpot per la serata di gruppo.</li></ul></article>
+          <article class="food-card"><h3>Supermercati e convenience store</h3><ul><li><b>Hema / Freshippo 盒马:</b> supermercato tecnologico con cibo pronto e prodotti strani.</li><li><b>Ole’, Sam’s, Walmart:</b> grandi giri esplorativi; Sam’s può richiedere tessera.</li><li><b>7-Eleven, Lawson, FamilyMart:</b> colazioni, bevande e snack regionali.</li><li><b>Mercati locali:</b> guardate, chiedete prima di fotografare e non comprate alimenti non importabili in UE.</li></ul></article>
+          <article class="food-card"><h3>Per chi non ama le verdure</h3><ul><li>不要蔬菜 — “niente verdure”. Non garantisce che il cuoco interpreti il piatto come immaginate.</li><li>不要香菜 — “niente coriandolo”. Questa è molto più precisa.</li><li>Scegliete roast meat, noodles, dumpling, barbecue e rice bowls; tenete comunque una foto del piatto.</li></ul></article>
+          <article class="food-card"><h3>Birra e bar</h3><ul><li>Tsingtao è ovunque; provate anche Harbin, Snow e birre craft locali.</li><li>A Shenzhen cercate taproom in Futian, Shuiwei o OCT Loft.</li><li>Ganbei significa “bicchiere secco”: non ditelo a ogni brindisi se non volete bere tutto.</li><li>A Hong Kong cocktail e craft beer costano molto più che nel mainland.</li></ul></article>
+        </div>
+      </div>
+    </section>
+
+    <section id="acquisti">
+      <div class="shell">
+        <div class="section-head">
+          <div><span class="number">09</span><h2>Cosa comprare e cosa lasciare lì</h2></div>
+          <p>Il viaggio può diventare una fiera dell’acquisto inutile. Meglio entrare con una lista corta e uno spazio vuoto preciso nel bagaglio.</p>
+        </div>
+        <div class="buy-grid">
+          <article class="buy-card"><h3>Da comprare prima</h3><ul><li>Adattatore universale con USB-C.</li><li>Power bank affidabile sotto 100 Wh.</li><li>eSIM regionale e assicurazione.</li><li>Borsa piccola frontale e organizer cavi.</li><li>Seconda carta e una carta prepagata separata.</li></ul></article>
+          <article class="buy-card"><h3>Acquisti sensati in Cina</h3><ul><li>Accessori tech testabili: cavi, stand, luci, tastiere, componenti piccoli.</li><li>Tè locale, soprattutto oolong e osmanthus, da negozi con confezione chiusa.</li><li>White Rabbit, snack regionali, bibite e salse ammesse in valigia.</li><li>Stationery, sigilli col nome, bacchette, tazze e piccoli oggetti guochao.</li><li>Vestiti locali solo dopo aver provato: le taglie cambiano parecchio.</li></ul></article>
+          <article class="buy-card"><h3>Da evitare</h3><ul><li>SSD, schede SD e power bank senza marchio e test: i falsi sono facili.</li><li>Smartphone mainland se non avete verificato bande, ROM, garanzia e servizi Google.</li><li>Repliche di marchi: dogana e qualità possono trasformare il risparmio in sequestro.</li><li>Carne, semi, piante e prodotti animali non verificati per l’ingresso UE.</li><li>Oggetti con batterie nel bagaglio da stiva.</li></ul></article>
+        </div>
+      </div>
+    </section>
+
+    <section id="frasi">
+      <div class="shell">
+        <div class="section-head">
+          <div><span class="number">10</span><h2>Parole da sapere, incluse quelle stupide</h2></div>
+          <p>Premete “Ascolta”: il browser prova una voce cinese installata. Se non esiste, resta il collegamento a Google Translate. Il mandarino basta nel mainland; in fondo ci sono alcune frasi cantonese per Hong Kong e Macao.</p>
+        </div>
+        <div class="phrase-toolbar"><input id="phrase-search" type="search" placeholder="Cerca: birra, bagno, prezzo, divertente…" aria-label="Cerca nel frasario"><span id="phrase-count"></span></div>
+        <div class="phrase-table-wrap">
+          <table class="phrase-table">
+            <thead><tr><th>Italiano</th><th>Cinese</th><th>Pronuncia</th><th>Nota</th><th>Audio</th></tr></thead>
+            <tbody id="phrase-body">
+              <tr data-search="ciao salve"><td>Ciao</td><td class="phrase-cn">你好</td><td>nǐ hǎo</td><td>Va bene quasi sempre.</td><td class="phrase-actions"><button class="speak-btn" data-text="你好" data-lang="zh-CN">▶ Ascolta</button><a class="translate-link" data-translate="你好" target="_blank">Translate</a></td></tr>
+              <tr data-search="grazie"><td>Grazie</td><td class="phrase-cn">谢谢</td><td>xièxie</td><td>Suona circa “siesie”.</td><td class="phrase-actions"><button class="speak-btn" data-text="谢谢" data-lang="zh-CN">▶ Ascolta</button><a class="translate-link" data-translate="谢谢" target="_blank">Translate</a></td></tr>
+              <tr data-search="scusa permesso"><td>Scusa / permesso</td><td class="phrase-cn">不好意思</td><td>bù hǎoyìsi</td><td>Utilissima tra folla e piccoli errori.</td><td class="phrase-actions"><button class="speak-btn" data-text="不好意思" data-lang="zh-CN">▶ Ascolta</button><a class="translate-link" data-translate="不好意思" target="_blank">Translate</a></td></tr>
+              <tr data-search="questo quello indicare"><td>Questo</td><td class="phrase-cn">这个</td><td>zhège</td><td>Indicate col dito senza fare un discorso.</td><td class="phrase-actions"><button class="speak-btn" data-text="这个" data-lang="zh-CN">▶ Ascolta</button><a class="translate-link" data-translate="这个" target="_blank">Translate</a></td></tr>
+              <tr data-search="quanto costa prezzo"><td>Quanto costa?</td><td class="phrase-cn">多少钱？</td><td>duōshao qián?</td><td>Guardate poi la cifra sul telefono.</td><td class="phrase-actions"><button class="speak-btn" data-text="多少钱？" data-lang="zh-CN">▶ Ascolta</button><a class="translate-link" data-translate="多少钱？" target="_blank">Translate</a></td></tr>
+              <tr data-search="caro prezzo contrattare"><td>È troppo caro</td><td class="phrase-cn">太贵了</td><td>tài guì le</td><td>Non usatela nei negozi a prezzo fisso.</td><td class="phrase-actions"><button class="speak-btn" data-text="太贵了" data-lang="zh-CN">▶ Ascolta</button><a class="translate-link" data-translate="太贵了" target="_blank">Translate</a></td></tr>
+              <tr data-search="sconto economico contrattare"><td>Un po’ meno?</td><td class="phrase-cn">便宜一点，可以吗？</td><td>piányi yìdiǎn, kěyǐ ma?</td><td>Contrattazione tranquilla.</td><td class="phrase-actions"><button class="speak-btn" data-text="便宜一点，可以吗？" data-lang="zh-CN">▶ Ascolta</button><a class="translate-link" data-translate="便宜一点，可以吗？" target="_blank">Translate</a></td></tr>
+              <tr data-search="quattro persone tavolo"><td>Siamo in quattro</td><td class="phrase-cn">我们四个人</td><td>wǒmen sì ge rén</td><td>Per ristorante, taxi e biglietti.</td><td class="phrase-actions"><button class="speak-btn" data-text="我们四个人" data-lang="zh-CN">▶ Ascolta</button><a class="translate-link" data-translate="我们四个人" target="_blank">Translate</a></td></tr>
+              <tr data-search="birra"><td>Birra</td><td class="phrase-cn">啤酒</td><td>píjiǔ</td><td>La parola fondamentale richiesta.</td><td class="phrase-actions"><button class="speak-btn" data-text="啤酒" data-lang="zh-CN">▶ Ascolta</button><a class="translate-link" data-translate="啤酒" target="_blank">Translate</a></td></tr>
+              <tr data-search="quattro birre bottiglie"><td>Quattro bottiglie di birra</td><td class="phrase-cn">四瓶啤酒</td><td>sì píng píjiǔ</td><td>“Píng” è il classificatore per bottiglie.</td><td class="phrase-actions"><button class="speak-btn" data-text="四瓶啤酒" data-lang="zh-CN">▶ Ascolta</button><a class="translate-link" data-translate="四瓶啤酒" target="_blank">Translate</a></td></tr>
+              <tr data-search="brindisi salute bere"><td>Cin cin</td><td class="phrase-cn">干杯</td><td>gānbēi</td><td>Letteralmente “svuota il bicchiere”: attenzione.</td><td class="phrase-actions"><button class="speak-btn" data-text="干杯" data-lang="zh-CN">▶ Ascolta</button><a class="translate-link" data-translate="干杯" target="_blank">Translate</a></td></tr>
+              <tr data-search="menu cibo"><td>Menu</td><td class="phrase-cn">菜单</td><td>càidān</td><td>“Yǒu túpiàn ma?” chiede se ci sono foto.</td><td class="phrase-actions"><button class="speak-btn" data-text="菜单" data-lang="zh-CN">▶ Ascolta</button><a class="translate-link" data-translate="菜单" target="_blank">Translate</a></td></tr>
+              <tr data-search="buono gustoso cibo"><td>È buonissimo</td><td class="phrase-cn">太好吃了</td><td>tài hǎochī le</td><td>Fa sempre piacere al ristoratore.</td><td class="phrase-actions"><button class="speak-btn" data-text="太好吃了" data-lang="zh-CN">▶ Ascolta</button><a class="translate-link" data-translate="太好吃了" target="_blank">Translate</a></td></tr>
+              <tr data-search="non piccante cibo"><td>Non piccante</td><td class="phrase-cn">不要辣</td><td>bú yào là</td><td>Nel Guangdong è facile; altrove ripetetelo.</td><td class="phrase-actions"><button class="speak-btn" data-text="不要辣" data-lang="zh-CN">▶ Ascolta</button><a class="translate-link" data-translate="不要辣" target="_blank">Translate</a></td></tr>
+              <tr data-search="poco piccante"><td>Solo poco piccante</td><td class="phrase-cn">一点点辣</td><td>yìdiǎndiǎn là</td><td>Il loro “poco” può restare aggressivo.</td><td class="phrase-actions"><button class="speak-btn" data-text="一点点辣" data-lang="zh-CN">▶ Ascolta</button><a class="translate-link" data-translate="一点点辣" target="_blank">Translate</a></td></tr>
+              <tr data-search="verdure no"><td>Niente verdure</td><td class="phrase-cn">不要蔬菜</td><td>bú yào shūcài</td><td>Meglio mostrare anche la frase scritta.</td><td class="phrase-actions"><button class="speak-btn" data-text="不要蔬菜" data-lang="zh-CN">▶ Ascolta</button><a class="translate-link" data-translate="不要蔬菜" target="_blank">Translate</a></td></tr>
+              <tr data-search="coriandolo no"><td>Niente coriandolo</td><td class="phrase-cn">不要香菜</td><td>bú yào xiāngcài</td><td>Molto più precisa di “niente verdure”.</td><td class="phrase-actions"><button class="speak-btn" data-text="不要香菜" data-lang="zh-CN">▶ Ascolta</button><a class="translate-link" data-translate="不要香菜" target="_blank">Translate</a></td></tr>
+              <tr data-search="acqua"><td>Acqua</td><td class="phrase-cn">水</td><td>shuǐ</td><td>“Bīng shuǐ” è acqua fredda.</td><td class="phrase-actions"><button class="speak-btn" data-text="水" data-lang="zh-CN">▶ Ascolta</button><a class="translate-link" data-translate="水" target="_blank">Translate</a></td></tr>
+              <tr data-search="conto pagare ristorante"><td>Il conto, grazie</td><td class="phrase-cn">买单，谢谢</td><td>mǎidān, xièxie</td><td>Spesso si paga scansionando al tavolo.</td><td class="phrase-actions"><button class="speak-btn" data-text="买单，谢谢" data-lang="zh-CN">▶ Ascolta</button><a class="translate-link" data-translate="买单，谢谢" target="_blank">Translate</a></td></tr>
+              <tr data-search="asporto portare via cibo"><td>Da portare via</td><td class="phrase-cn">打包</td><td>dǎbāo</td><td>Per gli avanzi o take-away.</td><td class="phrase-actions"><button class="speak-btn" data-text="打包" data-lang="zh-CN">▶ Ascolta</button><a class="translate-link" data-translate="打包" target="_blank">Translate</a></td></tr>
+              <tr data-search="bagno toilette"><td>Dov’è il bagno?</td><td class="phrase-cn">洗手间在哪里？</td><td>xǐshǒujiān zài nǎlǐ?</td><td>厕所 è più diretto; questa è più educata.</td><td class="phrase-actions"><button class="speak-btn" data-text="洗手间在哪里？" data-lang="zh-CN">▶ Ascolta</button><a class="translate-link" data-translate="洗手间在哪里？" target="_blank">Translate</a></td></tr>
+              <tr data-search="stazione treno alta velocità"><td>Stazione dell’alta velocità</td><td class="phrase-cn">高铁站</td><td>gāotiě zhàn</td><td>Mostrate sempre la stazione esatta: le città ne hanno molte.</td><td class="phrase-actions"><button class="speak-btn" data-text="高铁站" data-lang="zh-CN">▶ Ascolta</button><a class="translate-link" data-translate="高铁站" target="_blank">Translate</a></td></tr>
+              <tr data-search="metro"><td>Metropolitana</td><td class="phrase-cn">地铁</td><td>dìtiě</td><td>Segnaletica spesso bilingue.</td><td class="phrase-actions"><button class="speak-btn" data-text="地铁" data-lang="zh-CN">▶ Ascolta</button><a class="translate-link" data-translate="地铁" target="_blank">Translate</a></td></tr>
+              <tr data-search="hotel albergo"><td>Hotel</td><td class="phrase-cn">酒店</td><td>jiǔdiàn</td><td>Tenete l’indirizzo completo in cinese.</td><td class="phrase-actions"><button class="speak-btn" data-text="酒店" data-lang="zh-CN">▶ Ascolta</button><a class="translate-link" data-translate="酒店" target="_blank">Translate</a></td></tr>
+              <tr data-search="supermercato"><td>Supermercato</td><td class="phrase-cn">超市</td><td>chāoshì</td><td>Una delle attività ufficiali del viaggio.</td><td class="phrase-actions"><button class="speak-btn" data-text="超市" data-lang="zh-CN">▶ Ascolta</button><a class="translate-link" data-translate="超市" target="_blank">Translate</a></td></tr>
+              <tr data-search="minimarket convenience store"><td>Convenience store</td><td class="phrase-cn">便利店</td><td>biànlìdiàn</td><td>Lawson, 7-Eleven, FamilyMart.</td><td class="phrase-actions"><button class="speak-btn" data-text="便利店" data-lang="zh-CN">▶ Ascolta</button><a class="translate-link" data-translate="便利店" target="_blank">Translate</a></td></tr>
+              <tr data-search="foto permesso"><td>Possiamo fare una foto?</td><td class="phrase-cn">可以拍照吗？</td><td>kěyǐ pāizhào ma?</td><td>Per persone, negozi e laboratori.</td><td class="phrase-actions"><button class="speak-btn" data-text="可以拍照吗？" data-lang="zh-CN">▶ Ascolta</button><a class="translate-link" data-translate="可以拍照吗？" target="_blank">Translate</a></td></tr>
+              <tr data-search="indirizzo taxi portaci"><td>Ci porti a questo indirizzo</td><td class="phrase-cn">请带我们去这个地址</td><td>qǐng dài wǒmen qù zhège dìzhǐ</td><td>Mostrate poi il testo o la mappa.</td><td class="phrase-actions"><button class="speak-btn" data-text="请带我们去这个地址" data-lang="zh-CN">▶ Ascolta</button><a class="translate-link" data-translate="请带我们去这个地址" target="_blank">Translate</a></td></tr>
+              <tr data-search="persi smarriti"><td>Ci siamo persi</td><td class="phrase-cn">我们迷路了</td><td>wǒmen mílù le</td><td>Non drammatica, ma chiarissima.</td><td class="phrase-actions"><button class="speak-btn" data-text="我们迷路了" data-lang="zh-CN">▶ Ascolta</button><a class="translate-link" data-translate="我们迷路了" target="_blank">Translate</a></td></tr>
+              <tr data-search="no problem tranquillo"><td>Nessun problema</td><td class="phrase-cn">没问题</td><td>méi wèntí</td><td>Risposta universale.</td><td class="phrase-actions"><button class="speak-btn" data-text="没问题" data-lang="zh-CN">▶ Ascolta</button><a class="translate-link" data-translate="没问题" target="_blank">Translate</a></td></tr>
+              <tr data-search="andiamo divertente"><td>Andiamo!</td><td class="phrase-cn">走吧！</td><td>zǒu ba!</td><td>Perfetta per smuovere il gruppo.</td><td class="phrase-actions"><button class="speak-btn" data-text="走吧！" data-lang="zh-CN">▶ Ascolta</button><a class="translate-link" data-translate="走吧！" target="_blank">Translate</a></td></tr>
+              <tr data-search="forza incoraggiamento divertente"><td>Forza!</td><td class="phrase-cn">加油！</td><td>jiāyóu!</td><td>Letteralmente “aggiungi benzina”. Si usa per incoraggiare.</td><td class="phrase-actions"><button class="speak-btn" data-text="加油！" data-lang="zh-CN">▶ Ascolta</button><a class="translate-link" data-translate="加油！" target="_blank">Translate</a></td></tr>
+              <tr data-search="assurdo figo wow divertente"><td>È assurdo / fortissimo</td><td class="phrase-cn">太牛了！</td><td>tài niú le!</td><td>Slang sicuro per dire che qualcosa spacca.</td><td class="phrase-actions"><button class="speak-btn" data-text="太牛了！" data-lang="zh-CN">▶ Ascolta</button><a class="translate-link" data-translate="太牛了！" target="_blank">Translate</a></td></tr>
+              <tr data-search="davvero sul serio divertente"><td>Davvero?</td><td class="phrase-cn">真的假的？</td><td>zhēn de jiǎ de?</td><td>Letteralmente “vero o falso?”.</td><td class="phrase-actions"><button class="speak-btn" data-text="真的假的？" data-lang="zh-CN">▶ Ascolta</button><a class="translate-link" data-translate="真的假的？" target="_blank">Translate</a></td></tr>
+              <tr data-search="no dai impossibile divertente"><td>Ma dai / non ci credo</td><td class="phrase-cn">不是吧？</td><td>bú shì ba?</td><td>Reazione comune e facile.</td><td class="phrase-actions"><button class="speak-btn" data-text="不是吧？" data-lang="zh-CN">▶ Ascolta</button><a class="translate-link" data-translate="不是吧？" target="_blank">Translate</a></td></tr>
+              <tr data-search="capo negoziante boss divertente"><td>Capo / proprietario</td><td class="phrase-cn">老板</td><td>lǎobǎn</td><td>Modo amichevole per chiamare chi gestisce un negozio.</td><td class="phrase-actions"><button class="speak-btn" data-text="老板" data-lang="zh-CN">▶ Ascolta</button><a class="translate-link" data-translate="老板" target="_blank">Translate</a></td></tr>
+              <tr data-search="bello ragazzo divertente"><td>Bel ragazzo</td><td class="phrase-cn">帅哥</td><td>shuàigē</td><td>Può essere usato dai venditori per chiamarvi. Non montatevi.</td><td class="phrase-actions"><button class="speak-btn" data-text="帅哥" data-lang="zh-CN">▶ Ascolta</button><a class="translate-link" data-translate="帅哥" target="_blank">Translate</a></td></tr>
+              <tr data-search="hong kong cantonese grazie favore"><td>Grazie / per favore (HK)</td><td class="phrase-cn">唔該</td><td>m̀h gōi</td><td>Cantonese: servizio, favore, permesso.</td><td class="phrase-actions"><button class="speak-btn" data-text="唔該" data-lang="zh-HK">▶ Ascolta</button><a class="translate-link" data-translate="唔該" target="_blank">Translate</a></td></tr>
+              <tr data-search="hong kong cantonese grazie regalo"><td>Grazie davvero (HK)</td><td class="phrase-cn">多謝</td><td>dō ze</td><td>Cantonese: regalo o favore importante.</td><td class="phrase-actions"><button class="speak-btn" data-text="多謝" data-lang="zh-HK">▶ Ascolta</button><a class="translate-link" data-translate="多謝" target="_blank">Translate</a></td></tr>
+              <tr data-search="hong kong cantonese buono cibo"><td>Buono! (HK)</td><td class="phrase-cn">好食</td><td>hou sik</td><td>Per il cibo in cantonese.</td><td class="phrase-actions"><button class="speak-btn" data-text="好食" data-lang="zh-HK">▶ Ascolta</button><a class="translate-link" data-translate="好食" target="_blank">Translate</a></td></tr>
+              <tr data-search="hong kong cantonese conto"><td>Il conto (HK)</td><td class="phrase-cn">埋單</td><td>maai daan</td><td>La forma cantonese classica.</td><td class="phrase-actions"><button class="speak-btn" data-text="埋單" data-lang="zh-HK">▶ Ascolta</button><a class="translate-link" data-translate="埋單" target="_blank">Translate</a></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section id="fonti">
+      <div class="shell">
+        <div class="section-head">
+          <div><span class="number">11</span><h2>Da dove viene il piano</h2></div>
+          <p>Ultima verifica: 23 luglio 2026. Le fonti ufficiali decidono documenti e regole; Reddit serve per capire dove i piani teorici diventano scomodi; gli operatori servono per confrontare ritmo e struttura.</p>
+        </div>
+        <div class="source-grid">
+          <article class="source-card"><h3>Fonti ufficiali</h3><ul>
+            <li><a href="https://it.china-embassy.gov.cn/ita/lqgz/AVVISI_01/202512/t20251222_11780590.htm" target="_blank" rel="noreferrer">Ambasciata cinese: esenzione visto fino al 31/12/2026</a></li>
+            <li><a href="https://conshongkong.esteri.it/en/servizi-consolari-e-visti/servizi-per-il-cittadino-italiano/domande-frequenti/" target="_blank" rel="noreferrer">Consolato italiano HK: ingresso Hong Kong, Macao e mainland</a></li>
+            <li><a href="https://www.12306.cn/en/" target="_blank" rel="noreferrer">China Railway 12306 ufficiale</a></li>
+            <li><a href="https://english.www.gov.cn/2025special/bizexpatsinchina2025" target="_blank" rel="noreferrer">Guida governativa a pagamenti e vita in Cina</a></li>
+            <li><a href="https://www.weather.gov.hk/en/cis/climahk.htm" target="_blank" rel="noreferrer">Hong Kong Observatory: novembre tra i mesi migliori</a></li>
+            <li><a href="https://www.viaggiaresicuri.it/find-country/country/CHN" target="_blank" rel="noreferrer">Viaggiare Sicuri — Cina</a></li>
+          </ul></article>
+          <article class="source-card"><h3>Esperienze Reddit</h3><ul>
+            <li><a href="https://www.reddit.com/r/travelchina/comments/1r0uqfo/18_days_in_china_honest_review/" target="_blank" rel="noreferrer">18 giorni nel sud: HK → Shenzhen → Guangzhou → Yangshuo → Foshan → Macao</a></li>
+            <li><a href="https://www.reddit.com/r/travelchina/comments/1tokorn/hong_kong_yangshuo_shenzhen/" target="_blank" rel="noreferrer">Confronto ottobre/novembre sulla stessa rotta</a></li>
+            <li><a href="https://www.reddit.com/r/travelchina/comments/1k87bha/yangshuo/" target="_blank" rel="noreferrer">Perché Yangshuo può essere molto più affollata del previsto</a></li>
+            <li><a href="https://www.reddit.com/r/shenzhen/comments/1sdo8ux/huaqiangbei_ultimate_shopping_guide_for_foreign/" target="_blank" rel="noreferrer">Huaqiangbei: piani, confronto prezzi e contrattazione</a></li>
+            <li><a href="https://www.reddit.com/r/travelchina/comments/1tp3xv1/planning_food_budget_per_day/" target="_blank" rel="noreferrer">Budget cibo: Hong Kong costosa, mainland molto più economico</a></li>
+            <li><a href="https://www.reddit.com/r/travelchina/comments/1n1eqtl" target="_blank" rel="noreferrer">Alipay, WeChat, eSIM e DiDi da preparare prima</a></li>
+          </ul></article>
+          <article class="source-card"><h3>Agenzie e itinerari comparati</h3><ul>
+            <li><a href="https://www.chinahighlights.com/china-tours/nature-wonder-including-hongkong.htm" target="_blank" rel="noreferrer">China Highlights: 14 giorni natura da Hong Kong</a></li>
+            <li><a href="https://www.gadventures.com/trips/shanghai-to-hong-kong-shoestring/3509/" target="_blank" rel="noreferrer">G Adventures Shoestring: Yangshuo, bici e cooking class</a></li>
+            <li><a href="https://www.intrepidtravel.com/en/china/real-china-167179" target="_blank" rel="noreferrer">Intrepid Real China: viaggio basic e attività locali</a></li>
+            <li><a href="https://www.chinahighlights.com/hong-kong/article-top-mainland-china-tours-from-hk.htm" target="_blank" rel="noreferrer">Rotte mainland pratiche da Hong Kong</a></li>
+          </ul></article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="shell footer-grid">
+      <div><strong>Cina del Sud 2027 · SwadyaSpace</strong><p>Guida progettata per quattro amici che vogliono spendere con criterio, fare molto e avere anche il tempo di capire dove sono. Prezzi, regole e orari cambiano: le parti datate sono dichiarate invece di essere spacciate per eterne.</p></div>
+      <a href="index.html">← Torna a SwadyaSpace</a>
+    </div>
+  </footer>
+  <button class="back-top" type="button" aria-label="Torna in alto">↑</button>
+
+  <script>
+    const topbar = document.querySelector('.topbar');
+    const menuToggle = document.querySelector('.menu-toggle');
+    menuToggle?.addEventListener('click', () => {
+      const open = topbar.classList.toggle('open');
+      menuToggle.setAttribute('aria-expanded', String(open));
+    });
+    document.querySelectorAll('.nav-links a').forEach(link => link.addEventListener('click', () => {
+      topbar.classList.remove('open');
+      menuToggle?.setAttribute('aria-expanded', 'false');
+    }));
+    document.querySelector('.back-top')?.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+    const budgets = {
+      lean: {
+        label: 'Tirato', total: '1.105 €', description: 'Volo sotto target, alloggi essenziali divisi in quattro, quasi solo cibo locale e molte attività gratuite.',
+        rows: { flight: '600 €', stay: '190 €', transport: '115 €', food: '155 €', activities: '45 €' }
+      },
+      real: {
+        label: 'Realistico', total: '1.370 €', description: 'Volo comprato bene, camere divise in quattro, cibo locale, attività scelte e nessuna follia nei bar.',
+        rows: { flight: '680 €', stay: '260 €', transport: '135 €', food: '220 €', activities: '75 €' }
+      },
+      comfort: {
+        label: 'Comodo', total: '1.660 €', description: 'Camere migliori a Hong Kong, più Didi, ristoranti e serate, attività pagate senza tirare ogni conto.',
+        rows: { flight: '750 €', stay: '350 €', transport: '165 €', food: '290 €', activities: '105 €' }
+      }
+    };
+    document.querySelectorAll('[data-budget]').forEach(button => button.addEventListener('click', () => {
+      document.querySelectorAll('[data-budget]').forEach(b => b.classList.toggle('active', b === button));
+      const choice = budgets[button.dataset.budget];
+      document.getElementById('budget-total').textContent = choice.total;
+      document.getElementById('budget-description').textContent = choice.description;
+      document.getElementById('budget-mode-label').textContent = choice.label;
+      Object.entries(choice.rows).forEach(([key, value]) => {
+        const cell = document.querySelector(`[data-row="${key}"]`);
+        if (cell) cell.textContent = value;
+      });
+    }));
+
+    const checkboxes = [...document.querySelectorAll('[data-check]')];
+    const storageKey = 'swadyaspace-china-checklist-v1';
+    let savedChecks = {};
+    try { savedChecks = JSON.parse(localStorage.getItem(storageKey) || '{}'); } catch (_) {}
+    checkboxes.forEach(box => {
+      box.checked = Boolean(savedChecks[box.dataset.check]);
+      box.addEventListener('change', () => {
+        savedChecks[box.dataset.check] = box.checked;
+        localStorage.setItem(storageKey, JSON.stringify(savedChecks));
+        updateProgress();
+      });
+    });
+    function updateProgress() {
+      const done = checkboxes.filter(box => box.checked).length;
+      const percentage = checkboxes.length ? Math.round(done / checkboxes.length * 100) : 0;
+      document.getElementById('progress-label').textContent = percentage + '%';
+      document.getElementById('progress-bar').style.width = percentage + '%';
+    }
+    updateProgress();
+
+    document.querySelectorAll('.copy-btn').forEach(button => button.addEventListener('click', async () => {
+      const name = button.closest('.place')?.dataset.name || '';
+      try {
+        await navigator.clipboard.writeText(name);
+        const original = button.textContent;
+        button.textContent = 'Copiato ✓';
+        setTimeout(() => button.textContent = original, 1300);
+      } catch (_) {
+        window.prompt('Copia questo nome:', name);
+      }
+    }));
+
+    const translateBase = 'https://translate.google.com/?sl=zh-CN&tl=it&op=translate&text=';
+    document.querySelectorAll('[data-translate]').forEach(link => {
+      link.href = translateBase + encodeURIComponent(link.dataset.translate);
+    });
+    let voices = [];
+    function refreshVoices() { voices = window.speechSynthesis?.getVoices?.() || []; }
+    refreshVoices();
+    if ('speechSynthesis' in window) window.speechSynthesis.onvoiceschanged = refreshVoices;
+    document.querySelectorAll('.speak-btn').forEach(button => button.addEventListener('click', () => {
+      const text = button.dataset.text;
+      const lang = button.dataset.lang || 'zh-CN';
+      if (!('speechSynthesis' in window)) {
+        window.open(translateBase + encodeURIComponent(text), '_blank', 'noopener');
+        return;
+      }
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = lang;
+      utterance.rate = .78;
+      const exact = voices.find(v => v.lang.toLowerCase() === lang.toLowerCase());
+      const family = voices.find(v => v.lang.toLowerCase().startsWith(lang.slice(0, 2).toLowerCase()));
+      if (exact || family) utterance.voice = exact || family;
+      window.speechSynthesis.speak(utterance);
+    }));
+
+    const phraseRows = [...document.querySelectorAll('#phrase-body tr')];
+    const phraseSearch = document.getElementById('phrase-search');
+    const phraseCount = document.getElementById('phrase-count');
+    function filterPhrases() {
+      const query = (phraseSearch.value || '').trim().toLowerCase();
+      let visible = 0;
+      phraseRows.forEach(row => {
+        const haystack = (row.textContent + ' ' + (row.dataset.search || '')).toLowerCase();
+        const show = !query || haystack.includes(query);
+        row.hidden = !show;
+        if (show) visible++;
+      });
+      phraseCount.textContent = visible + ' frasi';
+    }
+    phraseSearch.addEventListener('input', filterPhrases);
+    filterPhrases();
+  </script>
+</body>
+</html>
