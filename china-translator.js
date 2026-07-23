@@ -1,7 +1,26 @@
 (() => {
   'use strict';
   const $ = selector => document.querySelector(selector);
-  const esc = (value='') => String(value).replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[char]));
+
+  const visualFix = document.createElement('style');
+  visualFix.textContent = `
+    .app-brand>.seal{display:grid!important;width:44px!important;height:44px!important;place-items:center!important;flex:0 0 44px;color:#5e0b10!important;background:#f4d699!important;border:2px solid rgba(255,255,255,.45)!important;border-radius:12px!important;font-family:serif;font-weight:950}
+    .app-brand>span:last-child{display:flex!important;width:auto!important;height:auto!important;min-width:0;align-items:flex-start!important;justify-content:center!important;flex-direction:column;color:#fff!important;background:transparent!important;border:0!important;border-radius:0!important}
+    .app-brand>span:last-child b{font-size:.98rem;line-height:1.1}.app-brand>span:last-child small{display:block;margin-top:2px;color:#e9c9c6;font-size:.66rem;font-weight:700}
+    .visual-hero .hero-photo,.visual-hero .hero-overlay{display:none!important}.visual-hero .hero-inner{position:relative;z-index:2;display:grid;grid-template-columns:minmax(0,1.25fr) minmax(280px,.75fr);gap:28px;align-items:end;width:min(1120px,calc(100% - 28px));margin-inline:auto}.visual-hero .hero-chinese{margin:0 0 10px;color:#f4d28d;font-family:serif;font-size:1rem;font-weight:900;letter-spacing:.08em}
+    .primary-button.gold{color:#551017!important;background:#f0cc84!important;border-color:#f0cc84!important}.secondary-button.glass{color:#fff!important;background:rgba(255,255,255,.08)!important;border-color:rgba(255,255,255,.32)!important}
+    #translator{position:relative;overflow:hidden;margin-top:72px;padding:0!important;color:#fff;background:linear-gradient(135deg,#5e0b10,#971e25 55%,#4a090d);box-shadow:inset 0 1px rgba(255,255,255,.14),inset 0 -1px rgba(255,255,255,.14)}
+    #translator::before{content:'译';position:absolute;right:3vw;top:20px;color:rgba(255,255,255,.055);font-family:serif;font-size:min(34vw,410px);font-weight:950;line-height:.8;pointer-events:none}
+    #translator>.app-shell{position:relative;z-index:2;padding:68px 0}.translator-heading h2{color:#fff}.translator-heading>p{color:#ead3cc}.kicker.light{color:#f2cb7e!important}
+    .translator-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}.translator-panel{padding:18px;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.23);border-radius:16px;backdrop-filter:blur(10px)}
+    .translator-panel label,.result-label{display:block;margin-bottom:7px;color:#f2cf87;font-size:.72rem;font-weight:950;text-transform:uppercase}.translator-panel textarea{width:100%;min-height:150px;padding:14px;color:#241815;background:#fffaf2;border:0;border-radius:12px;font:inherit;resize:vertical}
+    .translation-output{min-height:150px;display:grid;align-content:center;padding:16px;color:#501017;background:#fffaf2;border-radius:12px;font-family:'Noto Sans SC',system-ui,sans-serif;font-size:clamp(1.7rem,5vw,3.5rem);font-weight:950;line-height:1.25}.result-panel>p{margin:9px 0 0;color:#ead6d0;font-size:.82rem}
+    .translator-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}.translator-actions>*{min-height:40px;padding:8px 11px;border-radius:9px;font-size:.82rem}
+    .translator-phrases{margin-top:14px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.22);border-radius:14px}.translator-phrases summary{padding:15px 17px;font-weight:900;cursor:pointer}.phrase-groups{padding:0 14px 14px}.phrase-group{margin-top:9px;padding:12px;color:#241815;background:#fffaf2;border-radius:11px}.phrase-group h3{margin:0;color:#8b151b;font-size:.84rem}.phrase-list{display:grid;gap:7px;margin-top:8px}.phrase-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;padding:9px;background:#fff;border:1px solid #eadbca;border-radius:9px}.phrase-row strong{display:block}.phrase-row span{display:block;margin-top:3px;color:#8b151b;font-weight:850}.phrase-row-actions{display:flex;gap:5px;align-items:center}
+    @media(max-width:800px){.visual-hero .hero-inner{grid-template-columns:1fr}.translator-grid{grid-template-columns:1fr}.phrase-row{grid-template-columns:1fr}.phrase-row-actions{margin-top:4px}}
+  `;
+  document.head.appendChild(visualFix);
+  const esc = (value='') => String(value).replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
   const googleUrl = text => `https://translate.google.com/?sl=it&tl=zh-CN&op=translate&text=${encodeURIComponent(text)}`;
   const phrases = [
     ['Hotel','Siamo quattro turisti italiani. Potete registrarci?','我们是四名意大利游客。酒店可以为我们办理入住和住宿登记吗？'],
