@@ -3,38 +3,89 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#7f1218">
-  <meta name="description" content="Cina V2: guida visuale di 14 giorni tra Chengdu, Chongqing, Zhangjiajie, Furong Town, Changsha e Yangshuo.">
+  <meta name="theme-color" content="#76151a">
+  <meta name="description" content="Guida completa di due itinerari in Cina, organizzata per destinazione con giorni, cibo, alloggi, attività, trasporti e budget.">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="china-icon.svg" type="image/svg+xml">
-  <link rel="preconnect" href="https://unpkg.com">
   <link rel="preconnect" href="https://images.unsplash.com">
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
   <link rel="stylesheet" href="china-v2.css">
-  <title>Cina V2 · SwadyaSpace</title>
+  <title>Cina · Due itinerari · SwadyaSpace</title>
 </head>
 <body>
-  <a class="skip-link" href="#main">Vai al contenuto</a>
-  <header class="topbar"><a class="brand" href="index.html"><span class="seal">中国</span><span><b>Cina V2</b><small>SwadyaSpace</small></span></a><div class="top-actions"><span id="networkStatus">Online</span><button id="offlineButton">Salva offline</button></div></header>
+  <header class="topbar">
+    <a class="brand" href="index.html"><span class="seal">中国</span><span><b>Cina</b><small>Guida completa</small></span></a>
+    <button class="menu-button" id="menuButton" aria-expanded="false">Indice</button>
+  </header>
+
   <main id="main">
-    <section class="hero" id="home"><div class="hero-bg"></div><div class="hero-shade"></div><div class="shell hero-inner"><p class="cnline">成都 · 重庆 · 张家界 · 芙蓉镇 · 桂林 · 阳朔</p><p class="kicker light">4 amici · 14 giorni · città + natura + attività</p><h1>La Cina che<br><em>qui non esiste.</em></h1><p class="hero-copy">Panda, città verticali, treni dentro i palazzi, montagne Avatar, paesi sulle cascate, ponti di vetro, scivoli, zattere e strade tra i picchi carsici.</p><div class="hero-actions"><button class="primary gold" data-jump="days">Apri il viaggio</button><button class="secondary glass" data-jump="map">Mappa completa</button><button class="secondary glass" data-jump="activities">Attività</button></div><div class="hero-stats" id="heroStats"></div></div></section>
-    <nav class="quickbar shell"><button data-jump="route">🧭 Percorso</button><button data-jump="gallery">📸 Immagini</button><button data-jump="days">🗓 14 giorni</button><button data-jump="map">📍 Mappa</button><button data-jump="activities">🎢 Attività</button><button data-jump="stays">🏨 Dormire</button><button data-jump="budget">💶 Budget</button><button data-jump="food">🥢 Cibo</button><button data-jump="phrases">🗣 Parla</button><button data-jump="checklist">✓ Checklist</button></nav>
-    <section class="section shell" id="route"><div class="heading"><div><p class="kicker">Percorso principale</p><h2>Ovest → centro → sud.</h2></div><p>Una rotta continua che evita di bruciare giorni e soldi tra Pechino, Xi’an, Shenzhen e Hong Kong.</p></div><div class="route-line" id="routeLine"></div><div class="route-note">Changsha è una tappa elastica: la tenete per street food e collegamenti, oppure la riducete a semplice transito.</div></section>
-    <section class="section visual-section" id="gallery"><div class="shell"><div class="heading"><div><p class="kicker light">Prima di leggere</p><h2>Questo è il viaggio.</h2></div><p>Apri una foto per vederla grande. Ogni immagine è collegata a una tappa reale dell’itinerario.</p></div><div class="gallery" id="galleryGrid"></div></div></section>
-    <section class="section shell" id="days"><div class="heading"><div><p class="kicker">Guida principale</p><h2>14 giorni visuali.</h2></div><p>Ogni giornata ha foto, attività, spostamenti, costo, zona dove dormire e punti apribili nella mappa.</p></div><div class="day-list" id="dayList"></div></section>
-    <section class="section map-section" id="map"><div class="shell"><div class="heading"><div><p class="kicker light">Mappa unica</p><h2>Tutto collegato ai giorni.</h2></div><p>Filtra per città o categoria. Le schede sotto la mappa riportano giornata, descrizione e link ad Amap.</p></div><div class="map-tools"><button class="primary gold" id="locateButton">Usa il mio GPS</button><select id="cityFilter"></select><select id="categoryFilter"></select><input id="placeSearch" type="search" placeholder="Cerca luogo, attività, stazione…"></div><div id="tripMap"></div><div id="gpsResult" class="gps-result" hidden></div><div class="place-list" id="placeList"></div></div></section>
-    <section class="section shell" id="activities"><div class="heading"><div><p class="kicker">Non solo guardare</p><h2>Cose da fare davvero.</h2></div><p>Vetro, zipline, scivoli, zattere, e-bike, kart e percorsi in montagna. Le aperture vanno ricontrollate vicino alla partenza.</p></div><div class="activity-grid" id="activityGrid"></div></section>
-    <section class="section stays-section" id="stays"><div class="shell"><div class="heading"><div><p class="kicker light">Dove dormire</p><h2>Zone furbe, non hotel a caso.</h2></div><p>Le basi sono scelte per metro, stazioni o ingresso dei parchi. I prezzi sono obiettivi per camera/appartamento da quattro, non promesse.</p></div><div class="stay-summary" id="staySummary"></div><div class="stay-list" id="stayList"></div><details class="fold"><summary>Come cercare sulle piattaforme cinesi</summary><div class="fold-body" id="bookingGuide"></div></details></div></section>
-    <section class="section shell" id="budget"><div class="heading"><div><p class="kicker">Stima per persona</p><h2>Quanto costa davvero.</h2></div><p>Tre scenari, con attività e trasferimenti interni inclusi. Il volo internazionale resta la variabile più grossa.</p></div><div class="budget-tabs" id="budgetTabs"></div><div class="budget-box" id="budgetBox"></div></section>
-    <section class="section food-section" id="food"><div class="shell"><div class="heading"><div><p class="kicker light">Cibo per tappa</p><h2>Non una lista generica.</h2></div><p>Piatti collegati alle città e ai giorni in cui ha senso cercarli.</p></div><div class="food-grid" id="foodGrid"></div></div></section>
-    <section class="section shell" id="phrases"><div class="heading"><div><p class="kicker">Comunicazione</p><h2>Frasi da mostrare.</h2></div><p>Tocca una scheda per copiarla. Il cinese è grande abbastanza da essere mostrato a hotel, taxi e biglietterie.</p></div><div class="phrase-grid" id="phraseGrid"></div></section>
-    <section class="section prep-section" id="prep"><div class="shell"><div class="heading"><div><p class="kicker light">Prima di partire</p><h2>Telefono, trasporti e meteo.</h2></div><p>Le cose che possono rovinare il viaggio se le scoprite il primo giorno.</p></div><div class="prep-grid" id="prepGrid"></div></div></section>
-    <section class="section shell" id="checklist"><div class="heading"><div><p class="kicker">Checklist salvata</p><h2>Fatto davvero?</h2></div><p>Le spunte restano sul telefono.</p></div><div class="progress"><span id="progressBar"></span></div><strong id="progressLabel">0%</strong><div class="check-grid" id="checkGrid"></div></section>
+    <section class="hero" id="home">
+      <div class="hero-bg"></div><div class="hero-shade"></div>
+      <div class="shell hero-inner">
+        <p class="eyebrow light">4 amici · 14 giorni · due modi diversi di vedere la Cina</p>
+        <h1>Scegli il viaggio.<br><em>Poi trovi tutto lì.</em></h1>
+        <p class="hero-copy">Ogni itinerario è separato. Ogni destinazione raccoglie nello stesso punto programma, quartieri, alloggi, cibo, ristoranti da cercare, attività, trasporti, costi, consigli e piano B.</p>
+        <div class="itinerary-switch" id="heroSwitch"></div>
+        <div class="hero-summary" id="heroSummary"></div>
+      </div>
+    </section>
+
+    <nav class="section-nav shell" id="sectionNav" aria-label="Navigazione guida">
+      <button data-view="overview">Viaggio</button>
+      <button data-view="days">Giorni</button>
+      <button data-view="destinations">Destinazioni</button>
+      <button data-view="plan">Prenota</button>
+      <button data-view="practical">Altro</button>
+    </nav>
+
+    <section class="shell app-view" id="overviewView">
+      <div class="section-heading"><div><p class="eyebrow">Percorso scelto</p><h2 id="overviewTitle"></h2></div><p id="overviewIntro"></p></div>
+      <div class="route-track" id="routeTrack"></div>
+      <div class="overview-grid" id="overviewStats"></div>
+      <article class="decision-card" id="decisionCard"></article>
+      <div class="section-heading compact"><div><p class="eyebrow">Anteprima</p><h2>Le destinazioni del viaggio</h2></div><p>Apri una città per trovare tutto nello stesso posto.</p></div>
+      <div class="destination-preview" id="destinationPreview"></div>
+    </section>
+
+    <section class="shell app-view" id="daysView" hidden>
+      <div class="section-heading"><div><p class="eyebrow">Filo del viaggio</p><h2>14 giorni, senza informazioni duplicate</h2></div><p>Le giornate indicano cosa fare e rimandano alla guida completa della destinazione.</p></div>
+      <div class="day-list" id="dayList"></div>
+    </section>
+
+    <section class="app-view" id="destinationsView" hidden>
+      <div class="shell section-heading"><div><p class="eyebrow">Guida per posto</p><h2>Tutto diviso bene per destinazione</h2></div><p>Seleziona un posto: ogni informazione utile è raccolta nella stessa scheda.</p></div>
+      <div class="destination-tabs shell" id="destinationTabs"></div>
+      <div id="destinationGuide"></div>
+    </section>
+
+    <section class="shell app-view" id="planView" hidden>
+      <div class="section-heading"><div><p class="eyebrow">Organizzazione reale</p><h2>Prenotazioni e budget</h2></div><p>Azioni ordinate per stato, separate per itinerario e destinazione.</p></div>
+      <div class="budget-card" id="budgetCard"></div>
+      <div class="booking-board" id="bookingBoard"></div>
+    </section>
+
+    <section class="shell app-view" id="practicalView" hidden>
+      <div class="section-heading"><div><p class="eyebrow">Prima e durante</p><h2>Telefono, documenti, frasi e checklist</h2></div><p>Le informazioni trasversali che servono in entrambi gli itinerari.</p></div>
+      <div class="practical-grid" id="practicalGrid"></div>
+      <div class="phrase-grid" id="phraseGrid"></div>
+      <div class="checklist" id="checklist"></div>
+    </section>
   </main>
-  <nav class="bottom-nav"><button data-jump="home">⌂<span>Home</span></button><button data-jump="days">14<span>Giorni</span></button><button data-jump="map">◎<span>Mappa</span></button><button data-jump="activities">↯<span>Attività</span></button><button data-jump="stays">床<span>Dormire</span></button></nav>
-  <dialog id="imageDialog"><button id="closeImage">×</button><img id="dialogImage" alt=""><p id="dialogCaption"></p></dialog>
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+
+  <aside class="drawer" id="drawer" aria-hidden="true">
+    <div class="drawer-head"><strong>Indice</strong><button id="closeDrawer">×</button></div>
+    <div id="drawerContent"></div>
+  </aside>
+  <div class="drawer-backdrop" id="drawerBackdrop" hidden></div>
+
+  <nav class="bottom-nav">
+    <button data-view="overview">⌂<span>Viaggio</span></button>
+    <button data-view="days">14<span>Giorni</span></button>
+    <button data-view="destinations">城<span>Posti</span></button>
+    <button data-view="plan">✓<span>Prenota</span></button>
+    <button data-view="practical">•••<span>Altro</span></button>
+  </nav>
+
+  <script src="china-guide-data.js"></script>
   <script src="china-v2.js"></script>
-  <script src="china-v2-images.js"></script>
 </body>
 </html>
