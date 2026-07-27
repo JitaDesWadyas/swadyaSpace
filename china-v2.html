@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#76151a">
-  <meta name="description" content="Guida completa di due itinerari in Cina, organizzata per destinazione con giorni, cibo, alloggi, attività, trasporti e budget.">
+  <meta name="description" content="Guida completa di due itinerari in Cina, organizzata per destinazione con giorni, cibo, alloggi, attività, trasporti, periodi, immagini, link e budget.">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="china-icon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://images.unsplash.com">
@@ -12,80 +12,20 @@
   <title>Cina · Due itinerari · SwadyaSpace</title>
 </head>
 <body>
-  <header class="topbar">
-    <a class="brand" href="index.html"><span class="seal">中国</span><span><b>Cina</b><small>Guida completa</small></span></a>
-    <button class="menu-button" id="menuButton" aria-expanded="false">Indice</button>
-  </header>
-
+  <header class="topbar"><a class="brand" href="index.html"><span class="seal">中国</span><span><b>Cina</b><small>Guida completa</small></span></a><button class="menu-button" id="menuButton" aria-expanded="false">Indice</button></header>
   <main id="main">
-    <section class="hero" id="home">
-      <div class="hero-bg"></div><div class="hero-shade"></div>
-      <div class="shell hero-inner">
-        <p class="eyebrow light">4 amici · 14 giorni · due modi diversi di vedere la Cina</p>
-        <h1>Scegli il viaggio.<br><em>Poi trovi tutto lì.</em></h1>
-        <p class="hero-copy">Ogni itinerario è separato. Ogni destinazione raccoglie nello stesso punto programma, quartieri, alloggi, cibo, ristoranti da cercare, attività, trasporti, costi, consigli e piano B.</p>
-        <div class="itinerary-switch" id="heroSwitch"></div>
-        <div class="hero-summary" id="heroSummary"></div>
-      </div>
-    </section>
-
-    <nav class="section-nav shell" id="sectionNav" aria-label="Navigazione guida">
-      <button data-view="overview">Viaggio</button>
-      <button data-view="days">Giorni</button>
-      <button data-view="destinations">Destinazioni</button>
-      <button data-view="plan">Prenota</button>
-      <button data-view="practical">Altro</button>
-    </nav>
-
-    <section class="shell app-view" id="overviewView">
-      <div class="section-heading"><div><p class="eyebrow">Percorso scelto</p><h2 id="overviewTitle"></h2></div><p id="overviewIntro"></p></div>
-      <div class="route-track" id="routeTrack"></div>
-      <div class="overview-grid" id="overviewStats"></div>
-      <article class="decision-card" id="decisionCard"></article>
-      <div class="section-heading compact"><div><p class="eyebrow">Anteprima</p><h2>Le destinazioni del viaggio</h2></div><p>Apri una città per trovare tutto nello stesso posto.</p></div>
-      <div class="destination-preview" id="destinationPreview"></div>
-    </section>
-
-    <section class="shell app-view" id="daysView" hidden>
-      <div class="section-heading"><div><p class="eyebrow">Filo del viaggio</p><h2>14 giorni, senza informazioni duplicate</h2></div><p>Le giornate indicano cosa fare e rimandano alla guida completa della destinazione.</p></div>
-      <div class="day-list" id="dayList"></div>
-    </section>
-
-    <section class="app-view" id="destinationsView" hidden>
-      <div class="shell section-heading"><div><p class="eyebrow">Guida per posto</p><h2>Tutto diviso bene per destinazione</h2></div><p>Seleziona un posto: ogni informazione utile è raccolta nella stessa scheda.</p></div>
-      <div class="destination-tabs shell" id="destinationTabs"></div>
-      <div id="destinationGuide"></div>
-    </section>
-
-    <section class="shell app-view" id="planView" hidden>
-      <div class="section-heading"><div><p class="eyebrow">Organizzazione reale</p><h2>Prenotazioni e budget</h2></div><p>Azioni ordinate per stato, separate per itinerario e destinazione.</p></div>
-      <div class="budget-card" id="budgetCard"></div>
-      <div class="booking-board" id="bookingBoard"></div>
-    </section>
-
-    <section class="shell app-view" id="practicalView" hidden>
-      <div class="section-heading"><div><p class="eyebrow">Prima e durante</p><h2>Telefono, documenti, frasi e checklist</h2></div><p>Le informazioni trasversali che servono in entrambi gli itinerari.</p></div>
-      <div class="practical-grid" id="practicalGrid"></div>
-      <div class="phrase-grid" id="phraseGrid"></div>
-      <div class="checklist" id="checklist"></div>
-    </section>
+    <section class="hero" id="home"><div class="hero-bg"></div><div class="hero-shade"></div><div class="shell hero-inner"><p class="eyebrow light">4 amici · 14 giorni · due itinerari completamente separati</p><h1>Scegli il viaggio.<br><em>Poi trovi davvero tutto.</em></h1><p class="hero-copy">Giorni, quartieri, hotel, cibo, ristoranti, attività, trasporti, budget, immagini, link, periodi migliori, meteo, valigia, SIM, pagamenti e piani alternativi.</p><div class="itinerary-switch" id="heroSwitch"></div><div class="hero-summary" id="heroSummary"></div></div></section>
+    <nav class="section-nav shell" id="sectionNav"><button data-view="overview">Viaggio</button><button data-view="days">Giorni</button><button data-view="destinations">Destinazioni</button><button data-view="plan">Prenota</button><button data-view="practical">Altro</button></nav>
+    <section class="shell app-view" id="overviewView"><div class="section-heading"><div><p class="eyebrow">Percorso scelto</p><h2 id="overviewTitle"></h2></div><p id="overviewIntro"></p></div><div class="route-track" id="routeTrack"></div><div class="overview-grid" id="overviewStats"></div><article class="decision-card" id="decisionCard"></article><div class="section-heading compact"><div><p class="eyebrow">Anteprima</p><h2>Le destinazioni del viaggio</h2></div><p>Ogni posto è un capitolo completo della guida.</p></div><div class="destination-preview" id="destinationPreview"></div></section>
+    <section class="shell app-view" id="daysView" hidden><div class="section-heading"><div><p class="eyebrow">Filo del viaggio</p><h2>14 giorni dettagliati</h2></div><p>Ogni giornata porta alla guida locale senza cancellare il contesto del viaggio.</p></div><div class="day-list" id="dayList"></div></section>
+    <section class="app-view" id="destinationsView" hidden><div class="shell section-heading"><div><p class="eyebrow">Guida per posto</p><h2>Tutto diviso per destinazione</h2></div><p>Foto, zone, dormire, mangiare, ristoranti, attività, tempi, trasporti, costi, link e piano B.</p></div><div class="destination-tabs shell" id="destinationTabs"></div><div id="destinationGuide"></div></section>
+    <section class="shell app-view" id="planView" hidden><div class="section-heading"><div><p class="eyebrow">Organizzazione reale</p><h2>Prenotazioni e budget</h2></div><p>Azioni ordinate per itinerario, città e priorità.</p></div><div class="budget-card" id="budgetCard"></div><div class="booking-board" id="bookingBoard"></div></section>
+    <section class="shell app-view" id="practicalView" hidden><div class="section-heading"><div><p class="eyebrow">Tutto ciò che c’era nella V1</p><h2>Periodi, telefono, documenti, valigia e fonti</h2></div><p>Le informazioni trasversali ripristinate e ordinate.</p></div><div id="periodGrid" class="period-grid"></div><div class="practical-grid" id="practicalGrid"></div><div class="phrase-grid" id="phraseGrid"></div><div class="checklist" id="checklist"></div><div class="source-list" id="sourceList"></div></section>
   </main>
-
-  <aside class="drawer" id="drawer" aria-hidden="true">
-    <div class="drawer-head"><strong>Indice</strong><button id="closeDrawer">×</button></div>
-    <div id="drawerContent"></div>
-  </aside>
-  <div class="drawer-backdrop" id="drawerBackdrop" hidden></div>
-
-  <nav class="bottom-nav">
-    <button data-view="overview">⌂<span>Viaggio</span></button>
-    <button data-view="days">14<span>Giorni</span></button>
-    <button data-view="destinations">城<span>Posti</span></button>
-    <button data-view="plan">✓<span>Prenota</span></button>
-    <button data-view="practical">•••<span>Altro</span></button>
-  </nav>
-
+  <aside class="drawer" id="drawer" aria-hidden="true"><div class="drawer-head"><strong>Indice</strong><button id="closeDrawer">×</button></div><div id="drawerContent"></div></aside><div class="drawer-backdrop" id="drawerBackdrop" hidden></div>
+  <nav class="bottom-nav"><button data-view="overview">⌂<span>Viaggio</span></button><button data-view="days">14<span>Giorni</span></button><button data-view="destinations">城<span>Posti</span></button><button data-view="plan">✓<span>Prenota</span></button><button data-view="practical">•••<span>Altro</span></button></nav>
   <script src="china-guide-data.js"></script>
+  <script src="china-guide-extra.js"></script>
   <script src="china-v2.js"></script>
 </body>
 </html>
