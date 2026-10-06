@@ -12,24 +12,38 @@ Grand Canyon: ferrata breve prioritaria se riconfermata; fonte ufficiale ne docu
 
 I pin WGS84 sono approssimativi e separati graficamente quando sovrapposti: servono a orientarsi, non a navigare. I tratti tratteggiati non sono percorsi stradali. Navigazione tramite ricerche Amap dei nomi reali; niente conversioni GCJ-02 inventate. Leaflet/OSM online, mappa SVG di punti senza rete. Link esterni richiedono rete.
 
-Sette fotografie reali Commons, WebP locali; autori, originali e licenze pubblicati nella pagina. Leaflet BSD-2-Clause in `assets/china-v3/vendor/LICENSE.txt`. Fallback SVG esplicitamente dichiarato, non fotografia sostitutiva.
+122 fotografie reali Commons, WebP locali, immagini per tutti i 108 punti; autori, originali e licenze pubblicati nella pagina. Leaflet BSD-2-Clause in `assets/china-v3/vendor/LICENSE.txt`. Fallback SVG esplicitamente dichiarato, non fotografia sostitutiva.
 
 ## Verifiche eseguite
 
 - Sintassi Node per app e dati.
 - DOM con jsdom: tutti i 15 giorni, completezza dei campi, 108 punti e fonti valide, filtri/categorie/ricerca cinese, sincronizzazione giorno-mappa, budget extra, persistenza missioni/checklist, stampa di tutti i giorni e ripristino, fallback immagine, anchor.
 - Export HTML: CSS/dati/JS/foto incorporati, nessuna dipendenza da CDN, avvio e cambio giorno/mappa offline. Gestito anche divieto history di alcuni viewer file://.
-- Decodifica PIL delle sette foto; V1/V2 nessun cambiamento nel diff.
+- Decodifica PIL delle 122 foto; V1/V2 nessun cambiamento nel diff.
 
 Ripetere i controlli dalla root repository, con jsdom installato in un ambiente di test:
 
 ```sh
 CHINA_V3_JSDOM=/percorso/node_modules/jsdom node docs/test-v3-dom.cjs
 CHINA_V3_JSDOM=/percorso/node_modules/jsdom node docs/test-v3-offline.cjs
+CHINA_V3_JSDOM=/percorso/node_modules/jsdom node docs/test-v3-media.cjs
 ```
 
-## Limiti della verifica
+## Verifica visuale e pronuncia
 
-Non completata la prova visiva Chromium/mobile: download del browser restituisce una pagina "Site Unavailable"; il browser cloud blocca l'anteprima localhost (`ERR_BLOCKED_BY_CLIENT`). Non dichiarata superata. CSS responsive con breakpoint 720/1000/1100, touch target e overflow controllato nel codice; verificare visivamente 320/390/430/768/1440px e stampa nel browser prima del merge. Playwright non incluso come dipendenza del sito.
+Prova Chromium 153 completata su 320/390/430/768/1440px: cinque giorni rappresentativi a ogni larghezza, nessun overflow orizzontale; gallerie, lightbox, scelta testo nella pagina e pannello vocale; 175 istanze immagine caricate senza fallback o file mancanti; download HTML offline aperto con rete bloccata, foto ingrandibili incorporate e pannello pronuncia disponibile; stampa 15 giorni/ripristino. Zero errori JavaScript. L'ambiente iniziale non consentiva scaricare Chromium; recuperato con runtime di test da pacchetto npm, non dipendenza del sito.
+
+Pronuncia: Web Speech API con voci del dispositivo, lingua/voce/velocità/stop, scelta da 108 nomi e frasi oppure qualunque testo selezionato/toccato/incollato. Il pannello non legge il mandarino con una voce italiana né sostituisce Cantonese HK alla voce mandarina. Test di dispatch e stati con voci simulate, inclusa voce assente. Headless non dispone di voce mandarina: qualità audio reale dipende dalla voce installata sul dispositivo e non è stata verificata all'ascolto. Nessun microfono richiesto; le voci remote possono richiedere rete.
+
+47 schede usano esclusivamente foto di contesto o dell'attività, esplicitamente indicate; non sono immagini certificate dell'accesso, del meeting point o del punto preciso. Non sostituite con foto di posti omonimi (Qixing Taiwan, Huanglong Hangzhou, Mount Furong Ningxiang). Didascalie, autore, fonte, licenza e modifiche in pagina. Fallback limitato alle foto della guida, senza alterare le tessere Leaflet. Foto caricate lazy; file HTML offline incorpora una volta le immagini e ricostruisce le schede, circa 23 MB.
 
 Tariffe, voli, hotel, treni e attività non prenotati. Aperture, accesso passaporti stranieri e procedure possono cambiare; vanno riconfermati per date effettive. Esenzione visto 2026 non estesa automaticamente al 2027. Alloggi sono zone/budget e criteri pratici, senza promettere disponibilità di strutture non verificate.
+
+
+Test Chromium ripetibile (runtime di test separato dal sito):
+
+```sh
+CHINA_V3_PLAYWRIGHT=/percorso/node_modules/playwright-core CHINA_V3_CHROMIUM=/percorso/chromium node docs/test-v3-browser.mjs
+```
+
+Screenshot in `docs/screenshots/`. Il runtime headless non dispone di font CJK; sui dispositivi si usano i font cinesi di sistema. Il controllo dei file include decodifica WebP, quello visuale attende anche `image.decode()` e il frame di rendering prima degli screenshot.
