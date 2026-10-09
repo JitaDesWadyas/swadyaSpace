@@ -88,7 +88,7 @@ body[data-compact=true] .question{padding:13px 0}body[data-compact=true] .rating
 .creator-link>div:first-child{min-width:0}
 .creator-link p{font-size:13px;overflow-wrap:anywhere;word-break:break-word;color:var(--paper);margin:10px 0 0;line-height:1.6}
 .creator-link-actions{display:flex;gap:8px;flex-shrink:0}
-body[data-started=true] .hero,body[data-started=true] .marquee-line,body[data-started=true] .creator{display:none!important}
+body[data-started=true] .hero,body[data-started=true] .marquee-line{display:none!important}
 body[data-started=true] .survey{padding-top:43px}
 body[data-shared=true] .hero,body[data-shared=true] .marquee-line,body[data-shared=true] .creator{display:none!important}
 body[data-shared=true] .survey{padding-top:43px}
