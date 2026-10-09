@@ -189,9 +189,10 @@ const PREF_GROUPS=[
 ['confirmShare','includeDate','detailedReport','showStatistics','anonymous']
 ];
 let prefs={...DEFAULTS};
-let state={started:isShared,step:0,ratings:Array(surveyMode==='technical'?11:8).fill(0),watched:'',confirmed:'',emotion:'',name:'',notes:''};
+let state={started:isShared,step:0,ratings:Array(surveyMode==='technical'?11:8).fill(0),watched:'',confirmed:'',emotion:'',name:'',notes:'',lied:false};
 let creatorMode='personal',generatedLink='',returnFocus=null,modalOpen=false,toastTimer=null,audio=null,busy=false,posterCache=null,posterPreflight=null;
-const t=()=>Object.assign({},T[prefs.language]||T.it,COPY[prefs.language]||COPY.it);
+const VERIFY={"it":{"seenOptions":["Sì, integralmente","Quasi tutto, tecnicamente","No, ma ho un’opinione","Non posso confermare"],"confirmOptions":["Sì","La confermo sotto pressione","Preferisco non rispondere"],"integrityLabel":"bugiardo"},"en":{"seenOptions":["Yes, every second","Almost all of it, technically","No, but I have an opinion","I cannot confirm"],"confirmOptions":["Yes","I confirm, under pressure","I would rather not answer"],"integrityLabel":"liar"},"es":{"seenOptions":["Sí, por completo","Casi todo, técnicamente","No, pero tengo una opinión","No puedo confirmarlo"],"confirmOptions":["Sí","Lo confirmo bajo presión","Prefiero no responder"],"integrityLabel":"mentiroso"},"zh":{"seenOptions":["是的，全部看完","基本看完了","没有，但我有意见","无法确认"],"confirmOptions":["是的","在压力下确认","不愿回答"],"integrityLabel":"说谎者"},"fr":{"seenOptions":["Oui, intégralement","Presque tout, techniquement","Non, mais j’ai un avis","Impossible de confirmer"],"confirmOptions":["Oui","Je confirme sous pression","Je préfère ne pas répondre"],"integrityLabel":"menteur"},"de":{"seenOptions":["Ja, vollständig","Fast alles, technisch gesehen","Nein, aber ich habe eine Meinung","Kann ich nicht bestätigen"],"confirmOptions":["Ja","Ich bestätige unter Druck","Keine Antwort"],"integrityLabel":"Lügner"},"pt":{"seenOptions":["Sim, por completo","Quase tudo, tecnicamente","Não, mas tenho uma opinião","Não posso confirmar"],"confirmOptions":["Sim","Confirmo sob pressão","Prefiro não responder"],"integrityLabel":"mentiroso"},"ja":{"seenOptions":["はい、全部見た","ほぼ全部、技術的には","いいえ、でも意見はある","確認できない"],"confirmOptions":["はい","圧力の下で確認","回答を控える"],"integrityLabel":"うそつき"}};
+const t=()=>Object.assign({},T[prefs.language]||T.it,COPY[prefs.language]||COPY.it,VERIFY[prefs.language]||VERIFY.it);
 const questions=()=>surveyMode==='technical'?QUESTIONS[prefs.language].concat(TECH[prefs.language]):QUESTIONS[prefs.language];
 const sections=()=>surveyMode==='technical'?GROUPS.concat([[8,9,10]]):GROUPS;
 const reportStep=()=>sections().length+2;
@@ -200,11 +201,14 @@ function safeGet(key){try{return JSON.parse(localStorage.getItem(key)||'null')}c
 function savePrefs(){try{localStorage.setItem(PREF_KEY,JSON.stringify(prefs))}catch(e){}}
 function saveState(){try{if(prefs.saveAnswers){localStorage.setItem(DRAFT_KEY,JSON.stringify(Object.assign({},state,{step:prefs.rememberStep?state.step:0}))) }else{localStorage.removeItem(DRAFT_KEY)}}catch(e){}}
 function restore(){const p=safeGet(PREF_KEY);if(p&&typeof p==='object'){for(const key of Object.keys(DEFAULTS)){if(typeof p[key]===typeof DEFAULTS[key])prefs[key]=p[key]}}
-const d=safeGet(DRAFT_KEY);if(d&&typeof d==='object'){state.started=!!d.started||isShared;state.step=prefs.rememberStep&&Number.isInteger(d.step)?Math.min(reportStep(),Math.max(0,d.step)):0;const votes=Array.isArray(d.ratings)?d.ratings:[];state.ratings=state.ratings.map((_,i)=>Number.isInteger(votes[i])&&votes[i]>=1&&votes[i]<=5?votes[i]:0);for(const key of ['watched','confirmed','emotion','name','notes']){if(typeof d[key]==='string')state[key]=d[key].slice(0,key==='notes'?1200:100)}}}
+const d=safeGet(DRAFT_KEY);if(d&&typeof d==='object'){state.started=!!d.started||isShared;state.step=prefs.rememberStep&&Number.isInteger(d.step)?Math.min(reportStep(),Math.max(0,d.step)):0;const votes=Array.isArray(d.ratings)?d.ratings:[];state.ratings=state.ratings.map((_,i)=>Number.isInteger(votes[i])&&votes[i]>=1&&votes[i]<=5?votes[i]:0);for(const key of ['watched','confirmed','emotion','name','notes']){if(typeof d[key]==='string')state[key]=d[key].slice(0,key==='notes'?1200:100)}state.lied=!!d.lied && !!state.watched}}
 function toast(msg){const node=$('toast');node.textContent=msg;node.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>node.classList.remove('show'),3000)}
 function tone(rating=false){if(prefs.haptics&&navigator.vibrate)navigator.vibrate(rating?13:6);if(!prefs.sounds)return;try{const C=window.AudioContext||window.webkitAudioContext;if(!C)return;if(!audio)audio=new C();if(audio.state==='suspended')audio.resume().catch(()=>{});const now=audio.currentTime,osc=audio.createOscillator(),g=audio.createGain();osc.type=rating?'triangle':'sine';osc.frequency.setValueAtTime(rating?440:660,now);osc.frequency.linearRampToValueAtTime(rating?620:760,now+.07);g.gain.setValueAtTime(.035,now);g.gain.exponentialRampToValueAtTime(.0001,now+.105);osc.connect(g);g.connect(audio.destination);osc.start();osc.stop(now+.11)}catch(e){}}
-function appearance(){const theme=prefs.theme==='system'&&window.matchMedia?window.matchMedia('(prefers-color-scheme: light)').matches?'light':'dark':prefs.theme;for(const [key,val] of Object.entries({theme,vision:prefs.vision,accent:prefs.accent,contrast:prefs.highContrast,reduced:prefs.reducedMotion,compact:prefs.compact,reading:prefs.readingMode,large:prefs.largeText,started:state.started,shared:isShared})){document.body.dataset[key]=String(val)}
+function appearance(){const theme=prefs.theme==='system'&&window.matchMedia?window.matchMedia('(prefers-color-scheme: light)').matches?'light':'dark':prefs.theme;for(const [key,val] of Object.entries({theme,vision:prefs.vision,accent:prefs.accent,contrast:prefs.highContrast,reduced:prefs.reducedMotion,compact:prefs.compact,reading:prefs.readingMode,large:prefs.largeText,started:state.started,shared:isShared,lied:state.lied})){document.body.dataset[key]=String(val)}
 $('progressTrack').hidden=!prefs.showProgress;
+$('reviewShell').dataset.lied=String(state.lied);
+$('integrityNote').hidden=!state.lied;
+$('integrityNote').textContent=t().integrityLabel;
 const meta=document.querySelector('meta[name="theme-color"]');if(meta)meta.content=theme==='light'?'#f2f0e8':'#111418'}
 function staticText(){document.documentElement.lang=prefs.language;document.querySelectorAll('[data-i18n]').forEach(node=>{const value=t()[node.dataset.i18n];if(typeof value==='string')node.textContent=value});$('settingsOpen').setAttribute('aria-label',t().settingsTitle);document.title='Content Review · SwadyaSpace'}
 function renderSettings(){const l=t();let html='';
@@ -223,10 +227,11 @@ if(prefs.includeDate)out.push(new Date().toLocaleDateString(prefs.language));
 if(prefs.detailedReport){out.push('');questions().forEach((q,i)=>out.push(String(i+1)+'. '+q[0]+' — '+(state.ratings[i]||l.noRating)+'/5'+(state.ratings[i]?' · '+q[2][state.ratings[i]-1]:'')))}
 out.push('',l.watchedReport+': '+optValue('watched',l.seenOptions),l.confirmationReport+': '+optValue('confirmed',l.confirmOptions),l.emotionReport+': '+optValue('emotion',l.emotionOptions));
 if(state.notes.trim())out.push(l.commentReport+': '+state.notes.trim());
+if(state.lied)out.push(l.integrityLabel);
 out.push('',l.reportFooter);
 return out.join('\n')}
 function poster(){const l=t(),r=reportInfo(),nm=prefs.anonymous?l.anonymousName:state.name.trim(),fields=[['seen',l.watchedReport,l.seenOptions],['emotion',l.emotionReport,l.emotionOptions]];
-return '<div id="reportCapture" class="report-poster" role="img" aria-label="'+escapeHtml(l.reportReady)+'"><div class="poster-deco" aria-hidden="true">◎</div><div class="poster-kicker"><span>SWADYASPACE / CONTENT REVIEW</span><span>CR—'+String(r.count).padStart(2,'0')+'</span></div><div class="poster-main"><div class="stage-eyebrow">'+escapeHtml(l.reportEyebrow)+'</div><h3 class="poster-title">'+escapeHtml(l.reportReady)+'</h3><div class="poster-score-row"><div><div class="poster-score-label">'+escapeHtml(l.scoreLabel)+'</div><div class="poster-score">'+r.mean.toFixed(2)+'<small>/5</small></div></div><div class="poster-verdict">'+escapeHtml(r.verdict)+'</div></div></div>'+(prefs.showStatistics?'<div class="poster-rows">'+r.parts.map((p,i)=>'<div class="poster-row"><span>'+escapeHtml(p.label)+'</span><div class="poster-track"><span style="width:'+(100*p.avg/5).toFixed(1)+'%"></span></div><strong>'+p.avg.toFixed(1)+'</strong></div>').join('')+'</div>':'')+'<div class="poster-details">'+fields.map(([k,label,opts])=>'<div><small>'+escapeHtml(label)+'</small><span>'+escapeHtml(optValue(k,opts))+'</span></div>').join('')+'</div>'+(state.notes.trim()?'<div class="poster-quote">'+escapeHtml(state.notes.trim())+'</div>':'')+(nm?'<div class="poster-signature">'+escapeHtml(l.nameReport)+': <strong>'+escapeHtml(nm)+'</strong></div>':'')+'<div class="poster-foot"><strong>C/R</strong><span>CONTENT REVIEW · 2026</span>'+(prefs.includeDate?'<span>'+escapeHtml(new Date().toLocaleDateString(prefs.language))+'</span>':'')+'</div></div>'}
+return '<div id="reportCapture" class="report-poster'+(state.lied?' is-liar':'')+'" role="img" aria-label="'+escapeHtml(l.reportReady)+'"><div class="poster-deco" aria-hidden="true">◎</div><div class="poster-kicker"><span>SWADYASPACE / CONTENT REVIEW</span><span>CR—'+String(r.count).padStart(2,'0')+'</span></div><div class="poster-main"><div class="stage-eyebrow">'+escapeHtml(l.reportEyebrow)+'</div><h3 class="poster-title">'+escapeHtml(l.reportReady)+'</h3><div class="poster-score-row"><div><div class="poster-score-label">'+escapeHtml(l.scoreLabel)+'</div><div class="poster-score">'+r.mean.toFixed(2)+'<small>/5</small></div></div><div class="poster-verdict">'+escapeHtml(r.verdict)+'</div></div></div>'+(prefs.showStatistics?'<div class="poster-rows">'+r.parts.map((p,i)=>'<div class="poster-row"><span>'+escapeHtml(p.label)+'</span><div class="poster-track"><span style="width:'+(100*p.avg/5).toFixed(1)+'%"></span></div><strong>'+p.avg.toFixed(1)+'</strong></div>').join('')+'</div>':'')+'<div class="poster-details">'+fields.map(([k,label,opts])=>'<div><small>'+escapeHtml(label)+'</small><span>'+escapeHtml(optValue(k,opts))+'</span></div>').join('')+'</div>'+(state.notes.trim()?'<div class="poster-quote">'+escapeHtml(state.notes.trim())+'</div>':'')+(nm?'<div class="poster-signature">'+escapeHtml(l.nameReport)+': <strong>'+escapeHtml(nm)+'</strong></div>':'')+'<div class="poster-foot"><strong>C/R</strong><span>CONTENT REVIEW · 2026</span>'+(prefs.includeDate?'<span>'+escapeHtml(new Date().toLocaleDateString(prefs.language))+'</span>':'')+'</div>'+(state.lied?'<div class="poster-lie">'+escapeHtml(l.integrityLabel)+'</div>':'')+'</div>'}
 function exportActions(){const l=t();return '<div class="export-main"><button class="hero-cta share-image" type="button" data-action="shareImage"><span>'+escapeHtml(l.imageShare)+'</span><span>↗</span></button></div><details class="export-menu"><summary>'+escapeHtml(l.moreExports)+' <span>＋</span></summary><div class="export-grid">'+[['downloadPng',l.savePng],['copyPng',l.copyPng],['downloadSvg',l.saveSvg],['downloadCsv',l.saveCsv],['downloadJson',l.saveJson],['copyText',l.textCopy],['shareText',l.textShare],['print',l.print]].map(([key,label])=>'<button class="btn" type="button" data-action="'+key+'">'+escapeHtml(label)+'</button>').join('')+'</div></details>'}
 function render(){
 const l=t(),sectionsList=sections(),end=reportStep(),n=state.step,total=end;
@@ -236,7 +241,7 @@ $('next').hidden=n===end;$('next').querySelector('span').textContent=n===end-1?l
 $('resetCorner').title=l.restart;$('resetCorner').setAttribute('aria-label',l.restart);
 let html='';
 if(n<sectionsList.length){const indexes=sectionsList[n],title=l.stageTitles[n===3?3:n];html='<div class="stage-eyebrow">'+escapeHtml(l.phase)+' '+String(n+1).padStart(2,'0')+'</div><h3 class="stage-title">'+escapeHtml(title)+'</h3>'+indexes.map(questionMarkup).join('')}
-else if(n===sectionsList.length){html='<div class="stage-eyebrow">'+escapeHtml(l.phase)+' '+String(n+1).padStart(2,'0')+'</div><h3 class="stage-title">'+escapeHtml(l.stageTitles[4])+'</h3>'+optionsMarkup('watched',l.seen,l.seenOptions)+optionsMarkup('confirmed',l.confirmSeen,l.confirmOptions)+optionsMarkup('emotion',l.emotion,l.emotionOptions)}
+else if(n===sectionsList.length){html='<div class="stage-eyebrow">'+escapeHtml(l.phase)+' '+String(n+1).padStart(2,'0')+'</div><h3 class="stage-title">'+escapeHtml(l.stageTitles[4])+'</h3>'+optionsMarkup('watched',l.seen,l.seenOptions)+'<div id="confirmFollowup" class="followup" '+(state.watched?'':'hidden')+'>'+optionsMarkup('confirmed',l.confirmSeen,l.confirmOptions)+'</div>'+optionsMarkup('emotion',l.emotion,l.emotionOptions)}
 else if(n===end-1){html='<div class="stage-eyebrow">'+escapeHtml(l.phase)+' '+String(n+1).padStart(2,'0')+'</div><h3 class="stage-title">'+escapeHtml(l.stageTitles[5])+'</h3><div class="field"><label for="reviewer">'+escapeHtml(l.name)+'</label><input class="input" id="reviewer" maxlength="100" data-input="name" placeholder="'+escapeHtml(l.namePlaceholder)+'" value="'+escapeHtml(state.name)+'" autocomplete="off"></div><div class="field"><label for="notes">'+escapeHtml(l.notes)+'</label><textarea id="notes" maxlength="1200" data-input="notes" placeholder="'+escapeHtml(l.notesPlaceholder)+'">'+escapeHtml(state.notes)+'</textarea></div>'}
 else html=poster()+exportActions();
 $('stageContent').innerHTML=html;
@@ -247,9 +252,32 @@ function go(step){state.step=Math.max(0,Math.min(reportStep(),step));state.start
 function start(){state.started=true;go(state.step)}
 function next(){if(state.step<sections().length&&!prefs.allowSkip&&sections()[state.step].some(i=>!state.ratings[i])){toast(t().missing);return}
 if(state.step===reportStep()-1&&!state.ratings.some(Boolean)){toast(t().missingOverall);return}if(state.step<reportStep()){tone();go(state.step+1)}}
-function resetState(){state={started:true,step:0,ratings:Array(questions().length).fill(0),watched:'',confirmed:'',emotion:'',name:'',notes:''};try{localStorage.removeItem(DRAFT_KEY)}catch(e){}render();saveState();toast(t().resetToast);$('survey').scrollIntoView({behavior:'auto'})}
+function resetState(){state={started:true,step:0,ratings:Array(questions().length).fill(0),watched:'',confirmed:'',emotion:'',name:'',notes:'',lied:false};try{localStorage.removeItem(DRAFT_KEY)}catch(e){}render();saveState();toast(t().resetToast);$('survey').scrollIntoView({behavior:'auto'})}
 function onRate(btn){const index=Number(btn.dataset.rate),v=Number(btn.dataset.value),q=questions()[index];state.ratings[index]=v;tone(true);const question=btn.closest('[data-question]');question.querySelectorAll('[data-rate]').forEach(b=>{const x=Number(b.dataset.value);b.dataset.filled=String(x<=v);b.setAttribute('aria-pressed',String(x===v))});question.querySelector('.choice-description').textContent=q[2][v-1];progress();saveState()}
-function onOption(btn){const key=btn.dataset.option;state[key]=btn.dataset.value;tone();btn.closest('.option-choices').querySelectorAll('[data-option]').forEach(b=>b.setAttribute('aria-pressed',String(b===btn)));saveState()}
+function integrityViolation(){
+ state.lied=true;posterCache=null;saveState();appearance();
+ const survey=$('survey');
+ document.body.classList.remove('integrity-flash');survey.classList.remove('integrity-shake');
+ void document.body.offsetWidth;
+ document.body.classList.add('integrity-flash');
+ if(!prefs.reducedMotion)survey.classList.add('integrity-shake');
+ if(prefs.haptics&&navigator.vibrate)navigator.vibrate([55,45,90]);
+ window.setTimeout(()=>{document.body.classList.remove('integrity-flash');survey.classList.remove('integrity-shake')},650);
+}
+function onOption(btn){
+ const key=btn.dataset.option,value=btn.dataset.value;
+ if(key==='watched'&&state.watched!==''){
+   if(state.watched!==value)integrityViolation();
+   return;
+ }
+ state[key]=value;tone();
+ btn.closest('.option-choices').querySelectorAll('[data-option]').forEach(b=>b.setAttribute('aria-pressed',String(b===btn)));
+ if(key==='watched'){
+   const follow=$('confirmFollowup');
+   if(follow){follow.hidden=false;follow.classList.add('is-revealed')}
+ }
+ saveState();
+}
 function settingChange(key,value){if(!(key in DEFAULTS))return;prefs[key]=value;savePrefs();if(key==='saveAnswers'&&!value){try{localStorage.removeItem(DRAFT_KEY)}catch(e){}}if(key==='language'){renderSettings();render();return}if(key==='theme'||key==='vision'||key==='accent'||key==='largeText'||key==='highContrast'||key==='reducedMotion'||key==='showProgress'||key==='readingMode'||key==='compact'){posterCache=null;appearance();if(state.step===reportStep())render();return}render()}
 function newId(){const arr=new Uint8Array(12);if(window.crypto&&crypto.getRandomValues)crypto.getRandomValues(arr);else for(let i=0;i<arr.length;i++)arr[i]=Math.floor(Math.random()*256);return Array.from(arr,b=>b.toString(16).padStart(2,'0')).join('')}
 function generate(){const url=new URL(location.pathname,location.href);url.searchParams.set('q',newId());url.searchParams.set('mode',creatorMode);generatedLink=url.href;$('createdLinkText').textContent=url.href;$('createdLinkBox').hidden=false;tone();toast(t().linkGenerated);$('createdLinkBox').scrollIntoView({behavior:prefs.reducedMotion?'auto':'smooth',block:'nearest'})}
@@ -264,12 +292,17 @@ else{downloadBlob(blob,'content-review.png');toast(t().shareChoose)}
 finally{busy=false;if(button)button.disabled=false}}
 async function copyText(value){try{if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(value)}else{const ta=document.createElement('textarea');ta.value=value;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();const ok=document.execCommand('copy');ta.remove();if(!ok)throw Error('copy failed')}toast(value===generatedLink?t().linkCopied:t().copied)}catch(e){toast(t().failedCopy)}}
 async function shareText(text,url){if(navigator.share){try{await navigator.share(url?{title:'Content Review',url}:{title:'Content Review',text})}catch(e){if(e.name!=='AbortError')toast(t().shareError)}}else if(url)await copyText(url);else{const a=document.createElement('a');a.href='https://api.whatsapp.com/send?text='+encodeURIComponent(text);a.target='_blank';a.rel='noopener noreferrer';a.click()}}
-function downloadJson(){downloadBlob(new Blob([JSON.stringify({type:surveyMode,rating:reportInfo().mean,questions:questions().map((q,i)=>({question:q[0],rating:state.ratings[i],description:state.ratings[i]?q[2][state.ratings[i]-1]:''})),watched:state.watched,confirmed:state.confirmed,emotion:state.emotion,name:prefs.anonymous?'':state.name,notes:state.notes},null,2)],{type:'application/json'}),'content-review.json')}
+function downloadJson(){downloadBlob(new Blob([JSON.stringify({type:surveyMode,rating:reportInfo().mean,questions:questions().map((q,i)=>({question:q[0],rating:state.ratings[i],description:state.ratings[i]?q[2][state.ratings[i]-1]:''})),watched:state.watched,confirmed:state.confirmed,emotion:state.emotion,lied:state.lied,name:prefs.anonymous?'':state.name,notes:state.notes},null,2)],{type:'application/json'}),'content-review.json')}
 function downloadCsv(){const rows=[['question','rating','description'],...questions().map((q,i)=>[q[0],state.ratings[i]||'',state.ratings[i]?q[2][state.ratings[i]-1]:''])];downloadBlob(new Blob(['\uFEFF'+rows.map(row=>row.map(x=>'"'+String(x).replace(/"/g,'""')+'"').join(',')).join('\r\n')],{type:'text/csv;charset=utf-8'}),'content-review.csv')}
 function handleAction(action){switch(action){case 'shareImage':case 'downloadPng':case 'copyPng':case 'downloadSvg':imageAction(action);break;case 'downloadJson':downloadJson();break;case 'downloadCsv':downloadCsv();break;case 'copyText':copyText(reportText());break;case 'shareText':shareText(reportText());break;case 'print':window.print();break;case 'resetPrefs':if(confirm(t().settingsReset+'?')){prefs={...DEFAULTS};savePrefs();renderSettings();render();toast(t().optionsReset)}break;case 'resetState':if(confirm(t().resetConfirm)){resetState();closeSettings()}break}}
 restore();appearance();staticText();render();if(isShared||state.started){window.requestAnimationFrame(()=>window.scrollTo({top:0,behavior:'instant'}))}
 $('startButton').addEventListener('click',start);
-$('createJump').addEventListener('click',()=>$('creator').scrollIntoView({behavior:prefs.reducedMotion?'auto':'smooth',block:'start'}));
+$('createJump').addEventListener('click',()=>{
+ const creator=$('creator'),opening=creator.hidden;
+ creator.hidden=!opening;
+ $('createJump').setAttribute('aria-expanded',String(opening));
+ if(opening)creator.scrollIntoView({behavior:prefs.reducedMotion?'auto':'smooth',block:'start'});
+});
 $('settingsOpen').addEventListener('click',openSettings);$('settingsClose').addEventListener('click',closeSettings);$('settingsDone').addEventListener('click',closeSettings);$('settingsBackdrop').addEventListener('click',closeSettings);
 $('next').addEventListener('click',next);$('previous').addEventListener('click',()=>go(state.step-1));
 $('resetCorner').addEventListener('click',resetState);
