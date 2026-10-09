@@ -177,9 +177,9 @@ body[data-started=true] .survey{padding:0}
   --paper: #f3f1ea;
   --muted: #b6bdca;
   --line: rgba(239,241,245,.20);
-  --acid: #d6f17b;
-  --accent: #d6f17b;
-  --electric: #6475df;
+  --acid: #d9f669;
+  --accent: #d9f669;
+  --electric: #6275e9;
 }
 body {
   background:
