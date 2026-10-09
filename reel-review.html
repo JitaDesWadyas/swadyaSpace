@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#111418">
+<meta name="theme-color" content="#090b17">
 <meta name="description" content="Content Review — un modo semplice e dettagliato per recensire un contenuto.">
 <title>Content Review · SwadyaSpace</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="reel-review.css?v=6">
+<link rel="stylesheet" href="reel-review.css?v=7">
 <script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.13/dist/html-to-image.min.js" defer></script>
-<script src="reel-review.js?v=6" defer></script>
+<script src="reel-review.js?v=7" defer></script>
 </head>
 <body data-theme="dark" data-accent="classic" data-vision="normal">
 <a class="skip" href="#survey" data-i18n="skip">Vai alla recensione</a>
@@ -23,10 +23,7 @@
   <div class="hero-copy"><span class="eyebrow" data-i18n="heroEyebrow">CONTENT REVIEW / EDIZIONE 2026</span>
     <h1 id="heroTitle"><span data-i18n="heroLine1">LA TUA</span><span data-i18n="heroLine2">RECENSIONE</span><span data-i18n="heroLine3">CONTA.</span></h1>
     <p class="hero-sub" data-i18n="heroDesc">Un questionario per capire cosa hai pensato davvero del contenuto che hai ricevuto.</p>
-    <div class="hero-actions">
-      <button class="hero-cta" type="button" id="startButton"><span data-i18n="start">Inizia la recensione</span><span aria-hidden="true">↘</span></button>
-      <button class="btn hero-outline" type="button" id="createJump"><span data-i18n="createButton">Crea questionario</span><span aria-hidden="true">↗</span></button>
-    </div>
+    <div class="hero-actions"><button class="hero-cta" type="button" id="startButton"><span data-i18n="start">Inizia la recensione</span><span aria-hidden="true">↘</span></button></div>
   </div>
   <div class="hero-decoration" aria-hidden="true"><div class="orbit"><div class="orbit-center">5<sup>/5</sup></div></div><div class="orbit-stamp">MAKE IT<br>COUNT.</div></div>
 </section>
@@ -42,17 +39,18 @@
   </div>
 </section>
 
-<section id="creator" class="creator" aria-labelledby="creatorTitle">
+<section id="creator" class="creator" aria-labelledby="creatorTitle" hidden>
   <div class="creator-head"><div><span class="eyebrow" data-i18n="creatorEyebrow">CREAZIONE / CONDIVISIONE</span><h2 id="creatorTitle" data-i18n="creatorTitle">CREA UN QUESTIONARIO.</h2></div><p data-i18n="creatorDesc">Scegli il tipo di valutazione, genera un link e invialo. Chi lo apre comincia da zero; se torna, ritrova le proprie risposte.</p></div>
   <div class="creator-types" role="group" aria-label="Tipo di questionario"><button class="creator-type" type="button" data-mode="personal" aria-pressed="true"><span class="creator-type-mark">01 /</span><strong data-i18n="personalTitle">Esperienza personale</strong><span data-i18n="personalDesc">Reazioni, interesse, risate, attenzione e impatto.</span><span class="creator-type-arrow">↗</span></button><button class="creator-type" type="button" data-mode="technical" aria-pressed="false"><span class="creator-type-mark">02 /</span><strong data-i18n="technicalTitle">Analisi tecnica</strong><span data-i18n="technicalDesc">Esperienza personale e domande su realizzazione e qualità.</span><span class="creator-type-arrow">↗</span></button></div>
   <div class="creator-actions"><button type="button" id="createLink" class="hero-cta"><span data-i18n="generateLink">Genera link</span><span aria-hidden="true">↗</span></button><p id="creatorInfo" data-i18n="creatorInfo">Ogni link identifica un questionario indipendente.</p></div>
   <div class="creator-link" id="createdLinkBox" hidden><div><span class="eyebrow" data-i18n="generatedLinkLabel">LINK DEL QUESTIONARIO</span><p id="createdLinkText"></p></div><div class="creator-link-actions"><button id="copyLink" type="button" class="btn primary" data-i18n="copyLink">Copia link</button><button id="shareLink" type="button" class="btn" data-i18n="shareLink">Condividi</button></div></div>
 </section>
 </main>
-<footer class="foot"><span>CONTENT REVIEW © 2026 · SWADYASPACE</span><span data-i18n="footerText">Designed for better feedback.</span><a href="index.html" data-i18n="backHome">← SwadyaSpace</a></footer>
+<footer class="foot"><span>CONTENT REVIEW © 2026 · SWADYASPACE</span><button type="button" id="createJump" class="footer-create" aria-controls="creator" aria-expanded="false"><span data-i18n="createButton">Crea questionario</span> <span aria-hidden="true">↗</span></button><a href="index.html" data-i18n="backHome">← SwadyaSpace</a></footer>
 
 <div class="modal-backdrop" id="settingsBackdrop"></div>
 <aside class="settings-dialog" id="settingsDialog" role="dialog" aria-modal="true" aria-labelledby="settingsTitle" aria-hidden="true" tabindex="-1"><div class="settings-head"><div><span class="eyebrow" data-i18n="settingsEyebrow">PERSONALIZZAZIONE</span><h2 id="settingsTitle" data-i18n="settingsTitle">IMPOSTAZIONI.</h2></div><button id="settingsClose" type="button" class="close" aria-label="Chiudi impostazioni">×</button></div><div class="settings-scroll" id="settingsContent"></div><div class="settings-foot"><span data-i18n="savedLocally">Le preferenze vengono salvate sul dispositivo.</span><button class="btn primary" id="settingsDone" type="button" data-i18n="done">Fatto ✓</button></div></aside>
+<div class="integrity-note" id="integrityNote" role="status" aria-live="polite" hidden>bugiardo</div>
 <div class="toast" role="status" id="toast" aria-live="polite"></div>
 <noscript><p style="padding:20px">Attiva JavaScript per compilare il questionario.</p></noscript>
 </body></html>
