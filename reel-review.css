@@ -553,3 +553,6 @@ body.integrity-flash:after {
     position:relative!important;
   }
 }
+
+/* V12: a completed review is read-only, but remains shareable. */
+.review-shell .review-buttons [hidden],.review-shell .reset-corner[hidden]{display:none!important}
