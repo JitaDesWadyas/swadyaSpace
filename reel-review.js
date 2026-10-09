@@ -1,19 +1,14 @@
 (() => {
 'use strict';
 const $ = id => document.getElementById(id);
-const STORAGE_PREFS='content-review-prefs-v4';
-const STORAGE_DRAFT='content-review-draft-v4';
-const DEFAULTS={language:'it',theme:'dark',vision:'normal',accent:'classic',largeText:false,highContrast:false,reducedMotion:false,sounds:false,haptics:false,saveAnswers:true,rememberStep:true,showProgress:true,showHints:true,showLegends:true,institutionalHumor:true,compact:false,readingMode:false,confirmShare:false,includeDate:true,detailedReport:true,showStatistics:true,anonymous:false,allowSkip:false,keyboard:false};
-const Q={
-it:['Quanto ti ha interessato?','Quanto ti ha intrattenuto?','Quanto volevi arrivare alla fine?','Qualità del montaggio','Qualità dell’audio','Chiarezza del contenuto','Originalità dell’idea','Ritmo generale','Quanto ti ha sorpreso?','Quanto era divertente?','Quanto ti è rimasto in testa?','Lo riguarderesti volentieri?','Lo consiglieresti a qualcuno?','È valso il tempo impiegato?','Voto complessivo, senza pressioni.'],
-en:['How interesting was it?','How entertaining was it?','How much did you want to finish it?','Editing quality','Audio quality','Content clarity','Originality of the idea','Overall pacing','How surprising was it?','How funny was it?','How memorable was it?','Would you watch it again?','Would you recommend it?','Was it worth your time?','Overall rating, no pressure.'],
-es:['¿Cuánto te interesó?','¿Cuánto te entretuvo?','¿Cuánto querías verlo hasta el final?','Calidad del montaje','Calidad del audio','Claridad del contenido','Originalidad de la idea','Ritmo general','¿Cuánto te sorprendió?','¿Cuánto te hizo reír?','¿Cuánto lo recordarás?','¿Lo volverías a ver?','¿Lo recomendarías?','¿Valió la pena tu tiempo?','Nota general, sin presiones.'],
-zh:['你觉得有多有趣？','它有多吸引你？','你有多想看完？','剪辑质量','音频质量','内容清晰度','创意原创性','整体节奏','它有多让你惊喜？','它有多好笑？','你有多难忘？','你愿意再看一遍吗？','你愿意推荐吗？','值得花时间吗？','总体评分，不施加压力。'],
-fr:['À quel point était-ce intéressant ?','À quel point était-ce divertissant ?','Avais-tu envie de voir la fin ?','Qualité du montage','Qualité du son','Clarté du contenu','Originalité de l’idée','Rythme général','Était-ce surprenant ?','Était-ce drôle ?','Était-ce mémorable ?','Le regarderais-tu encore ?','Le recommanderais-tu ?','Cela valait-il ton temps ?','Note globale, sans pression.'],
-de:['Wie interessant war es?','Wie unterhaltsam war es?','Wie sehr wolltest du es zu Ende sehen?','Schnittqualität','Audioqualität','Verständlichkeit','Originalität der Idee','Allgemeines Tempo','Wie überraschend war es?','Wie lustig war es?','Wie einprägsam war es?','Würdest du es erneut ansehen?','Würdest du es empfehlen?','War es deine Zeit wert?','Gesamtbewertung, ganz ohne Druck.'],
-pt:['Quanto te interessou?','Quanto te entreteve?','Quanto quiseste ver até ao fim?','Qualidade da edição','Qualidade do áudio','Clareza do conteúdo','Originalidade da ideia','Ritmo geral','Quanto te surpreendeu?','Quanto te fez rir?','Quanto ficou na memória?','Voltarias a ver?','Recomendarias a alguém?','Valeu o teu tempo?','Nota geral, sem pressão.'],
-ja:['どれくらい興味を持った？','どれくらい楽しめた？','最後まで見たいと思った？','編集の質','音声の質','内容の分かりやすさ','アイデアの独創性','全体のテンポ','どれくらい驚いた？','どれくらい面白かった？','印象に残った？','もう一度見たい？','人にすすめたい？','時間を使う価値はあった？','総合評価。圧力はありません。']
-};
+const PARAMS = new URLSearchParams(location.search);
+const incomingId = PARAMS.get('q');
+const questionnaireId = incomingId && /^[A-Za-z0-9_-]{8,50}$/.test(incomingId) ? incomingId : 'local';
+const surveyMode = PARAMS.get('mode') === 'technical' ? 'technical' : 'personal';
+const isShared = questionnaireId !== 'local';
+const PREF_KEY='content-review:preferences:v6';
+const DRAFT_KEY='content-review:answers:v6:'+questionnaireId+':'+surveyMode;
+const DEFAULTS={language:'it',theme:'dark',vision:'normal',accent:'classic',largeText:false,highContrast:false,reducedMotion:false,sounds:true,haptics:true,saveAnswers:true,rememberStep:true,showProgress:true,showHints:true,showLegends:false,institutionalHumor:false,compact:false,readingMode:false,confirmShare:false,includeDate:true,detailedReport:true,showStatistics:true,anonymous:false,allowSkip:false,keyboard:false};
 const T={
 it:{
 skip:'Vai alla valutazione',settingsShort:'Opzioni',heroEyebrow:'DIPARTIMENTO DI OPINIONI NON RICHIESTE · EST. 2026',heroLine1:'NE VALEVA',heroLine2:'LA PENA?',heroLine3:'DAVVERO.',heroDesc:'Hai ricevuto un contenuto. È arrivato il momento di valutarlo con un rigore completamente ingiustificato. Ci vogliono circa due minuti.',start:'Inizia la valutazione',surveyEyebrow:'IL QUESTIONARIO / EDIZIONE SPECIALE',surveyTitle:'METTI A VERBALE.',surveyAside:'Nessun account. Nessun voto pubblico. Nessun motivo concreto per tutta questa procedura.',settingsEyebrow:'AREA RISERVATA A CHI INSISTE',settingsTitle:'IMPOSTAZIONI.',savedLocally:'Preferenze salvate solo su questo dispositivo.',done:'Fatto ✓',back:'Indietro',next:'Continua',strip1:'GIUDIZIO / PERCEZIONE',strip2:'DICHIARAZIONI / VERDETTO',strip3:'SERISSIMO (NON VERIFICATO)',footerText:'Nessuna autorità competente è stata consultata.',backHome:'← Torna a SwadyaSpace',
@@ -81,191 +76,213 @@ name:'評価者名（任意）',namePlaceholder:'何とお呼びしましょう�
 reportEyebrow:'作成済み / 個人利用',reportReady:'評価完了',scoreLabel:'平均点',reportSummary:'委員会のまとめ',ratingCount:'記録された評価',reportCategory:['関心','技術的品質','発想とテンポ','印象','総合評価'],verdicts:['委員会は再視聴を推奨しません。','懸念点が見つかりました。誰にも通知していません。','まずまずの結果です。保管可能です。','十分に良い内容です。審査終了。','全面承認。委員会はほどほどに感心しています。'],whatsapp:'WhatsApp で共有 ↗',copy:'レポートをコピー',nativeShare:'他のアプリ',download:'JSONを保存',print:'印刷',preview:'レポートのプレビュー',noRating:'なし',anonymousName:'非公開',reportFooter:'この文書に法的効力も存在意義もありません。',reportTitle:'CONTENT REVIEW — レポート',evaluation:'評価',finalScore:'平均',watchedReport:'最後まで視聴',confirmationReport:'確認',emotionReport:'感情',commentReport:'コメント',nameReport:'評価者',notProvided:'未記入',shareConfirm:'WhatsApp でレポートを開きますか？',copied:'レポートをコピーしました。',failedCopy:'コピーできません。共有してください。',settingsReset:'設定をリセット',clearAnswers:'回答を削除',resetConfirm:'この端末の回答をすべて削除しますか？',resetDone:'回答を削除しました。',optionsReset:'設定を初期化しました。',continueFirst:'このセクションを完了してください。',shareError:'このブラウザでは共有できません。',saved:'端末に保存済み',instructions:'すべての設定は独立していて任意です。',keyboardHint:'ショートカット：1～5キーで評価。',
 groups:['言語と見た目','アクセシビリティ','操作','アンケートとプライバシー','レポートと共有'],settings:{language:'表示言語',theme:'テーマ',vision:'色覚モード',accent:'アクセント色',largeText:'文字を大きく',highContrast:'高コントラスト',reducedMotion:'アニメを減らす',sounds:'ボタン音',haptics:'評価時の振動',saveAnswers:'回答を端末に保存',rememberStep:'前回のセクションを記憶',showProgress:'進行状況バー',showHints:'質問のヒント',showLegends:'1～5の説明',institutionalHumor:'公的な冗談',compact:'コンパクト表示',readingMode:'読書モード',confirmShare:'共有前に確認',includeDate:'レポートに日付',detailedReport:'全評価を表示',showStatistics:'集計グラフ',anonymous:'匿名レポート',allowSkip:'未評価を許可',keyboard:'キーボード操作'},choices:{dark:'ダーク',light:'ライト',system:'システム',normal:'標準',deuter:'第二色覚異常',protan:'第一色覚異常',tritan:'第三色覚異常',classic:'ライム',cobalt:'ブルー',peach:'ピーチ'}}
 };
-const SETTING_GROUPS=[
+
+const LANG=['it','en','es','zh','fr','de','pt','ja'];
+const COPY={
+it:{heroEyebrow:'CONTENT REVIEW / 2026',heroLine1:'LA TUA',heroLine2:'RECENSIONE',heroLine3:'CONTA.',heroDesc:'Un questionario per capire cosa hai pensato davvero del contenuto che hai ricevuto.',start:'Inizia la recensione',surveyEyebrow:'QUESTIONARIO / VALUTAZIONE',surveyTitle:'LA RECENSIONE.',surveyAside:'Seleziona il livello che descrive meglio la tua esperienza.',settingsEyebrow:'PERSONALIZZAZIONE',savedLocally:'Le preferenze vengono salvate sul dispositivo.',footerText:'Feedback, fatto bene.',backHome:'← SwadyaSpace',stageTitles:['PRIMA IMPRESSIONE.','LA TUA REAZIONE.','DOPO LA VISIONE.','QUALITÀ DEL CONTENUTO.','CONFERMA.','IL TUO COMMENTO.','IL RISULTATO.'],sectionDescriptors:['Interesse, attenzione e coinvolgimento.','Le reazioni che il contenuto ha suscitato.','Quello che ti è rimasto.','Valutazione degli aspetti tecnici.','Alcune informazioni sulla visione.','Ultimi dettagli prima del risultato.','Riepilogo della tua recensione.'],phase:'SEZIONE',answers:'VOTI',protocol:'RECENSIONE IN CORSO',low:'Per niente',high:'Moltissimo',reportBtn:'Visualizza risultato',reportReady:'RECENSIONE COMPLETATA',reportEyebrow:'CONTENT REVIEW / RISULTATO',scoreLabel:'VALUTAZIONE MEDIA',reportSummary:'Riepilogo',ratingCount:'Voti raccolti',reportFooter:'CONTENT REVIEW · SWADYASPACE',name:'Nome',namePlaceholder:'Nome o nickname',notes:'Commento finale',notesPlaceholder:'Cosa ne pensi?',seen:'Hai visto tutto il contenuto?',confirmSeen:'Confermi?',emotion:'Quale sensazione ti ha lasciato?',seenOptions:['Sì, dall’inizio alla fine','Quasi tutto','No, non tutto'],confirmOptions:['Sì','Non del tutto'],emotionOptions:['Divertimento','Curiosità','Sorpresa','Confusione','Indifferenza','Altro'],finalScore:'Media',watchedReport:'Contenuto visto',confirmationReport:'Conferma',emotionReport:'Sensazione',commentReport:'Commento',nameReport:'Recensione di',notProvided:'—',reportTitle:'CONTENT REVIEW / RISULTATO',noRating:'—',restart:'Ricomincia',copied:'Testo copiato.',failedCopy:'Non è stato possibile copiare.',missing:'Completa le valutazioni per continuare.',missingOverall:'Inserisci almeno un voto.',settingsReset:'Ripristina impostazioni',clearAnswers:'Azzera recensione',resetDone:'Recensione azzerata.',resetConfirm:'Azzerare la recensione?',optionsReset:'Impostazioni ripristinate.',createButton:'Crea questionario',creatorEyebrow:'QUESTIONARI / CONDIVISIONE',creatorTitle:'CREA UN QUESTIONARIO.',creatorDesc:'Scegli il tipo di valutazione e genera un link da inviare.',personalTitle:'Esperienza personale',personalDesc:'Reazioni, interesse, risate, attenzione e impatto.',technicalTitle:'Analisi tecnica',technicalDesc:'Esperienza personale e valutazione della realizzazione.',generateLink:'Genera link',creatorInfo:'Ogni link identifica un nuovo questionario.',generatedLinkLabel:'LINK DEL QUESTIONARIO',copyLink:'Copia link',shareLink:'Condividi',imageShare:'Condividi immagine ↗',moreExports:'Altri formati ed esportazioni',savePng:'Scarica PNG',copyPng:'Copia immagine',saveSvg:'Scarica SVG',saveCsv:'Scarica CSV',saveJson:'Scarica JSON',textCopy:'Copia testo',textShare:'Condividi testo',print:'Stampa / PDF',imageUnavailable:'Impossibile generare l’immagine. Riprova.',imageSaved:'Immagine salvata.',imageCopied:'Immagine copiata.',shareChoose:'Seleziona l’app con cui condividere l’immagine.',linkCopied:'Link copiato.',linkGenerated:'Link pronto.',resetToast:'Recensione azzerata.',questionCount:'domande',selectHint:'Seleziona una risposta',signatureNote:'',verdicts:['Poco convincente.','Non ha colpito particolarmente.','Nel complesso positivo.','Ti è piaciuto parecchio.','Ti ha conquistato.']},
+en:{heroEyebrow:'CONTENT REVIEW / 2026',heroLine1:'YOUR',heroLine2:'REVIEW',heroLine3:'MATTERS.',heroDesc:'A questionnaire about what you really thought of the content you received.',start:'Start review',surveyEyebrow:'QUESTIONNAIRE / REVIEW',surveyTitle:'YOUR REVIEW.',surveyAside:'Choose the level that best describes your experience.',settingsEyebrow:'CUSTOMIZATION',savedLocally:'Preferences are saved on this device.',footerText:'Feedback, done well.',backHome:'← SwadyaSpace',stageTitles:['FIRST IMPRESSION.','YOUR REACTION.','AFTER WATCHING.','CONTENT QUALITY.','CONFIRMATION.','YOUR COMMENTS.','YOUR RESULT.'],sectionDescriptors:['Interest, attention and engagement.','How the content made you react.','What stayed with you.','Review of technical aspects.','A few details about watching.','Final details before your result.','Summary of your review.'],phase:'SECTION',answers:'RATINGS',protocol:'REVIEW IN PROGRESS',reportBtn:'See result',reportReady:'REVIEW COMPLETE',reportEyebrow:'CONTENT REVIEW / RESULT',scoreLabel:'AVERAGE SCORE',reportSummary:'Summary',ratingCount:'Ratings',reportFooter:'CONTENT REVIEW · SWADYASPACE',name:'Name',namePlaceholder:'Name or nickname',notes:'Final comment',notesPlaceholder:'What do you think?',seen:'Did you watch all of it?',confirmSeen:'Confirm?',emotion:'How did it make you feel?',seenOptions:['Yes, all the way through','Almost all of it','No, not all of it'],confirmOptions:['Yes','Not entirely'],emotionOptions:['Amusement','Curiosity','Surprise','Confusion','Indifference','Other'],finalScore:'Average',watchedReport:'Watched',confirmationReport:'Confirmed',emotionReport:'Feeling',commentReport:'Comment',nameReport:'Reviewed by',notProvided:'—',reportTitle:'CONTENT REVIEW / RESULT',noRating:'—',restart:'Restart',copied:'Text copied.',failedCopy:'Could not copy.',missing:'Complete the ratings to continue.',missingOverall:'Enter at least one rating.',settingsReset:'Reset settings',clearAnswers:'Reset review',resetDone:'Review reset.',resetConfirm:'Reset the review?',optionsReset:'Settings reset.',createButton:'Create questionnaire',creatorEyebrow:'QUESTIONNAIRES / SHARING',creatorTitle:'CREATE A QUESTIONNAIRE.',creatorDesc:'Choose the review type and generate a link to share.',personalTitle:'Personal experience',personalDesc:'Reactions, interest, laughter, attention and impact.',technicalTitle:'Technical analysis',technicalDesc:'Personal experience and production quality.',generateLink:'Generate link',creatorInfo:'Each link identifies a new questionnaire.',generatedLinkLabel:'QUESTIONNAIRE LINK',copyLink:'Copy link',shareLink:'Share',imageShare:'Share image ↗',moreExports:'More formats and exports',savePng:'Download PNG',copyPng:'Copy image',saveSvg:'Download SVG',saveCsv:'Download CSV',saveJson:'Download JSON',textCopy:'Copy text',textShare:'Share text',print:'Print / PDF',imageUnavailable:'Unable to generate image. Try again.',imageSaved:'Image saved.',imageCopied:'Image copied.',shareChoose:'Choose an app to share the image.',linkCopied:'Link copied.',linkGenerated:'Link ready.',resetToast:'Review reset.',questionCount:'questions',selectHint:'Select an answer',signatureNote:'',verdicts:['Not very convincing.','It did not leave a big impression.','Overall positive.','You liked it quite a bit.','You loved it.']},
+es:{heroEyebrow:'CONTENT REVIEW / 2026',heroLine1:'TU',heroLine2:'OPINIÓN',heroLine3:'CUENTA.',heroDesc:'Un cuestionario sobre lo que pensaste realmente del contenido recibido.',start:'Empezar reseña',surveyEyebrow:'CUESTIONARIO / EVALUACIÓN',surveyTitle:'TU RESEÑA.',surveyAside:'Elige el nivel que mejor describa tu experiencia.',settingsEyebrow:'PERSONALIZACIÓN',savedLocally:'Las preferencias se guardan en este dispositivo.',footerText:'Opiniones, bien presentadas.',backHome:'← SwadyaSpace',stageTitles:['PRIMERA IMPRESIÓN.','TU REACCIÓN.','DESPUÉS DE VERLO.','CALIDAD DEL CONTENIDO.','CONFIRMACIÓN.','TU COMENTARIO.','EL RESULTADO.'],sectionDescriptors:['Interés, atención e implicación.','Las reacciones provocadas por el contenido.','Lo que te quedó.','Evaluación técnica.','Algunos datos de la visualización.','Últimos detalles antes del resultado.','Resumen de tu evaluación.'],phase:'SECCIÓN',answers:'NOTAS',protocol:'EVALUACIÓN EN CURSO',reportBtn:'Ver resultado',reportReady:'EVALUACIÓN COMPLETA',reportEyebrow:'CONTENT REVIEW / RESULTADO',scoreLabel:'NOTA MEDIA',reportSummary:'Resumen',ratingCount:'Notas',reportFooter:'CONTENT REVIEW · SWADYASPACE',name:'Nombre',namePlaceholder:'Nombre o apodo',notes:'Comentario final',notesPlaceholder:'¿Qué opinas?',seen:'¿Lo viste entero?',confirmSeen:'¿Lo confirmas?',emotion:'¿Cómo te hizo sentir?',seenOptions:['Sí, de principio a fin','Casi entero','No, no entero'],confirmOptions:['Sí','No del todo'],emotionOptions:['Diversión','Curiosidad','Sorpresa','Confusión','Indiferencia','Otro'],finalScore:'Media',watchedReport:'Visualización',confirmationReport:'Confirmación',emotionReport:'Sensación',commentReport:'Comentario',nameReport:'Reseña de',notProvided:'—',reportTitle:'CONTENT REVIEW / RESULTADO',noRating:'—',restart:'Reiniciar',copied:'Texto copiado.',failedCopy:'No se pudo copiar.',missing:'Completa las notas para continuar.',missingOverall:'Introduce al menos una nota.',settingsReset:'Restablecer ajustes',clearAnswers:'Reiniciar reseña',resetDone:'Reseña reiniciada.',resetConfirm:'¿Reiniciar la reseña?',optionsReset:'Ajustes restablecidos.',createButton:'Crear cuestionario',creatorEyebrow:'CUESTIONARIOS / COMPARTIR',creatorTitle:'CREAR CUESTIONARIO.',creatorDesc:'Elige el tipo de evaluación y genera un enlace.',personalTitle:'Experiencia personal',personalDesc:'Reacciones, interés, risas, atención e impacto.',technicalTitle:'Análisis técnico',technicalDesc:'Experiencia personal y calidad de producción.',generateLink:'Generar enlace',creatorInfo:'Cada enlace es un cuestionario nuevo.',generatedLinkLabel:'ENLACE DEL CUESTIONARIO',copyLink:'Copiar enlace',shareLink:'Compartir',imageShare:'Compartir imagen ↗',moreExports:'Más formatos y exportaciones',savePng:'Descargar PNG',copyPng:'Copiar imagen',saveSvg:'Descargar SVG',saveCsv:'Descargar CSV',saveJson:'Descargar JSON',textCopy:'Copiar texto',textShare:'Compartir texto',print:'Imprimir / PDF',imageUnavailable:'No se pudo crear la imagen.',imageSaved:'Imagen guardada.',imageCopied:'Imagen copiada.',shareChoose:'Elige una app para compartir la imagen.',linkCopied:'Enlace copiado.',linkGenerated:'Enlace listo.',resetToast:'Reseña reiniciada.',questionCount:'preguntas',selectHint:'Elige una respuesta',signatureNote:'',verdicts:['Poco convincente.','No ha dejado gran impresión.','En general, positivo.','Te gustó bastante.','Te encantó.']},
+zh:{heroEyebrow:'CONTENT REVIEW / 2026',heroLine1:'你的',heroLine2:'评价',heroLine3:'很重要。',heroDesc:'通过问卷表达你对收到的内容的真实看法。',start:'开始评价',surveyEyebrow:'问卷 / 评价',surveyTitle:'你的评价。',surveyAside:'选择最符合你体验的等级。',settingsEyebrow:'个性化',savedLocally:'设置仅保存在本设备。',footerText:'让反馈更清晰。',backHome:'← SwadyaSpace',stageTitles:['第一印象。','你的反应。','观看之后。','内容质量。','确认。','最后评论。','评价结果。'],sectionDescriptors:['兴趣、注意力和参与感。','内容带来的反应。','留下的印象。','技术方面的评价。','有关观看的几个问题。','提交前的最后内容。','评价摘要。'],phase:'部分',answers:'评分',protocol:'评价进行中',reportBtn:'查看结果',reportReady:'评价完成',reportEyebrow:'CONTENT REVIEW / 结果',scoreLabel:'平均分',reportSummary:'摘要',ratingCount:'已评分',reportFooter:'CONTENT REVIEW · SWADYASPACE',name:'名字',namePlaceholder:'姓名或昵称',notes:'最后评论',notesPlaceholder:'你的看法是什么？',seen:'你看完了吗？',confirmSeen:'确认吗？',emotion:'它给你留下什么感受？',seenOptions:['是的，从头到尾','几乎看完了','没有看完'],confirmOptions:['确认','不完全确认'],emotionOptions:['开心','好奇','惊喜','困惑','无所谓','其他'],finalScore:'平均',watchedReport:'观看情况',confirmationReport:'确认',emotionReport:'感受',commentReport:'评论',nameReport:'评价者',notProvided:'—',reportTitle:'CONTENT REVIEW / 结果',noRating:'—',restart:'重新开始',copied:'已复制文本。',failedCopy:'无法复制。',missing:'请完成评分后继续。',missingOverall:'请至少评分一项。',settingsReset:'重置设置',clearAnswers:'重置评价',resetDone:'已重置评价。',resetConfirm:'重置评价？',optionsReset:'已重置设置。',createButton:'创建问卷',creatorEyebrow:'问卷 / 分享',creatorTitle:'创建问卷。',creatorDesc:'选择评价类型并生成分享链接。',personalTitle:'个人体验',personalDesc:'反应、兴趣、笑声、注意力和印象。',technicalTitle:'技术分析',technicalDesc:'个人体验与制作质量。',generateLink:'生成链接',creatorInfo:'每个链接都是独立的问卷。',generatedLinkLabel:'问卷链接',copyLink:'复制链接',shareLink:'分享',imageShare:'分享图片 ↗',moreExports:'其他格式和导出',savePng:'下载 PNG',copyPng:'复制图片',saveSvg:'下载 SVG',saveCsv:'下载 CSV',saveJson:'下载 JSON',textCopy:'复制文本',textShare:'分享文本',print:'打印 / PDF',imageUnavailable:'图片生成失败，请重试。',imageSaved:'图片已保存。',imageCopied:'图片已复制。',shareChoose:'选择分享图片的应用。',linkCopied:'链接已复制。',linkGenerated:'链接已生成。',resetToast:'评价已重置。',questionCount:'道题',selectHint:'请选择答案',signatureNote:'',verdicts:['没有太大吸引力。','印象并不深刻。','总体不错。','你相当喜欢。','你非常喜欢。']},
+fr:{heroEyebrow:'CONTENT REVIEW / 2026',heroLine1:'TON',heroLine2:'AVIS',heroLine3:'COMPTE.',heroDesc:'Un questionnaire pour exprimer ce que tu as vraiment pensé du contenu reçu.',start:'Commencer',surveyEyebrow:'QUESTIONNAIRE / ÉVALUATION',surveyTitle:'TON AVIS.',surveyAside:'Choisis le niveau qui décrit le mieux ton expérience.',settingsEyebrow:'PERSONNALISATION',savedLocally:'Préférences enregistrées sur cet appareil.',footerText:'Un meilleur retour.',backHome:'← SwadyaSpace',stageTitles:['PREMIÈRE IMPRESSION.','TA RÉACTION.','APRÈS VISIONNAGE.','QUALITÉ DU CONTENU.','CONFIRMATION.','TON COMMENTAIRE.','LE RÉSULTAT.'],sectionDescriptors:['Intérêt, attention et implication.','Réactions au contenu.','Ce qui reste en mémoire.','Évaluation technique.','Quelques détails sur le visionnage.','Derniers détails avant le résultat.','Résumé de ton avis.'],phase:'SECTION',answers:'NOTES',protocol:'ÉVALUATION EN COURS',reportBtn:'Voir le résultat',reportReady:'ÉVALUATION TERMINÉE',reportEyebrow:'CONTENT REVIEW / RÉSULTAT',scoreLabel:'NOTE MOYENNE',reportSummary:'Résumé',ratingCount:'Notes',reportFooter:'CONTENT REVIEW · SWADYASPACE',name:'Nom',namePlaceholder:'Nom ou pseudo',notes:'Commentaire final',notesPlaceholder:'Qu’en penses-tu ?',seen:'As-tu tout regardé ?',confirmSeen:'Tu confirmes ?',emotion:'Quel sentiment as-tu ressenti ?',seenOptions:['Oui, du début à la fin','Presque tout','Non, pas entièrement'],confirmOptions:['Oui','Pas complètement'],emotionOptions:['Amusement','Curiosité','Surprise','Confusion','Indifférence','Autre'],finalScore:'Moyenne',watchedReport:'Visionnage',confirmationReport:'Confirmation',emotionReport:'Sentiment',commentReport:'Commentaire',nameReport:'Avis de',notProvided:'—',reportTitle:'CONTENT REVIEW / RÉSULTAT',noRating:'—',restart:'Recommencer',copied:'Texte copié.',failedCopy:'Impossible de copier.',missing:'Termine les notes pour continuer.',missingOverall:'Au moins une note est nécessaire.',settingsReset:'Réinitialiser',clearAnswers:'Réinitialiser avis',resetDone:'Avis réinitialisé.',resetConfirm:'Réinitialiser cet avis ?',optionsReset:'Paramètres réinitialisés.',createButton:'Créer un questionnaire',creatorEyebrow:'QUESTIONNAIRES / PARTAGE',creatorTitle:'CRÉER UN QUESTIONNAIRE.',creatorDesc:'Choisis le type d’évaluation et génère un lien.',personalTitle:'Expérience personnelle',personalDesc:'Réactions, intérêt, rires, attention et impact.',technicalTitle:'Analyse technique',technicalDesc:'Expérience personnelle et qualité de réalisation.',generateLink:'Générer un lien',creatorInfo:'Chaque lien est un questionnaire indépendant.',generatedLinkLabel:'LIEN DU QUESTIONNAIRE',copyLink:'Copier le lien',shareLink:'Partager',imageShare:'Partager l’image ↗',moreExports:'Autres formats et exports',savePng:'Télécharger PNG',copyPng:'Copier l’image',saveSvg:'Télécharger SVG',saveCsv:'Télécharger CSV',saveJson:'Télécharger JSON',textCopy:'Copier le texte',textShare:'Partager le texte',print:'Imprimer / PDF',imageUnavailable:'Impossible de créer l’image.',imageSaved:'Image téléchargée.',imageCopied:'Image copiée.',shareChoose:'Choisis une appli pour partager l’image.',linkCopied:'Lien copié.',linkGenerated:'Lien prêt.',resetToast:'Avis réinitialisé.',questionCount:'questions',selectHint:'Choisis une réponse',signatureNote:'',verdicts:['Peu convaincant.','Pas vraiment marquant.','Globalement positif.','Tu as bien aimé.','Tu as adoré.']},
+de:{heroEyebrow:'CONTENT REVIEW / 2026',heroLine1:'DEINE',heroLine2:'BEWERTUNG',heroLine3:'ZÄHLT.',heroDesc:'Ein Fragebogen zu deiner ehrlichen Meinung über den erhaltenen Inhalt.',start:'Bewertung starten',surveyEyebrow:'FRAGEBOGEN / BEWERTUNG',surveyTitle:'DEINE MEINUNG.',surveyAside:'Wähle die Stufe, die dein Erlebnis am besten beschreibt.',settingsEyebrow:'PERSONALISIERUNG',savedLocally:'Einstellungen werden auf diesem Gerät gespeichert.',footerText:'Feedback, das zählt.',backHome:'← SwadyaSpace',stageTitles:['ERSTER EINDRUCK.','DEINE REAKTION.','DANACH.','INHALTSQUALITÄT.','BESTÄTIGUNG.','DEIN KOMMENTAR.','ERGEBNIS.'],sectionDescriptors:['Interesse, Aufmerksamkeit und Beteiligung.','Deine Reaktion auf den Inhalt.','Was im Gedächtnis bleibt.','Technische Beurteilung.','Ein paar Fragen zum Anschauen.','Letzte Angaben vor dem Ergebnis.','Zusammenfassung deiner Bewertung.'],phase:'ABSCHNITT',answers:'WERTUNGEN',protocol:'BEWERTUNG LÄUFT',reportBtn:'Ergebnis anzeigen',reportReady:'BEWERTUNG ABGESCHLOSSEN',reportEyebrow:'CONTENT REVIEW / ERGEBNIS',scoreLabel:'DURCHSCHNITT',reportSummary:'Zusammenfassung',ratingCount:'Bewertungen',reportFooter:'CONTENT REVIEW · SWADYASPACE',name:'Name',namePlaceholder:'Name oder Spitzname',notes:'Abschließender Kommentar',notesPlaceholder:'Was denkst du?',seen:'Hast du alles angeschaut?',confirmSeen:'Bestätigst du?',emotion:'Welches Gefühl blieb?',seenOptions:['Ja, von Anfang bis Ende','Fast alles','Nein, nicht alles'],confirmOptions:['Ja','Nicht ganz'],emotionOptions:['Freude','Neugier','Überraschung','Verwirrung','Gleichgültigkeit','Sonstiges'],finalScore:'Durchschnitt',watchedReport:'Angesehen',confirmationReport:'Bestätigung',emotionReport:'Gefühl',commentReport:'Kommentar',nameReport:'Bewertung von',notProvided:'—',reportTitle:'CONTENT REVIEW / ERGEBNIS',noRating:'—',restart:'Neu starten',copied:'Text kopiert.',failedCopy:'Kopieren fehlgeschlagen.',missing:'Bitte alle Wertungen ausfüllen.',missingOverall:'Mindestens eine Bewertung nötig.',settingsReset:'Einstellungen zurücksetzen',clearAnswers:'Bewertung zurücksetzen',resetDone:'Bewertung zurückgesetzt.',resetConfirm:'Bewertung zurücksetzen?',optionsReset:'Einstellungen zurückgesetzt.',createButton:'Fragebogen erstellen',creatorEyebrow:'FRAGEBOGEN / TEILEN',creatorTitle:'FRAGEBOGEN ERSTELLEN.',creatorDesc:'Wähle den Typ und erstelle einen Link zum Teilen.',personalTitle:'Persönliches Erlebnis',personalDesc:'Reaktionen, Interesse, Lachen, Aufmerksamkeit und Eindruck.',technicalTitle:'Technische Analyse',technicalDesc:'Persönliches Erlebnis und Produktionsqualität.',generateLink:'Link erstellen',creatorInfo:'Jeder Link ist ein eigener Fragebogen.',generatedLinkLabel:'FRAGEBOGEN-LINK',copyLink:'Link kopieren',shareLink:'Teilen',imageShare:'Bild teilen ↗',moreExports:'Weitere Exportformate',savePng:'PNG herunterladen',copyPng:'Bild kopieren',saveSvg:'SVG herunterladen',saveCsv:'CSV herunterladen',saveJson:'JSON herunterladen',textCopy:'Text kopieren',textShare:'Text teilen',print:'Drucken / PDF',imageUnavailable:'Bild konnte nicht erzeugt werden.',imageSaved:'Bild gespeichert.',imageCopied:'Bild kopiert.',shareChoose:'Wähle eine App, um das Bild zu teilen.',linkCopied:'Link kopiert.',linkGenerated:'Link bereit.',resetToast:'Bewertung zurückgesetzt.',questionCount:'Fragen',selectHint:'Antwort auswählen',signatureNote:'',verdicts:['Wenig überzeugend.','Nicht besonders eindrucksvoll.','Insgesamt positiv.','Hat dir sehr gefallen.','Hat dich begeistert.']},
+pt:{heroEyebrow:'CONTENT REVIEW / 2026',heroLine1:'A TUA',heroLine2:'OPINIÃO',heroLine3:'CONTA.',heroDesc:'Um questionário sobre o que realmente pensaste do conteúdo recebido.',start:'Começar avaliação',surveyEyebrow:'QUESTIONÁRIO / AVALIAÇÃO',surveyTitle:'A TUA AVALIAÇÃO.',surveyAside:'Escolhe o nível que melhor descreve a tua experiência.',settingsEyebrow:'PERSONALIZAÇÃO',savedLocally:'As preferências são guardadas neste dispositivo.',footerText:'Feedback bem feito.',backHome:'← SwadyaSpace',stageTitles:['PRIMEIRA IMPRESSÃO.','A TUA REAÇÃO.','DEPOIS DE VER.','QUALIDADE DO CONTEÚDO.','CONFIRMAÇÃO.','O TEU COMENTÁRIO.','O RESULTADO.'],sectionDescriptors:['Interesse, atenção e envolvimento.','Como reagiste ao conteúdo.','O que ficou na memória.','Avaliação técnica.','Algumas perguntas sobre a visualização.','Últimos detalhes antes do resultado.','Resumo da tua avaliação.'],phase:'SECÇÃO',answers:'NOTAS',protocol:'AVALIAÇÃO EM CURSO',reportBtn:'Ver resultado',reportReady:'AVALIAÇÃO CONCLUÍDA',reportEyebrow:'CONTENT REVIEW / RESULTADO',scoreLabel:'MÉDIA',reportSummary:'Resumo',ratingCount:'Notas',reportFooter:'CONTENT REVIEW · SWADYASPACE',name:'Nome',namePlaceholder:'Nome ou alcunha',notes:'Comentário final',notesPlaceholder:'O que achas?',seen:'Viste todo o conteúdo?',confirmSeen:'Confirmas?',emotion:'Como te sentiste?',seenOptions:['Sim, do início ao fim','Quase tudo','Não, nem tudo'],confirmOptions:['Sim','Não totalmente'],emotionOptions:['Diversão','Curiosidade','Surpresa','Confusão','Indiferença','Outro'],finalScore:'Média',watchedReport:'Visualização',confirmationReport:'Confirmação',emotionReport:'Sensação',commentReport:'Comentário',nameReport:'Avaliação de',notProvided:'—',reportTitle:'CONTENT REVIEW / RESULTADO',noRating:'—',restart:'Recomeçar',copied:'Texto copiado.',failedCopy:'Não foi possível copiar.',missing:'Completa as avaliações para continuar.',missingOverall:'É preciso pelo menos uma nota.',settingsReset:'Repor opções',clearAnswers:'Repor avaliação',resetDone:'Avaliação reposta.',resetConfirm:'Repor avaliação?',optionsReset:'Opções repostas.',createButton:'Criar questionário',creatorEyebrow:'QUESTIONÁRIOS / PARTILHA',creatorTitle:'CRIAR QUESTIONÁRIO.',creatorDesc:'Escolhe o tipo e gera um link para partilhar.',personalTitle:'Experiência pessoal',personalDesc:'Reações, interesse, risos, atenção e impacto.',technicalTitle:'Análise técnica',technicalDesc:'Experiência pessoal e qualidade de produção.',generateLink:'Gerar link',creatorInfo:'Cada link é um questionário independente.',generatedLinkLabel:'LINK DO QUESTIONÁRIO',copyLink:'Copiar link',shareLink:'Partilhar',imageShare:'Partilhar imagem ↗',moreExports:'Mais formatos e exportações',savePng:'Transferir PNG',copyPng:'Copiar imagem',saveSvg:'Transferir SVG',saveCsv:'Transferir CSV',saveJson:'Transferir JSON',textCopy:'Copiar texto',textShare:'Partilhar texto',print:'Imprimir / PDF',imageUnavailable:'Não foi possível criar a imagem.',imageSaved:'Imagem guardada.',imageCopied:'Imagem copiada.',shareChoose:'Escolhe a app para partilhar.',linkCopied:'Link copiado.',linkGenerated:'Link pronto.',resetToast:'Avaliação reposta.',questionCount:'perguntas',selectHint:'Seleciona uma resposta',signatureNote:'',verdicts:['Pouco convincente.','Não impressionou muito.','Globalmente positivo.','Gostaste bastante.','Adoraste.']},
+ja:{heroEyebrow:'CONTENT REVIEW / 2026',heroLine1:'あなたの',heroLine2:'レビュー',heroLine3:'を届けよう。',heroDesc:'受け取ったコンテンツについての率直な感想をまとめるアンケートです。',start:'評価を始める',surveyEyebrow:'アンケート / 評価',surveyTitle:'レビュー。',surveyAside:'体験に最も近いレベルを選んでください。',settingsEyebrow:'カスタマイズ',savedLocally:'設定はこの端末に保存されます。',footerText:'より良いフィードバック。',backHome:'← SwadyaSpace',stageTitles:['第一印象。','あなたの反応。','視聴後。','コンテンツの品質。','確認。','最後のコメント。','結果。'],sectionDescriptors:['興味、注意、関心度。','コンテンツへの反応。','印象に残ったこと。','技術面の評価。','視聴についての確認。','結果の前の最終確認。','評価の概要。'],phase:'セクション',answers:'評価',protocol:'評価中',reportBtn:'結果を見る',reportReady:'評価完了',reportEyebrow:'CONTENT REVIEW / 結果',scoreLabel:'平均評価',reportSummary:'概要',ratingCount:'評価数',reportFooter:'CONTENT REVIEW · SWADYASPACE',name:'名前',namePlaceholder:'名前・ニックネーム',notes:'最後のコメント',notesPlaceholder:'どう思いましたか？',seen:'最後まで見ましたか？',confirmSeen:'確認しますか？',emotion:'どんな気持ちになりましたか？',seenOptions:['はい、最初から最後まで','ほぼ全部','いいえ、全部ではありません'],confirmOptions:['はい','完全には'],emotionOptions:['楽しさ','好奇心','驚き','混乱','無関心','その他'],finalScore:'平均',watchedReport:'視聴',confirmationReport:'確認',emotionReport:'気持ち',commentReport:'コメント',nameReport:'評価者',notProvided:'—',reportTitle:'CONTENT REVIEW / 結果',noRating:'—',restart:'やり直す',copied:'テキストをコピーしました。',failedCopy:'コピーできません。',missing:'評価を完了してから進んでください。',missingOverall:'最低1つ評価してください。',settingsReset:'設定をリセット',clearAnswers:'レビューをリセット',resetDone:'レビューをリセットしました。',resetConfirm:'レビューをリセットしますか？',optionsReset:'設定をリセットしました。',createButton:'アンケート作成',creatorEyebrow:'アンケート / 共有',creatorTitle:'アンケートを作成。',creatorDesc:'種類を選び、共有リンクを生成します。',personalTitle:'個人の感想',personalDesc:'反応、興味、笑い、注意力、印象。',technicalTitle:'技術分析',technicalDesc:'個人の感想と制作の質。',generateLink:'リンク作成',creatorInfo:'リンクごとに独立したアンケートです。',generatedLinkLabel:'アンケートリンク',copyLink:'リンクをコピー',shareLink:'共有',imageShare:'画像を共有 ↗',moreExports:'その他の形式・書き出し',savePng:'PNGを保存',copyPng:'画像をコピー',saveSvg:'SVGを保存',saveCsv:'CSVを保存',saveJson:'JSONを保存',textCopy:'テキストをコピー',textShare:'テキストを共有',print:'印刷 / PDF',imageUnavailable:'画像を生成できませんでした。',imageSaved:'画像を保存しました。',imageCopied:'画像をコピーしました。',shareChoose:'画像を共有するアプリを選択してください。',linkCopied:'リンクをコピーしました。',linkGenerated:'リンクを作成しました。',resetToast:'レビューをリセットしました。',questionCount:'問',selectHint:'回答を選択',signatureNote:'',verdicts:['あまり響かなかった。','強い印象はなかった。','全体として良かった。','かなり気に入った。','とても気に入った。']}
+};
+const QUESTIONS={
+it:[
+['Quanto era vicino ai tuoi interessi?','Il tema trattato rispecchiava ciò che ti piace?',['Per niente','Poco','Abbastanza','Molto','Esattamente per me']],
+['Quanto volevi arrivare alla fine?','La voglia di scoprire come proseguiva.',['Avrei interrotto subito','Non ero molto curioso','Un po’ curioso','Volevo vedere la fine','Non riuscivo a fermarmi']],
+['Quanto ti ha fatto ridere?','La tua reazione spontanea.',['Viso impassibile','Ho sorriso','Ho soffiato aria dal naso','Ho riso ad alta voce','Ho riso a squarciagola']],
+['Quanto ti ha sorpreso?','Quanto è stato diverso da ciò che ti aspettavi?',['Me lo aspettavo','Quasi prevedibile','Qualche sorpresa','Non me lo aspettavo','Mi ha spiazzato']],
+['Quanto ti sei sentito coinvolto?','Quanto eri preso da quello che stavi vedendo?',['Per niente','Poco','A tratti','Molto','Completamente']],
+['Quanto pensi che te lo ricorderai?','Quanto è rimasto impresso?',['Già dimenticato','Durerà poco','Qualcosa mi resta','Me lo ricorderò','Mi resterà in testa']],
+['Quanto vorresti mostrarlo a qualcuno?','La voglia di farlo vedere ad altre persone.',['A nessuno','Probabilmente no','Forse','Lo manderei','L’ho già inoltrato']],
+['Nel complesso, quanto ti è piaciuto?','Il tuo giudizio finale.',['Per niente','Poco','Abbastanza','Molto','Moltissimo']]
+],
+en:[
+['How close was it to your interests?','Was it about something you care about?',['Not at all','A little','Somewhat','Very','Exactly my thing']],
+['How much did you want to see the end?','Your curiosity about what would happen next.',['Would stop immediately','Not that curious','A bit curious','Wanted to finish','Could not stop watching']],
+['How much did it make you laugh?','Your actual reaction.',['Straight face','I smiled','I breathed out through my nose','I laughed out loud','I burst out laughing']],
+['How much did it surprise you?','How different was it from what you expected?',['Saw it coming','Mostly predictable','A little surprise','Did not expect it','Completely caught me off guard']],
+['How engaged did you feel?','How immersed were you in the content?',['Not at all','A little','At times','Very','Completely']],
+['How much will you remember it?','How much of it stuck with you?',['Already forgotten','Not for long','Some of it','Will remember it','Stuck in my head']],
+['Would you show it to someone?','Your urge to share it with another person.',['No one','Probably not','Maybe','Would send it','Already shared it']],
+['Overall, how much did you like it?','Your final assessment.',['Not at all','Not much','Somewhat','A lot','Loved it']]
+],
+es:[
+['¿Cuánto encajaba con tus intereses?','¿Trataba algo que te gusta?',['Nada','Poco','Bastante','Mucho','Exactamente lo mío']],
+['¿Cuánto querías llegar al final?','Tu curiosidad por lo que pasaría después.',['Lo dejaría enseguida','Poca curiosidad','Algo de curiosidad','Quería ver el final','No podía parar']],
+['¿Cuánto te hizo reír?','Tu reacción real.',['Cara impasible','Sonreí','Solté aire por la nariz','Me reí en voz alta','Me morí de risa']],
+['¿Cuánto te sorprendió?','Qué diferente fue de lo esperado.',['Lo esperaba','Casi previsible','Alguna sorpresa','No me lo esperaba','Me dejó sin palabras']],
+['¿Cuánto te involucró?','Hasta qué punto estabas pendiente.',['Nada','Poco','A ratos','Mucho','Por completo']],
+['¿Cuánto lo recordarás?','Cuánto se te ha quedado grabado.',['Ya lo olvidé','Por poco tiempo','Algo recuerdo','Lo recordaré','Se me queda en la cabeza']],
+['¿Se lo mostrarías a alguien?','Tus ganas de compartirlo.',['A nadie','Probablemente no','Tal vez','Lo enviaría','Ya lo compartí']],
+['En general, ¿cuánto te gustó?','Tu valoración final.',['Nada','Poco','Bastante','Mucho','Muchísimo']]
+],
+zh:[
+['内容符合你的兴趣吗？','这个主题是你喜欢的吗？',['完全不','有一点','还算可以','很符合','正合我意']],
+['你有多想看到结尾？','你对接下来发生的事有多好奇？',['马上就想关掉','不太好奇','有点好奇','想看到结尾','根本停不下来']],
+['它让你笑到了什么程度？','你真实的反应。',['毫无表情','微笑了','轻轻哼笑','笑出了声','笑得停不下来']],
+['内容有多让你意外？','与预想有多大不同？',['完全猜到了','大致可以预测','有点意外','没想到','完全出乎意料']],
+['你有多投入？','观看时有多专注？',['完全没有','一点','有时','非常','完全投入']],
+['你会记住多少？','留下了多深的印象？',['已经忘了','很快会忘','记得一些','会记很久','一直留在脑海']],
+['你会推荐给别人吗？','想分享给其他人的程度。',['谁也不发','应该不会','也许','会发出去','已经分享了']],
+['总体而言你有多喜欢？','你的综合评价。',['一点也不','不太','一般','很喜欢','非常喜欢']]
+],
+fr:[
+['Cela correspondait-il à tes centres d’intérêt ?','Le sujet t’intéressait-il ?',['Pas du tout','Un peu','Assez','Beaucoup','Exactement mon truc']],
+['Avais-tu envie de voir la fin ?','Ta curiosité pour la suite.',['J’aurais arrêté','Peu curieux','Un peu curieux','Je voulais la fin','Impossible de décrocher']],
+['À quel point as-tu ri ?','Ta réaction réelle.',['Visage impassible','J’ai souri','J’ai soufflé du nez','J’ai ri à voix haute','J’ai éclaté de rire']],
+['Cela t’a-t-il surpris ?','Écart avec tes attentes.',['Prévisible','Presque prévu','Quelques surprises','Inattendu','Complètement surpris']],
+['T’es-tu senti impliqué ?','À quel point étais-tu captivé ?',['Pas du tout','Un peu','Par moments','Beaucoup','Totalement']],
+['Combien de temps t’en souviendras-tu ?','Ce qui reste en mémoire.',['Déjà oublié','Peu de temps','Quelques éléments','Je m’en souviendrai','Gravé en mémoire']],
+['Le montrerais-tu à quelqu’un ?','Ton envie de le partager.',['À personne','Probablement pas','Peut-être','Je l’enverrais','Déjà partagé']],
+['Globalement, cela t’a plu ?','Ton avis final.',['Pas du tout','Peu','Assez','Beaucoup','Énormément']]
+],
+de:[
+['Wie gut passte es zu deinen Interessen?','War das Thema interessant für dich?',['Überhaupt nicht','Wenig','Ziemlich','Sehr','Genau mein Thema']],
+['Wie sehr wolltest du das Ende sehen?','Deine Neugier auf den weiteren Verlauf.',['Sofort abschalten','Kaum neugierig','Etwas neugierig','Wollte das Ende sehen','Konnte nicht aufhören']],
+['Wie sehr hast du gelacht?','Deine echte Reaktion.',['Keine Miene verzogen','Ich habe gelächelt','Durch die Nase ausgeatmet','Laut gelacht','Tränen gelacht']],
+['Wie sehr hat es dich überrascht?','Wie anders war es als erwartet?',['War vorhersehbar','Fast vorhersehbar','Etwas überraschend','Unerwartet','Völlig verblüfft']],
+['Wie gefesselt warst du?','Wie sehr warst du dabei?',['Gar nicht','Wenig','Zeitweise','Sehr','Vollkommen']],
+['Wie lange bleibt es dir in Erinnerung?','Wie einprägsam war es?',['Schon vergessen','Nicht lange','Ein paar Details','Werde es behalten','Bleibt im Kopf']],
+['Würdest du es jemandem zeigen?','Dein Wunsch, es zu teilen.',['Niemandem','Wohl nicht','Vielleicht','Würde es verschicken','Schon weitergeleitet']],
+['Wie gut hat es dir insgesamt gefallen?','Dein Gesamturteil.',['Gar nicht','Wenig','Ganz okay','Sehr','Ausgezeichnet']]
+],
+pt:[
+['Quanto se alinhava com os teus interesses?','O tema interessava-te?',['Nada','Pouco','Bastante','Muito','Exatamente a minha cena']],
+['Quanto querias ver até ao fim?','Curiosidade sobre o que acontecia a seguir.',['Parava logo','Pouca curiosidade','Alguma curiosidade','Queria ver o fim','Não conseguia parar']],
+['Quanto te fez rir?','A tua reação verdadeira.',['Cara impassível','Sorri','Soltei ar pelo nariz','Ri em voz alta','Ri à gargalhada']],
+['Quanto te surpreendeu?','Foi diferente do que esperavas?',['Já esperava','Quase previsível','Alguma surpresa','Não esperava','Apanhou-me de surpresa']],
+['Quanto te envolveste?','Quanto estavas atento?',['Nada','Pouco','Às vezes','Muito','Completamente']],
+['Quanto te vais lembrar?','O que ficou na memória.',['Já esqueci','Por pouco tempo','Alguma coisa','Vou lembrar-me','Não me sai da cabeça']],
+['Mostrá-lo-ias a alguém?','A vontade de o partilhar.',['A ninguém','Provavelmente não','Talvez','Partilharia','Já partilhei']],
+['No geral, quanto gostaste?','A tua avaliação global.',['Nada','Pouco','Bastante','Muito','Imenso']]
+],
+ja:[
+['興味のある内容だった？','好きなテーマに近かった？',['まったく','少し','まあまあ','かなり','まさに好み']],
+['最後まで見たいと思った？','続きが気になる程度。',['すぐやめたかった','あまり気にならない','少し気になった','最後まで見たかった','目が離せなかった']],
+['どれくらい笑った？','実際の反応。',['無表情','微笑んだ','鼻でふっと笑った','声を出して笑った','大笑いした']],
+['どれくらい驚いた？','予想との違い。',['予想通り','ほぼ予想通り','少し驚いた','予想外だった','かなり驚いた']],
+['どれくらい夢中になった？','視聴への集中度。',['まったく','少し','ときどき','かなり','完全に']],
+['どれくらい覚えていそう？','印象の残り方。',['もう忘れた','すぐ忘れそう','少し残った','覚えていそう','ずっと残りそう']],
+['誰かに見せたい？','他の人に共有したい気持ち。',['誰にも','たぶんしない','もしかしたら','送りたい','もう送った']],
+['総合的にどれくらい好き？','最終評価。',['まったく','あまり','まあまあ','とても','最高']]
+]
+};
+const TECH={
+it:[['Quanto era chiaro il messaggio?','Era facile capire cosa voleva comunicare?',['Per niente','Poco chiaro','Abbastanza','Chiaro','Chiarissimo']],['Quanto era curata la realizzazione?','Riprese, immagini, montaggio e suono.',['Trascurata','Poco curata','Discreta','Curata','Eccellente']],['Quanto funzionava il ritmo?','La velocità con cui scorrevano le parti del contenuto.',['Non funzionava','Poco fluido','Adeguato','Molto buono','Perfetto']]],
+en:[['How clear was the message?','Was it easy to understand?',['Not clear','A little unclear','Fairly clear','Clear','Crystal clear']],['How polished was the production?','Visuals, editing and sound.',['Not polished','A little rough','Decent','Polished','Excellent']],['How well did the pacing work?','The flow of the content.',['Did not work','Not smooth','Adequate','Very good','Perfect']]],
+es:[['¿El mensaje era claro?','¿Se entendía bien?',['Nada claro','Poco claro','Bastante','Claro','Clarísimo']],['¿Qué tal la realización?','Imagen, montaje y sonido.',['Descuidada','Poco cuidada','Aceptable','Cuidada','Excelente']],['¿Funcionaba el ritmo?','Cómo fluía el contenido.',['Mal','Poco fluido','Adecuado','Muy bien','Perfecto']]],
+zh:[['信息清楚吗？','是否容易理解？',['不清楚','有点模糊','一般','清楚','非常清楚']],['制作质量如何？','画面、剪辑与声音。',['粗糙','稍显粗糙','还可以','精致','非常出色']],['节奏怎么样？','内容的流畅程度。',['很差','不太流畅','合适','很好','完美']]],
+fr:[['Le message était-il clair ?','Facile à comprendre ?',['Pas du tout','Peu clair','Assez clair','Clair','Très clair']],['La réalisation était-elle soignée ?','Images, montage et son.',['Négligée','Peu soignée','Correcte','Soignée','Excellente']],['Le rythme fonctionnait-il ?','Fluidité du contenu.',['Pas du tout','Peu fluide','Correct','Très bon','Parfait']]],
+de:[['War die Aussage verständlich?','War die Botschaft klar?',['Gar nicht','Wenig klar','Ziemlich klar','Klar','Glasklar']],['Wie gut war die Umsetzung?','Bild, Schnitt und Ton.',['Schlecht','Wenig sorgfältig','Ordentlich','Gut gemacht','Ausgezeichnet']],['Wie gut war das Tempo?','Fluss der Inhalte.',['Unpassend','Wenig flüssig','Passend','Sehr gut','Perfekt']]],
+pt:[['A mensagem era clara?','Era fácil de compreender?',['Nada clara','Pouco clara','Razoável','Clara','Claríssima']],['A produção estava cuidada?','Imagem, edição e som.',['Descuidada','Pouco cuidada','Razoável','Cuidada','Excelente']],['O ritmo funcionava?','Fluidez do conteúdo.',['Não','Pouco fluido','Adequado','Muito bom','Perfeito']]],
+ja:[['メッセージは分かりやすかった？','伝えたいことは明確だった？',['不明瞭','やや不明瞭','普通','明確','非常に明確']],['制作の質はどうだった？','映像、編集、音声。',['粗い','少し粗い','普通','丁寧','素晴らしい']],['テンポは良かった？','内容の流れ。',['悪い','やや悪い','普通','良い','完璧']]]
+};
+const GROUPS=[[0,1,2],[3,4,5],[6,7]];
+const PREF_GROUPS=[
 [{key:'language',values:['it','en','es','zh','fr','de','pt','ja'],labels:['Italiano','English','Español','中文','Français','Deutsch','Português','日本語']},{key:'theme',values:['dark','light','system']},{key:'accent',values:['classic','cobalt','peach']}],
 [{key:'vision',values:['normal','deuter','protan','tritan']},'largeText','highContrast','reducedMotion','readingMode'],
 ['sounds','haptics','keyboard','compact'],
-['saveAnswers','rememberStep','showProgress','showHints','showLegends','institutionalHumor','allowSkip'],
+['saveAnswers','rememberStep','showProgress','showHints','showLegends','allowSkip'],
 ['confirmShare','includeDate','detailedReport','showStatistics','anonymous']
 ];
 let prefs={...DEFAULTS};
-let state={ratings:Array(15).fill(0),stage:0,watched:'',confirmed:'',emotion:'',name:'',notes:'',pledge:false};
-let noticeTimeout=null,modalOpen=false,returnFocus=null,audio=null;
-const t=()=>T[prefs.language]||T.it;
-const savePref=()=>{try{localStorage.setItem(STORAGE_PREFS,JSON.stringify(prefs))}catch(_){}};
-const saveDraft=()=>{try{if(prefs.saveAnswers){const copy={...state,stage:prefs.rememberStep?state.stage:0};localStorage.setItem(STORAGE_DRAFT,JSON.stringify(copy))}else localStorage.removeItem(STORAGE_DRAFT)}catch(_){}};
-function restore(){
-try{const saved=JSON.parse(localStorage.getItem(STORAGE_PREFS)||'null');if(saved&&typeof saved==='object'){for(const k of Object.keys(DEFAULTS)){if(typeof saved[k]===typeof DEFAULTS[k])prefs[k]=saved[k]}}}catch(_){}
-try{const saved=JSON.parse(localStorage.getItem(STORAGE_DRAFT)||'null');if(saved&&prefs.saveAnswers){const clean=Array.isArray(saved.ratings)?saved.ratings.slice(0,15).map(v=>Number.isInteger(v)&&v>=1&&v<=5?v:0):[];state.ratings=Array.from({length:15},(_,i)=>clean[i]||0);for(const k of ['watched','confirmed','emotion','name','notes'])if(typeof saved[k]==='string')state[k]=saved[k].slice(0,k==='notes'?2000:120);state.pledge=!!saved.pledge;state.stage=prefs.rememberStep&&Number.isInteger(saved.stage)?Math.max(0,Math.min(7,saved.stage)):0;}}catch(_){}
-}
-const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-function toast(message){const el=$('toast');el.textContent=message;el.classList.add('show');clearTimeout(noticeTimeout);noticeTimeout=setTimeout(()=>el.classList.remove('show'),2900)}
-function applyAppearance(){
-const theme=prefs.theme==='system'?(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark'):prefs.theme;
-Object.entries({theme,vision:prefs.vision,accent:prefs.accent,contrast:String(prefs.highContrast),reduced:String(prefs.reducedMotion),compact:String(prefs.compact),reading:String(prefs.readingMode)}).forEach(([k,v])=>document.body.dataset[k]=v);
-document.documentElement.style.setProperty('--fontScale',prefs.largeText?'1.17':'1');
-document.querySelector('meta[name="theme-color"]').content=theme==='dark'?'#111418':'#f2f0e8';
-$('progressTrack').style.display=prefs.showProgress?'':'none';
-}
-function syncStatic(){
-document.documentElement.lang=prefs.language;
-document.querySelectorAll('[data-i18n]').forEach(el=>{const key=el.dataset.i18n;if(t()[key])el.textContent=t()[key]});
-$('settingsOpen').setAttribute('aria-label',t().settingsTitle);
-$('settingsClose').setAttribute('aria-label',t().done);
-document.title='CONTENT REVIEW / '+t().surveyTitle;
-}
-function renderSettings(){
-const translations=t(),names=translations.settings;
-let html='<p style="color:var(--muted);font-size:12px;margin:0 0 15px">'+esc(translations.instructions)+'</p>';
-SETTING_GROUPS.forEach((items,i)=>{
-html+='<details class="settings-group" '+(i===0?'open':'')+'><summary>'+esc(translations.groups[i])+'</summary>';
-items.forEach(item=>{
-const key=typeof item==='string'?item:item.key;
-html+='<div class="setting-line"><label for="pref-'+key+'">'+esc(names[key])+'</label>';
-if(typeof item==='string'){
-html+='<label class="switch" aria-label="'+esc(names[key])+'"><input type="checkbox" id="pref-'+key+'" data-pref="'+key+'" '+(prefs[key]?'checked':'')+'><span></span></label>';
-}else{
-html+='<select id="pref-'+key+'" data-pref="'+key+'" aria-label="'+esc(names[key])+'">';
-item.values.forEach((value,j)=>{const label=item.labels?item.labels[j]:translations.choices[value]||value;html+='<option value="'+esc(value)+'" '+(prefs[key]===value?'selected':'')+'>'+esc(label)+'</option>'});
-html+='</select>';
-}
-html+='</div>';
-});
-html+='</details>';
-});
-html+='<div class="settings-actions"><button type="button" class="btn" data-action="resetPrefs">'+esc(translations.settingsReset)+'</button><button type="button" class="btn" data-action="clearDraft">'+esc(translations.clearAnswers)+'</button></div>';
-$('settingsContent').innerHTML=html;
-}
-function openSettings(){
-if(modalOpen)return;
-modalOpen=true;returnFocus=document.activeElement;
-renderSettings();$('settingsBackdrop').classList.add('open');$('settingsDialog').classList.add('open');
-$('settingsDialog').setAttribute('aria-hidden','false');document.body.style.overflow='hidden';
-$('settingsClose').focus();
-}
-function closeSettings(){
-if(!modalOpen)return;modalOpen=false;
-$('settingsBackdrop').classList.remove('open');$('settingsDialog').classList.remove('open');$('settingsDialog').setAttribute('aria-hidden','true');document.body.style.overflow='';
-if(returnFocus&&returnFocus.focus)returnFocus.focus();
-}
-function questionHtml(i){
-const l=t(),value=state.ratings[i];
-return '<article class="question"><div class="q-heading"><span class="q-number">'+String(i+1).padStart(2,'0')+'.</span><div><h3 class="q-name">'+esc(Q[prefs.language][i])+'</h3>'+(prefs.showHints?'<div class="q-hint">'+esc(l.questionHint)+'</div>':'')+'</div></div><div><div class="rating" role="group" aria-label="'+esc(Q[prefs.language][i])+'">'+[1,2,3,4,5].map(n=>'<button type="button" data-rate="'+i+'" data-value="'+n+'" aria-pressed="'+(value===n)+'" aria-label="'+n+' / 5">'+n+'</button>').join('')+'</div>'+(prefs.showLegends?'<div class="rating-legend"><span>'+esc(l.low)+'</span><span>'+esc(l.high)+'</span></div>':'')+'</div></article>';
-}
-function selectBlock(id,label,arr,value){
-return '<div class="field"><label for="'+id+'">'+esc(label)+'</label><select id="'+id+'" data-answer="'+id+'"><option value="">'+esc(t().selectAnswer)+'</option>'+arr.map((x,i)=>'<option value="'+i+'" '+(value===String(i)?'selected':'')+'>'+esc(x)+'</option>').join('')+'</select></div>';
-}
-function reportData(){
-const l=t(),valid=state.ratings.filter(v=>v>0),mean=valid.reduce((a,b)=>a+b,0)/(valid.length||1),groups=[];
-for(let i=0;i<5;i++){const slice=state.ratings.slice(i*3,i*3+3).filter(Boolean);groups.push({label:l.reportCategory[i],count:slice.length,mean:slice.length?slice.reduce((a,b)=>a+b,0)/slice.length:0})}
-const verdictIndex=Math.min(4,Math.max(0,Math.floor(mean-1+.00001)));
-return {average:mean,count:valid.length,verdict:l.verdicts[verdictIndex],groups};
-}
-function reportText(){
-const l=t(),d=reportData(),name=prefs.anonymous?l.anonymousName:state.name.trim()||l.notProvided;
-const lines=[l.reportTitle,'────────────────────',l.nameReport+': '+name, ...(prefs.includeDate?[new Date().toLocaleString(prefs.language==='zh'?'zh-CN':prefs.language)]:[]),l.finalScore+': '+d.average.toFixed(2)+' / 5 ('+d.count+'/15)',l.reportSummary+': '+d.verdict];
-if(prefs.detailedReport){lines.push('',l.evaluation+':');Q[prefs.language].forEach((q,i)=>lines.push(String(i+1).padStart(2,'0')+'. '+q+': '+(state.ratings[i]?state.ratings[i]+'/5':l.noRating)))}
-if(prefs.showStatistics){lines.push('',l.reportSummary+':');d.groups.forEach(g=>lines.push(g.label+': '+(g.count?g.mean.toFixed(2)+'/5':l.noRating)))}
-const value=(arr,id)=>state[id]!==''&&arr[Number(state[id])]!==undefined?arr[Number(state[id])]:l.notProvided;
-lines.push('',l.watchedReport+': '+value(l.seenOptions,'watched'),l.confirmationReport+': '+value(l.confirmOptions,'confirmed'),l.emotionReport+': '+value(l.emotionOptions,'emotion'),l.commentReport+': '+(state.notes.trim()||l.notProvided),'',l.reportFooter);
-return lines.join('\n');
-}
-function reportHtml(){
-const l=t(),d=reportData();
-return '<div class="stage-eyebrow">'+esc(l.reportEyebrow)+'</div><h3 class="stage-title">'+esc(l.reportReady)+'</h3><div class="report-score"><div><div class="stage-eyebrow">'+esc(l.scoreLabel)+'</div><div class="score-big">'+d.average.toFixed(2)+'<small>/5</small></div></div><p class="report-verdict">'+esc(d.verdict)+'</p></div><div class="report-meta">'+esc(l.ratingCount)+': '+d.count+'/15 &nbsp; <span class="seal">CONTENT REVIEW / OK</span></div>'+(prefs.showStatistics?'<div><div class="stage-eyebrow">'+esc(l.reportSummary)+'</div>'+d.groups.map(g=>'<div class="chart-row"><span>'+esc(g.label)+'</span><div class="track"><div class="fill" style="width:'+(g.mean/5*100).toFixed(1)+'%"></div></div><strong>'+(g.count?g.mean.toFixed(1):'—')+'</strong></div>').join('')+'</div>':'')+'<div class="report-actions"><button type="button" class="btn primary" data-action="whatsapp">'+esc(l.whatsapp)+'</button><button type="button" class="btn" data-action="copy">'+esc(l.copy)+'</button><button type="button" class="btn" data-action="nativeShare">'+esc(l.nativeShare)+'</button><button type="button" class="btn" data-action="download">'+esc(l.download)+'</button><button type="button" class="btn" data-action="print">'+esc(l.print)+'</button></div>';
-}
+let state={started:isShared,step:0,ratings:Array(surveyMode==='technical'?11:8).fill(0),watched:'',confirmed:'',emotion:'',name:'',notes:''};
+let creatorMode='personal',generatedLink='',returnFocus=null,modalOpen=false,toastTimer=null,audio=null,busy=false;
+const t=()=>Object.assign({},T[prefs.language]||T.it,COPY[prefs.language]||COPY.it);
+const questions=()=>surveyMode==='technical'?QUESTIONS[prefs.language].concat(TECH[prefs.language]):QUESTIONS[prefs.language];
+const sections=()=>surveyMode==='technical'?GROUPS.concat([[8,9,10]]):GROUPS;
+const reportStep=()=>sections().length+2;
+const escapeHtml=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','"':'&quot;',"'":'&#39;'}[c]));
+function safeGet(key){try{return JSON.parse(localStorage.getItem(key)||'null')}catch(e){return null}}
+function savePrefs(){try{localStorage.setItem(PREF_KEY,JSON.stringify(prefs))}catch(e){}}
+function saveState(){try{if(prefs.saveAnswers){localStorage.setItem(DRAFT_KEY,JSON.stringify(Object.assign({},state,{step:prefs.rememberStep?state.step:0}))) }else{localStorage.removeItem(DRAFT_KEY)}}catch(e){}}
+function restore(){const p=safeGet(PREF_KEY);if(p&&typeof p==='object'){for(const key of Object.keys(DEFAULTS)){if(typeof p[key]===typeof DEFAULTS[key])prefs[key]=p[key]}}
+const d=safeGet(DRAFT_KEY);if(d&&typeof d==='object'){state.started=!!d.started||isShared;state.step=prefs.rememberStep&&Number.isInteger(d.step)?Math.min(reportStep(),Math.max(0,d.step)):0;const votes=Array.isArray(d.ratings)?d.ratings:[];state.ratings=state.ratings.map((_,i)=>Number.isInteger(votes[i])&&votes[i]>=1&&votes[i]<=5?votes[i]:0);for(const key of ['watched','confirmed','emotion','name','notes']){if(typeof d[key]==='string')state[key]=d[key].slice(0,key==='notes'?1200:100)}}}
+function toast(msg){const node=$('toast');node.textContent=msg;node.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>node.classList.remove('show'),3000)}
+function tone(rating=false){if(prefs.haptics&&navigator.vibrate)navigator.vibrate(rating?13:6);if(!prefs.sounds)return;try{const C=window.AudioContext||window.webkitAudioContext;if(!C)return;if(!audio)audio=new C();if(audio.state==='suspended')audio.resume().catch(()=>{});const now=audio.currentTime,osc=audio.createOscillator(),g=audio.createGain();osc.type=rating?'triangle':'sine';osc.frequency.setValueAtTime(rating?440:660,now);osc.frequency.linearRampToValueAtTime(rating?620:760,now+.07);g.gain.setValueAtTime(.035,now);g.gain.exponentialRampToValueAtTime(.0001,now+.105);osc.connect(g);g.connect(audio.destination);osc.start();osc.stop(now+.11)}catch(e){}}
+function appearance(){const theme=prefs.theme==='system'&&window.matchMedia?window.matchMedia('(prefers-color-scheme: light)').matches?'light':'dark':prefs.theme;for(const [key,val] of Object.entries({theme,vision:prefs.vision,accent:prefs.accent,contrast:prefs.highContrast,reduced:prefs.reducedMotion,compact:prefs.compact,reading:prefs.readingMode,large:prefs.largeText,started:state.started,shared:isShared})){document.body.dataset[key]=String(val)}
+$('progressTrack').hidden=!prefs.showProgress;
+const meta=document.querySelector('meta[name="theme-color"]');if(meta)meta.content=theme==='light'?'#f2f0e8':'#111418'}
+function staticText(){document.documentElement.lang=prefs.language;document.querySelectorAll('[data-i18n]').forEach(node=>{const value=t()[node.dataset.i18n];if(typeof value==='string')node.textContent=value});$('settingsOpen').setAttribute('aria-label',t().settingsTitle);document.title='Content Review · SwadyaSpace'}
+function renderSettings(){const l=t();let html='<p class="settings-intro">'+escapeHtml(l.instructions==='Le opzioni sono indipendenti e completamente facoltative.'?'Personalizza la tua esperienza.':(l.instructions||''))+'</p>';
+PREF_GROUPS.forEach((items,i)=>{html+='<details class="settings-group" '+(i===0?'open':'')+'><summary>'+escapeHtml(l.groups[i])+'</summary>';items.forEach(item=>{const key=typeof item==='string'?item:item.key;html+='<div class="setting-line"><label for="pref-'+key+'">'+escapeHtml(l.settings[key])+'</label>';if(typeof item==='string')html+='<label class="switch"><input id="pref-'+key+'" type="checkbox" data-pref="'+key+'" '+(prefs[key]?'checked':'')+'><span></span></label>';else{html+='<select id="pref-'+key+'" data-pref="'+key+'">';item.values.forEach((value,j)=>html+='<option value="'+value+'" '+(prefs[key]===value?'selected':'')+'>'+escapeHtml(item.labels?item.labels[j]:(l.choices[value]||value))+'</option>');html+='</select>'}html+='</div>'});html+='</details>'});
+html+='<div class="settings-actions"><button class="btn" type="button" data-action="resetPrefs">'+escapeHtml(l.settingsReset)+'</button><button class="btn" type="button" data-action="resetState">'+escapeHtml(l.clearAnswers)+'</button></div>';$('settingsContent').innerHTML=html}
+function openSettings(){if(modalOpen)return;returnFocus=document.activeElement;modalOpen=true;renderSettings();$('settingsBackdrop').classList.add('open');$('settingsDialog').classList.add('open');$('settingsDialog').setAttribute('aria-hidden','false');document.body.style.overflow='hidden';$('settingsClose').focus()}
+function closeSettings(){if(!modalOpen)return;modalOpen=false;$('settingsBackdrop').classList.remove('open');$('settingsDialog').classList.remove('open');$('settingsDialog').setAttribute('aria-hidden','true');document.body.style.overflow='';if(returnFocus&&returnFocus.focus)returnFocus.focus()}
+function progress(){const num=state.ratings.filter(Boolean).length;const total=state.ratings.length;$('completedLabel').textContent=String(num).padStart(2,'0')+' / '+String(total).padStart(2,'0')+' '+t().answers;$('progressFill').style.width=(100*num/total).toFixed(1)+'%';$('progressTrack').setAttribute('aria-valuenow',String(Math.round(100*num/total)))}
+function questionMarkup(index){const q=questions()[index],v=state.ratings[index];return '<article class="question" data-question="'+index+'"><div class="q-heading"><span class="q-number">'+String(index+1).padStart(2,'0')+'.</span><div><h3 class="q-name">'+escapeHtml(q[0])+'</h3>'+(prefs.showHints?'<div class="q-hint">'+escapeHtml(q[1])+'</div>':'')+'</div></div><div class="rating-side"><div class="rating" role="group" aria-label="'+escapeHtml(q[0])+'">'+[1,2,3,4,5].map(n=>'<button type="button" data-rate="'+index+'" data-value="'+n+'" data-filled="'+(n<=v)+'" aria-pressed="'+(n===v)+'" aria-label="'+n+' / 5">'+n+'</button>').join('')+'</div><div class="choice-description" aria-live="polite">'+(v?escapeHtml(q[2][v-1]):'&nbsp;')+'</div>'+(prefs.showLegends?'<div class="rating-legend"><span>1</span><span>5</span></div>':'')+'</div></article>'}
+function optionsMarkup(key,label,values){return '<div class="option-question"><h4>'+escapeHtml(label)+'</h4><div class="option-choices">'+values.map((v,i)=>'<button type="button" data-option="'+key+'" data-value="'+i+'" aria-pressed="'+(state[key]===String(i))+'">'+escapeHtml(v)+'</button>').join('')+'</div></div>'}
+function reportInfo(){const values=state.ratings.filter(Boolean),mean=values.reduce((a,b)=>a+b,0)/Math.max(1,values.length),l=t();const parts=sections().map((section,i)=>{const list=section.map(j=>state.ratings[j]).filter(Boolean);return{label:sectionTitle(i),avg:list.reduce((a,b)=>a+b,0)/Math.max(1,list.length),count:list.length}});return {mean,parts,count:values.length,verdict:l.verdicts[Math.min(4,Math.max(0,Math.ceil(mean)-1))]}}
+function sectionTitle(i){const l=t();return l.stageTitles[i===3?'3':String(i)]||l.stageTitles[i]||l.reportSummary}
+function optValue(key,values){return state[key]!==''&&values[Number(state[key])]!==undefined?values[Number(state[key])]:t().notProvided}
+function reportText(){const l=t(),r=reportInfo();const out=[l.reportTitle,l.finalScore+': '+r.mean.toFixed(2)+' / 5',r.verdict,l.nameReport+': '+(prefs.anonymous?l.anonymousName:state.name.trim()||l.notProvided)];
+if(prefs.includeDate)out.push(new Date().toLocaleDateString(prefs.language));
+if(prefs.detailedReport){out.push('');questions().forEach((q,i)=>out.push(String(i+1)+'. '+q[0]+' — '+(state.ratings[i]||l.noRating)+'/5'+(state.ratings[i]?' · '+q[2][state.ratings[i]-1]:'')))}
+out.push('',l.watchedReport+': '+optValue('watched',l.seenOptions),l.confirmationReport+': '+optValue('confirmed',l.confirmOptions),l.emotionReport+': '+optValue('emotion',l.emotionOptions));
+if(state.notes.trim())out.push(l.commentReport+': '+state.notes.trim());
+out.push('',l.reportFooter);
+return out.join('\n')}
+function poster(){const l=t(),r=reportInfo(),nm=prefs.anonymous?l.anonymousName:state.name.trim(),fields=[['seen',l.watchedReport,l.seenOptions],['emotion',l.emotionReport,l.emotionOptions]];
+return '<div id="reportCapture" class="report-poster" role="img" aria-label="'+escapeHtml(l.reportReady)+'"><div class="poster-deco" aria-hidden="true">◎</div><div class="poster-kicker"><span>SWADYASPACE / CONTENT REVIEW</span><span>CR—'+String(r.count).padStart(2,'0')+'</span></div><div class="poster-main"><div class="stage-eyebrow">'+escapeHtml(l.reportEyebrow)+'</div><h3 class="poster-title">'+escapeHtml(l.reportReady)+'</h3><div class="poster-score-row"><div><div class="poster-score-label">'+escapeHtml(l.scoreLabel)+'</div><div class="poster-score">'+r.mean.toFixed(2)+'<small>/5</small></div></div><div class="poster-verdict">'+escapeHtml(r.verdict)+'</div></div></div><div class="poster-rows">'+r.parts.map((p,i)=>'<div class="poster-row"><span>'+escapeHtml(p.label)+'</span><div class="poster-track"><span style="width:'+(100*p.avg/5).toFixed(1)+'%"></span></div><strong>'+p.avg.toFixed(1)+'</strong></div>').join('')+'</div><div class="poster-details">'+fields.map(([k,label,opts])=>'<div><small>'+escapeHtml(label)+'</small><span>'+escapeHtml(optValue(k,opts))+'</span></div>').join('')+'</div>'+(state.notes.trim()?'<div class="poster-quote">'+escapeHtml(state.notes.trim())+'</div>':'')+(nm?'<div class="poster-signature">'+escapeHtml(l.nameReport)+': <strong>'+escapeHtml(nm)+'</strong></div>':'')+'<div class="poster-foot"><strong>C/R</strong><span>CONTENT REVIEW · 2026</span>'+(prefs.includeDate?'<span>'+escapeHtml(new Date().toLocaleDateString(prefs.language))+'</span>':'')+'</div></div>'}
+function exportActions(){const l=t();return '<div class="export-main"><button class="hero-cta share-image" type="button" data-action="shareImage"><span>'+escapeHtml(l.imageShare)+'</span><span>↗</span></button></div><details class="export-menu"><summary>'+escapeHtml(l.moreExports)+' <span>＋</span></summary><div class="export-grid">'+[['downloadPng',l.savePng],['copyPng',l.copyPng],['downloadSvg',l.saveSvg],['downloadCsv',l.saveCsv],['downloadJson',l.saveJson],['copyText',l.textCopy],['shareText',l.textShare],['print',l.print]].map(([key,label])=>'<button class="btn" type="button" data-action="'+key+'">'+escapeHtml(label)+'</button>').join('')+'</div></details>'}
 function render(){
-const l=t(),n=state.stage;
-syncStatic();applyAppearance();
-$('chapterLabel').textContent=l.phase+' '+String(Math.min(7,n+1)).padStart(2,'0')+' / 07';
-$('completedLabel').textContent=String(state.ratings.filter(Boolean).length).padStart(2,'0')+' / 15 '+l.answers;
-$('progressFill').style.width=Math.min(100,n/7*100)+'%';
-$('progressTrack').setAttribute('aria-valuenow',String(Math.round(n/7*100)));
-$('pageStatus').textContent=n===7?l.reportReady:l.protocol;
+const l=t(),sectionsList=sections(),end=reportStep(),n=state.step,total=end;
+appearance();staticText();progress();$('chapterLabel').textContent=n===end?l.reportReady:(l.phase+' '+String(n+1).padStart(2,'0')+' / '+String(end).padStart(2,'0'));$('pageStatus').textContent=n===end?l.reportReady:l.protocol;
 $('previous').style.visibility=n===0?'hidden':'visible';
-$('next').style.display=n===7?'none':'inline-flex';
-$('next').firstElementChild.textContent=n===6?l.reportBtn:l.next;
-const body=$('stageContent');
+$('next').hidden=n===end;$('next').querySelector('span').textContent=n===end-1?l.reportBtn:l.next;
+$('resetCorner').title=l.restart;$('resetCorner').setAttribute('aria-label',l.restart);
 let html='';
-if(n<=4){html='<div class="stage-eyebrow">'+esc(l.phase)+' '+String(n+1).padStart(2,'0')+' / 05</div><h3 class="stage-title">'+esc(l.stageTitles[n])+'</h3><p class="stage-desc">'+esc(l.stageDescriptions[n])+'</p>'+[n*3,n*3+1,n*3+2].map(questionHtml).join('')}
-if(n===5)html='<div class="stage-eyebrow">'+esc(l.phase)+' 06 / 07</div><h3 class="stage-title">'+esc(l.stageTitles[n])+'</h3><p class="stage-desc">'+esc(l.stageDescriptions[n])+'</p><div class="two-cols">'+selectBlock('watched',l.seen,l.seenOptions,state.watched)+selectBlock('confirmed',l.confirmSeen,l.confirmOptions,state.confirmed)+'</div>'+selectBlock('emotion',l.emotion,l.emotionOptions,state.emotion)+(prefs.institutionalHumor?'<p class="note-line">'+esc(l.stageDescriptions[5])+'</p>':'');
-if(n===6)html='<div class="stage-eyebrow">'+esc(l.phase)+' 07 / 07</div><h3 class="stage-title">'+esc(l.stageTitles[n])+'</h3><p class="stage-desc">'+esc(l.stageDescriptions[n])+'</p><div class="field"><label for="reviewer">'+esc(l.name)+'</label><input id="reviewer" class="input" data-text="name" maxlength="120" placeholder="'+esc(l.namePlaceholder)+'" value="'+esc(state.name)+'"></div><div class="field"><label for="notes">'+esc(l.notes)+'</label><textarea id="notes" data-text="notes" maxlength="2000" placeholder="'+esc(l.notesPlaceholder)+'">'+esc(state.notes)+'</textarea></div><p class="note-line">'+esc(l.noIdentity)+'</p><label class="checkline"><input type="checkbox" data-check="pledge" '+(state.pledge?'checked':'')+'><span>'+esc(l.optionalConfirm)+'</span></label>';
-if(n===7)html=reportHtml();
-body.innerHTML=html;
+if(n<sectionsList.length){const indexes=sectionsList[n],title=l.stageTitles[n===3?3:n];html='<div class="stage-eyebrow">'+escapeHtml(l.phase)+' '+String(n+1).padStart(2,'0')+'</div><h3 class="stage-title">'+escapeHtml(title)+'</h3>'+indexes.map(questionMarkup).join('')}
+else if(n===sectionsList.length){html='<div class="stage-eyebrow">'+escapeHtml(l.phase)+' '+String(n+1).padStart(2,'0')+'</div><h3 class="stage-title">'+escapeHtml(l.stageTitles[4])+'</h3>'+optionsMarkup('watched',l.seen,l.seenOptions)+optionsMarkup('confirmed',l.confirmSeen,l.confirmOptions)+optionsMarkup('emotion',l.emotion,l.emotionOptions)}
+else if(n===end-1){html='<div class="stage-eyebrow">'+escapeHtml(l.phase)+' '+String(n+1).padStart(2,'0')+'</div><h3 class="stage-title">'+escapeHtml(l.stageTitles[5])+'</h3><div class="field"><label for="reviewer">'+escapeHtml(l.name)+'</label><input class="input" id="reviewer" maxlength="100" data-input="name" placeholder="'+escapeHtml(l.namePlaceholder)+'" value="'+escapeHtml(state.name)+'" autocomplete="off"></div><div class="field"><label for="notes">'+escapeHtml(l.notes)+'</label><textarea id="notes" maxlength="1200" data-input="notes" placeholder="'+escapeHtml(l.notesPlaceholder)+'">'+escapeHtml(state.notes)+'</textarea></div>'}
+else html=poster()+exportActions();
+$('stageContent').innerHTML=html;
 }
-function goTo(stage,scroll=true){state.stage=Math.max(0,Math.min(7,stage));render();saveDraft();if(scroll&&prefs.rememberStep!==null){$('survey').scrollIntoView({behavior:prefs.reducedMotion?'auto':'smooth',block:'start'})}}
-function next(){
-if(state.stage<=4&&!prefs.allowSkip){const first=state.stage*3;if(state.ratings.slice(first,first+3).some(x=>x===0)){toast(t().missing);const b=$('stageContent').querySelector('.rating button[aria-pressed="false"]');if(b)b.focus();return}}
-if(state.stage===6&&!state.ratings.some(Boolean)){toast(t().missingOverall);return}
-if(state.stage<7){playTone();goTo(state.stage+1)}
-}
-function playTone(){if(!prefs.sounds)return;try{const C=window.AudioContext||window.webkitAudioContext;if(!C)return;if(!audio)audio=new C();const o=audio.createOscillator(),g=audio.createGain();o.type='sine';o.frequency.value=610;g.gain.setValueAtTime(.025,audio.currentTime);g.gain.exponentialRampToValueAtTime(.001,audio.currentTime+.06);o.connect(g);g.connect(audio.destination);o.start();o.stop(audio.currentTime+.07)}catch(_){}}
-function resetDraft(){state={ratings:Array(15).fill(0),stage:0,watched:'',confirmed:'',emotion:'',name:'',notes:'',pledge:false};try{localStorage.removeItem(STORAGE_DRAFT)}catch(_){}render()}
-function applyPref(key,value){
-if(!(key in DEFAULTS))return;
-prefs[key]=value;
-if(key==='saveAnswers'&&!value){try{localStorage.removeItem(STORAGE_DRAFT)}catch(_){}}
-if(key==='rememberStep'&&!value)saveDraft();
-savePref();applyAppearance();
-if(key==='language'){renderSettings();render();return}
-if(key==='theme'||key==='vision'||key==='accent'||key==='largeText'||key==='highContrast'||key==='reducedMotion')return;
-render();
-}
-async function copyReport(){
-try{if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(reportText());toast(t().copied);return}
-const area=document.createElement('textarea');area.value=reportText();area.style.position='fixed';area.style.opacity='0';document.body.appendChild(area);area.select();const ok=document.execCommand('copy');area.remove();toast(ok?t().copied:t().failedCopy)}catch(_){toast(t().failedCopy)}
-}
-function download(){
-const info={app:'CONTENT REVIEW',version:4,exportedAt:new Date().toISOString(),language:prefs.language,...state,average:reportData().average,report:reportText()};
-const blob=new Blob([JSON.stringify(info,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='content-review.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1500);
-}
-function whatsapp(){
-if(prefs.confirmShare&&!confirm(t().shareConfirm))return;
-const url='https://api.whatsapp.com/send?text='+encodeURIComponent(reportText());
-const a=document.createElement('a');a.href=url;a.target='_blank';a.rel='noopener noreferrer';document.body.appendChild(a);a.click();a.remove();
-}
-async function nativeShare(){
-if(!navigator.share){await copyReport();return}
-try{await navigator.share({title:'CONTENT REVIEW',text:reportText()})}catch(e){if(e.name!=='AbortError')toast(t().shareError)}
-}
-function onAction(name){
-switch(name){
-case 'whatsapp':whatsapp();break;
-case 'copy':copyReport();break;
-case 'nativeShare':nativeShare();break;
-case 'download':download();break;
-case 'print':window.print();break;
-case 'resetPrefs':if(confirm(t().settingsReset+'?')){prefs={...DEFAULTS};savePref();applyAppearance();renderSettings();render();toast(t().optionsReset)}break;
-case 'clearDraft':if(confirm(t().resetConfirm)){resetDraft();toast(t().resetDone);closeSettings()}break;
-}}
-restore();render();
-$('startButton').addEventListener('click',()=>{$('survey').scrollIntoView({behavior:prefs.reducedMotion?'auto':'smooth'});});
-$('settingsOpen').addEventListener('click',openSettings);
-$('settingsClose').addEventListener('click',closeSettings);
-$('settingsDone').addEventListener('click',closeSettings);
-$('settingsBackdrop').addEventListener('click',closeSettings);
-$('next').addEventListener('click',next);
-$('previous').addEventListener('click',()=>goTo(state.stage-1));
-$('settingsContent').addEventListener('change',e=>{
-const node=e.target.closest('[data-pref]');if(!node)return;const key=node.dataset.pref;
-applyPref(key,node.type==='checkbox'?node.checked:node.value);
+function go(step){state.step=Math.max(0,Math.min(reportStep(),step));state.started=true;render();saveState();$('survey').scrollIntoView({behavior:prefs.reducedMotion?'auto':'smooth',block:'start'})}
+function start(){state.started=true;go(state.step)}
+function next(){if(state.step<sections().length&&!prefs.allowSkip&&sections()[state.step].some(i=>!state.ratings[i])){toast(t().missing);return}
+if(state.step===reportStep()-1&&!state.ratings.some(Boolean)){toast(t().missingOverall);return}if(state.step<reportStep()){tone();go(state.step+1)}}
+function resetState(){state={started:true,step:0,ratings:Array(questions().length).fill(0),watched:'',confirmed:'',emotion:'',name:'',notes:''};try{localStorage.removeItem(DRAFT_KEY)}catch(e){}render();saveState();toast(t().resetToast);$('survey').scrollIntoView({behavior:'auto'})}
+function onRate(btn){const index=Number(btn.dataset.rate),v=Number(btn.dataset.value),q=questions()[index];state.ratings[index]=v;tone(true);const question=btn.closest('[data-question]');question.querySelectorAll('[data-rate]').forEach(b=>{const x=Number(b.dataset.value);b.dataset.filled=String(x<=v);b.setAttribute('aria-pressed',String(x===v))});question.querySelector('.choice-description').textContent=q[2][v-1];progress();saveState()}
+function onOption(btn){const key=btn.dataset.option;state[key]=btn.dataset.value;tone();btn.closest('.option-choices').querySelectorAll('[data-option]').forEach(b=>b.setAttribute('aria-pressed',String(b===btn)));saveState()}
+function settingChange(key,value){if(!(key in DEFAULTS))return;prefs[key]=value;savePrefs();if(key==='saveAnswers'&&!value){try{localStorage.removeItem(DRAFT_KEY)}catch(e){}}if(key==='language'){renderSettings();render();return}if(key==='theme'||key==='vision'||key==='accent'||key==='largeText'||key==='highContrast'||key==='reducedMotion'||key==='showProgress'||key==='readingMode'||key==='compact'){appearance();return}render()}
+function newId(){const arr=new Uint8Array(12);if(window.crypto&&crypto.getRandomValues)crypto.getRandomValues(arr);else for(let i=0;i<arr.length;i++)arr[i]=Math.floor(Math.random()*256);return Array.from(arr,b=>b.toString(16).padStart(2,'0')).join('')}
+function generate(){const url=new URL(location.pathname,location.href);url.searchParams.set('q',newId());url.searchParams.set('mode',creatorMode);generatedLink=url.href;$('createdLinkText').textContent=url.href;$('createdLinkBox').hidden=false;tone();toast(t().linkGenerated);$('createdLinkBox').scrollIntoView({behavior:prefs.reducedMotion?'auto':'smooth',block:'nearest'})}
+function downloadBlob(blob,name){const href=URL.createObjectURL(blob),a=document.createElement('a');a.href=href;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(href),2000)}
+async function makeImage(format='png'){const node=$('reportCapture');if(!node||!window.htmlToImage)throw Error('renderer unavailable');if(document.fonts&&document.fonts.ready)await document.fonts.ready;const options={pixelRatio:2,cacheBust:true,backgroundColor:window.getComputedStyle(node).backgroundColor,skipAutoScale:false};if(format==='svg')return await window.htmlToImage.toSvg(node,options);const blob=await window.htmlToImage.toBlob(node,options);if(!blob)throw Error('blob unavailable');return blob}
+async function imageAction(action){if(busy)return;busy=true;const button=document.querySelector('[data-action="'+action+'"]');if(button)button.disabled=true;try{if(action==='downloadSvg'){const svg=await makeImage('svg');downloadBlob(new Blob([decodeURIComponent(svg.split(',').slice(1).join(','))],{type:'image/svg+xml'}),'content-review.svg');return}
+const blob=await makeImage();if(action==='downloadPng'){downloadBlob(blob,'content-review.png');toast(t().imageSaved);return}
+if(action==='copyPng'){if(!window.ClipboardItem||!navigator.clipboard||!navigator.clipboard.write)throw Error('clipboard unavailable');await navigator.clipboard.write([new ClipboardItem({'image/png':blob})]);toast(t().imageCopied);return}
+const file=new File([blob],'content-review.png',{type:'image/png'});if(navigator.share&&(!navigator.canShare||navigator.canShare({files:[file]}))){try{await navigator.share({files:[file],title:'Content Review'})}catch(e){if(e.name!=='AbortError')throw e}}
+else{downloadBlob(blob,'content-review.png');toast(t().shareChoose)}
+}catch(e){console.warn('Content Review image error:',e);toast(t().imageUnavailable)}
+finally{busy=false;if(button)button.disabled=false}}
+async function copyText(value){try{if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(value)}else{const ta=document.createElement('textarea');ta.value=value;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();const ok=document.execCommand('copy');ta.remove();if(!ok)throw Error('copy failed')}toast(value===generatedLink?t().linkCopied:t().copied)}catch(e){toast(t().failedCopy)}}
+async function shareText(text,url){if(navigator.share){try{await navigator.share(url?{title:'Content Review',url}:{title:'Content Review',text})}catch(e){if(e.name!=='AbortError')toast(t().shareError)}}else if(url)await copyText(url);else{const a=document.createElement('a');a.href='https://api.whatsapp.com/send?text='+encodeURIComponent(text);a.target='_blank';a.rel='noopener noreferrer';a.click()}}
+function downloadJson(){downloadBlob(new Blob([JSON.stringify({type:surveyMode,rating:reportInfo().mean,questions:questions().map((q,i)=>({question:q[0],rating:state.ratings[i],description:state.ratings[i]?q[2][state.ratings[i]-1]:''})),watched:state.watched,confirmed:state.confirmed,emotion:state.emotion,name:prefs.anonymous?'':state.name,notes:state.notes},null,2)],{type:'application/json'}),'content-review.json')}
+function downloadCsv(){const rows=[['question','rating','description'],...questions().map((q,i)=>[q[0],state.ratings[i]||'',state.ratings[i]?q[2][state.ratings[i]-1]:''])];downloadBlob(new Blob(['\uFEFF'+rows.map(row=>row.map(x=>'"'+String(x).replace(/"/g,'""')+'"').join(',')).join('\r\n')],{type:'text/csv;charset=utf-8'}),'content-review.csv')}
+function handleAction(action){switch(action){case 'shareImage':case 'downloadPng':case 'copyPng':case 'downloadSvg':imageAction(action);break;case 'downloadJson':downloadJson();break;case 'downloadCsv':downloadCsv();break;case 'copyText':copyText(reportText());break;case 'shareText':shareText(reportText());break;case 'print':window.print();break;case 'resetPrefs':if(confirm(t().settingsReset+'?')){prefs={...DEFAULTS};savePrefs();renderSettings();render();toast(t().optionsReset)}break;case 'resetState':if(confirm(t().resetConfirm)){resetState();closeSettings()}break}}
+restore();appearance();staticText();render();if(isShared||state.started){window.requestAnimationFrame(()=>window.scrollTo({top:0,behavior:'instant'}))}
+$('startButton').addEventListener('click',start);
+$('createJump').addEventListener('click',()=>$('creator').scrollIntoView({behavior:prefs.reducedMotion?'auto':'smooth',block:'start'}));
+$('settingsOpen').addEventListener('click',openSettings);$('settingsClose').addEventListener('click',closeSettings);$('settingsDone').addEventListener('click',closeSettings);$('settingsBackdrop').addEventListener('click',closeSettings);
+$('next').addEventListener('click',next);$('previous').addEventListener('click',()=>go(state.step-1));
+$('resetCorner').addEventListener('click',resetState);
+$('createLink').addEventListener('click',generate);
+$('copyLink').addEventListener('click',()=>{if(generatedLink)copyText(generatedLink)});
+$('shareLink').addEventListener('click',()=>{if(generatedLink)shareText('',generatedLink)});
+$('settingsContent').addEventListener('change',e=>{const node=e.target.closest('[data-pref]');if(node)settingChange(node.dataset.pref,node.type==='checkbox'?node.checked:node.value)});
+document.addEventListener('click',e=>{const a=e.target.closest('[data-action]');if(a){handleAction(a.dataset.action);return}
+const b=e.target.closest('[data-rate]');if(b){onRate(b);return}
+const c=e.target.closest('[data-option]');if(c){onOption(c);return}
+const d=e.target.closest('[data-mode]');if(d){creatorMode=d.dataset.mode;document.querySelectorAll('[data-mode]').forEach(el=>el.setAttribute('aria-pressed',String(el===d)));$('createdLinkBox').hidden=true;generatedLink='';tone();return}
 });
-document.addEventListener('click',e=>{const action=e.target.closest('[data-action]');if(action)onAction(action.dataset.action);
-const rating=e.target.closest('[data-rate]');if(!rating)return;const i=Number(rating.dataset.rate),n=Number(rating.dataset.value);if(i<0||i>=15)return;state.ratings[i]=n;playTone();if(prefs.haptics&&navigator.vibrate)navigator.vibrate(13);render();saveDraft();});
-$('stageContent').addEventListener('change',e=>{
-const select=e.target.closest('[data-answer]');if(select){const key=select.dataset.answer;if(key==='watched')state.watched=select.value;if(key==='confirmed')state.confirmed=select.value;if(key==='emotion')state.emotion=select.value;saveDraft()}
-const box=e.target.closest('[data-check]');if(box){state.pledge=box.checked;saveDraft()}
+$('stageContent').addEventListener('input',e=>{const node=e.target.closest('[data-input]');if(node){state[node.dataset.input]=node.value;saveState()}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&modalOpen){closeSettings();return}if(modalOpen&&e.key==='Tab'){const nodes=Array.from($('settingsDialog').querySelectorAll('button,input,select,summary')).filter(x=>x.getClientRects().length);if(nodes.length){const first=nodes[0],last=nodes[nodes.length-1];if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus()}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus()}}return}
+if(!prefs.keyboard||state.step>=sections().length||e.ctrlKey||e.metaKey||e.altKey||/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName))return;if(/^[1-5]$/.test(e.key)){const missing=sections()[state.step].find(i=>!state.ratings[i]);if(missing!==undefined){const b=$('stageContent').querySelector('[data-rate="'+missing+'"][data-value="'+e.key+'"]');if(b)onRate(b)}}
 });
-$('stageContent').addEventListener('input',e=>{const node=e.target.closest('[data-text]');if(node){state[node.dataset.text]=node.value;saveDraft()}});
-document.addEventListener('keydown',e=>{
-if(e.key==='Escape'&&modalOpen){closeSettings();return}
-if(modalOpen&&e.key==='Tab'){
-const focusable=Array.from($('settingsDialog').querySelectorAll('button,input,select,summary')).filter(x=>x.getClientRects().length);
-if(focusable.length){const first=focusable[0],last=focusable[focusable.length-1];if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus()}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus()}}return;
-}
-if(!prefs.keyboard||state.stage>4||e.altKey||e.ctrlKey||e.metaKey||/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName))return;
-if(/^[1-5]$/.test(e.key)){const start=state.stage*3,index=state.ratings.slice(start,start+3).findIndex(v=>v===0);if(index>=0){state.ratings[start+index]=Number(e.key);render();saveDraft();}}
-});
-const mm=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)');
-if(mm&&mm.addEventListener)mm.addEventListener('change',()=>{if(prefs.theme==='system')applyAppearance()});
+if(window.matchMedia){const m=window.matchMedia('(prefers-color-scheme: light)');if(m.addEventListener)m.addEventListener('change',()=>{if(prefs.theme==='system')appearance()})}
 })();
