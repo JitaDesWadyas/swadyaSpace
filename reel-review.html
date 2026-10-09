@@ -4,66 +4,55 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#111418">
-<meta name="description" content="Content Review — una valutazione sorprendentemente approfondita per un contenuto che probabilmente non ne aveva bisogno.">
-<title>CONTENT REVIEW / Dipartimento valutazioni</title>
-<link rel="stylesheet" href="reel-review.css?v=4">
-<script src="reel-review.js?v=4" defer></script>
+<meta name="description" content="Content Review — un modo semplice e dettagliato per recensire un contenuto.">
+<title>Content Review · SwadyaSpace</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="reel-review.css?v=6">
+<script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.13/dist/html-to-image.min.js" defer></script>
+<script src="reel-review.js?v=6" defer></script>
 </head>
 <body data-theme="dark" data-accent="classic" data-vision="normal">
-<a class="skip" href="#survey" data-i18n="skip">Vai alla valutazione</a>
+<a class="skip" href="#survey" data-i18n="skip">Vai alla recensione</a>
 <header class="nav">
-  <a class="brand" href="index.html" aria-label="SwadyaSpace">
-    <span class="brand-icon">C<span style="color:var(--muted)">/</span>R</span>
-    <span class="brand-copy">CONTENT<br>REVIEW<small>SWADYASPACE / SPECIAL DIVISION</small></span>
-  </a>
-  <div class="nav-actions">
-    <span class="edition">CR — 001 / OPEN FOR REVIEW</span>
-    <button id="settingsOpen" class="gear" type="button" aria-haspopup="dialog" aria-controls="settingsDialog" aria-label="Apri impostazioni">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 17h16M9 4v6M16 14v6"/><circle cx="9" cy="7" r="2" fill="var(--surface)"/><circle cx="16" cy="17" r="2" fill="var(--surface)"/></svg>
-      <span data-i18n="settingsShort">Opzioni</span>
-    </button>
-  </div>
+  <a class="brand" href="index.html" aria-label="SwadyaSpace"><span class="brand-icon" aria-hidden="true"><span>C</span><span class="slash">/</span><span>R</span></span><span class="brand-copy">CONTENT<br>REVIEW<small>BY SWADYASPACE</small></span></a>
+  <div class="nav-actions"><span class="edition">CONTENT REVIEW · 2026</span><button id="settingsOpen" class="gear" type="button" aria-haspopup="dialog" aria-controls="settingsDialog" aria-label="Impostazioni">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 17h16M9 4v6M16 14v6"/><circle cx="9" cy="7" r="2" fill="var(--surface)"/><circle cx="16" cy="17" r="2" fill="var(--surface)"/></svg><span data-i18n="settingsShort">Opzioni</span></button></div>
 </header>
 <main>
-<section class="hero" aria-labelledby="heroTitle">
-  <div>
-    <span class="eyebrow" data-i18n="heroEyebrow">DIPARTIMENTO DI OPINIONI NON RICHIESTE · EST. 2026</span>
-    <h1 id="heroTitle"><span data-i18n="heroLine1">NE VALEVA</span><span data-i18n="heroLine2">LA PENA<span class="tiny-sup">®</span></span><span data-i18n="heroLine3">DAVVERO?</span></h1>
-    <p class="hero-sub" data-i18n="heroDesc">Hai ricevuto un contenuto. È arrivato il momento di valutarlo con <strong>un rigore completamente ingiustificato.</strong> Ci vogliono circa due minuti.</p>
-    <button class="hero-cta" type="button" id="startButton"><span data-i18n="start">Inizia la valutazione</span><span aria-hidden="true">↘</span></button>
-  </div>
-  <div class="hero-decoration" aria-hidden="true">
-    <div class="orbit"><div class="orbit-center">5<sup>/5</sup></div></div>
-    <div class="orbit-stamp">OBJECTIVITY<br>NOT GUARANTEED</div>
-    <span class="floating-indicator">FORM #001 / INDEPENDENT REVIEW</span>
-  </div>
-</section>
-<div class="marquee-line" aria-hidden="true"><div>CONTENT QUALITY ASSURANCE &nbsp; ✳ &nbsp; COMPLETELY OPTIONAL &nbsp; ✳ &nbsp; OPINION UNDER REVIEW &nbsp; ✳ &nbsp; CONTENT QUALITY ASSURANCE &nbsp; ✳ &nbsp; COMPLETELY OPTIONAL &nbsp; ✳ &nbsp; OPINION UNDER REVIEW &nbsp; ✳ &nbsp; </div></div>
-<section class="survey" id="survey" aria-labelledby="surveyTitle">
-  <div class="section-heading"><div><span class="eyebrow" data-i18n="surveyEyebrow">IL QUESTIONARIO / EDIZIONE SPECIALE</span><h2 id="surveyTitle" data-i18n="surveyTitle">METTI A VERBALE.</h2></div><p class="side-note" data-i18n="surveyAside">Nessun account. Nessun voto pubblico. Nessun motivo concreto per tutta questa procedura.</p></div>
-  <div class="review-shell">
-    <div class="review-top"><span id="chapterLabel">SEZIONE 01 / 07</span><span id="completedLabel">00 / 15 RISPOSTE</span></div>
-    <div class="progress-track" id="progressTrack" role="progressbar" aria-label="Progresso questionario" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="progressFill" class="progress-fill"></span></div>
-    <div id="stageContent" class="stage" aria-live="polite"></div>
-    <div class="review-bottom">
-      <span id="pageStatus" class="review-count">PROTOCOLLO ATTIVO</span>
-      <div class="review-buttons">
-        <button type="button" class="btn secondary" id="previous">← <span data-i18n="back">Indietro</span></button>
-        <button type="button" class="btn primary" id="next"><span data-i18n="next">Continua</span> <span aria-hidden="true">↗</span></button>
-      </div>
+<section class="hero" id="homeHero">
+  <div class="hero-copy"><span class="eyebrow" data-i18n="heroEyebrow">CONTENT REVIEW / EDIZIONE 2026</span>
+    <h1 id="heroTitle"><span data-i18n="heroLine1">LA TUA</span><span data-i18n="heroLine2">RECENSIONE</span><span data-i18n="heroLine3">CONTA.</span></h1>
+    <p class="hero-sub" data-i18n="heroDesc">Un questionario per capire cosa hai pensato davvero del contenuto che hai ricevuto.</p>
+    <div class="hero-actions">
+      <button class="hero-cta" type="button" id="startButton"><span data-i18n="start">Inizia la recensione</span><span aria-hidden="true">↘</span></button>
+      <button class="btn hero-outline" type="button" id="createJump"><span data-i18n="createButton">Crea questionario</span><span aria-hidden="true">↗</span></button>
     </div>
   </div>
-  <div class="info-strip" aria-hidden="true"><div><strong>01—05</strong><span data-i18n="strip1">GIUDIZIO / PERCEZIONE</span></div><div><strong>06—07</strong><span data-i18n="strip2">DICHIARAZIONI / VERDETTO</span></div><div><strong>100%</strong><span data-i18n="strip3">SERISSIMO (NON VERIFICATO)</span></div></div>
+  <div class="hero-decoration" aria-hidden="true"><div class="orbit"><div class="orbit-center">5<sup>/5</sup></div></div><div class="orbit-stamp">MAKE IT<br>COUNT.</div></div>
+</section>
+<div class="marquee-line" id="marquee" aria-hidden="true"><div>CONTENT REVIEW &nbsp; ✳ &nbsp; THE DETAILS MATTER &nbsp; ✳ &nbsp; YOUR OPINION &nbsp; ✳ &nbsp; CONTENT REVIEW &nbsp; ✳ &nbsp; THE DETAILS MATTER &nbsp; ✳ &nbsp; YOUR OPINION &nbsp; ✳ &nbsp;</div></div>
+
+<section class="survey" id="survey" aria-labelledby="surveyTitle">
+  <div class="section-heading"><div><span class="eyebrow" id="surveyKicker" data-i18n="surveyEyebrow">QUESTIONARIO / VALUTAZIONE</span><h2 id="surveyTitle" data-i18n="surveyTitle">LA RECENSIONE.</h2></div><p class="side-note" id="surveyAside" data-i18n="surveyAside">Seleziona il livello che descrive meglio la tua esperienza.</p></div>
+  <div class="review-shell">
+    <div class="review-top"><span id="chapterLabel">SEZIONE 01 / 05</span><span class="review-top-right"><button type="button" id="resetCorner" class="reset-corner" title="Ricomincia" aria-label="Ricomincia la recensione">↻</button><span id="completedLabel">00 / 08</span></span></div>
+    <div class="progress-track" id="progressTrack" role="progressbar" aria-label="Avanzamento" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="progressFill" class="progress-fill"></span></div>
+    <div id="stageContent" class="stage" aria-live="polite"></div>
+    <div class="review-bottom"><span id="pageStatus" class="review-count">RECENSIONE IN CORSO</span><div class="review-buttons"><button type="button" class="btn secondary" id="previous">← <span data-i18n="back">Indietro</span></button><button type="button" class="btn primary" id="next"><span data-i18n="next">Continua</span> ↗</button></div></div>
+  </div>
+</section>
+
+<section id="creator" class="creator" aria-labelledby="creatorTitle">
+  <div class="creator-head"><div><span class="eyebrow" data-i18n="creatorEyebrow">CREAZIONE / CONDIVISIONE</span><h2 id="creatorTitle" data-i18n="creatorTitle">CREA UN QUESTIONARIO.</h2></div><p data-i18n="creatorDesc">Scegli il tipo di valutazione, genera un link e invialo. Chi lo apre comincia da zero; se torna, ritrova le proprie risposte.</p></div>
+  <div class="creator-types" role="group" aria-label="Tipo di questionario"><button class="creator-type" type="button" data-mode="personal" aria-pressed="true"><span class="creator-type-mark">01 /</span><strong data-i18n="personalTitle">Esperienza personale</strong><span data-i18n="personalDesc">Reazioni, interesse, risate, attenzione e impatto.</span><span class="creator-type-arrow">↗</span></button><button class="creator-type" type="button" data-mode="technical" aria-pressed="false"><span class="creator-type-mark">02 /</span><strong data-i18n="technicalTitle">Analisi tecnica</strong><span data-i18n="technicalDesc">Esperienza personale e domande su realizzazione e qualità.</span><span class="creator-type-arrow">↗</span></button></div>
+  <div class="creator-actions"><button type="button" id="createLink" class="hero-cta"><span data-i18n="generateLink">Genera link</span><span aria-hidden="true">↗</span></button><p id="creatorInfo" data-i18n="creatorInfo">Ogni link identifica un questionario indipendente.</p></div>
+  <div class="creator-link" id="createdLinkBox" hidden><div><span class="eyebrow" data-i18n="generatedLinkLabel">LINK DEL QUESTIONARIO</span><p id="createdLinkText"></p></div><div class="creator-link-actions"><button id="copyLink" type="button" class="btn primary" data-i18n="copyLink">Copia link</button><button id="shareLink" type="button" class="btn" data-i18n="shareLink">Condividi</button></div></div>
 </section>
 </main>
-<footer class="foot"><span>© CONTENT REVIEW · SWADYASPACE</span><span data-i18n="footerText">Nessuna autorità competente è stata consultata.</span><a href="index.html" data-i18n="backHome">← Torna a SwadyaSpace</a></footer>
+<footer class="foot"><span>CONTENT REVIEW © 2026 · SWADYASPACE</span><span data-i18n="footerText">Designed for better feedback.</span><a href="index.html" data-i18n="backHome">← SwadyaSpace</a></footer>
+
 <div class="modal-backdrop" id="settingsBackdrop"></div>
-<aside class="settings-dialog" id="settingsDialog" role="dialog" aria-modal="true" aria-labelledby="settingsTitle" aria-hidden="true" tabindex="-1">
-  <div class="settings-head"><div><span class="eyebrow" data-i18n="settingsEyebrow">AREA RISERVATA A CHI INSISTE</span><h2 id="settingsTitle" data-i18n="settingsTitle">IMPOSTAZIONI.</h2></div><button id="settingsClose" type="button" class="close" aria-label="Chiudi impostazioni">×</button></div>
-  <div class="settings-scroll" id="settingsContent"></div>
-  <div class="settings-foot"><span data-i18n="savedLocally">Preferenze salvate solo su questo dispositivo.</span><button class="btn primary" id="settingsDone" type="button" data-i18n="done">Fatto ✓</button></div>
-</aside>
+<aside class="settings-dialog" id="settingsDialog" role="dialog" aria-modal="true" aria-labelledby="settingsTitle" aria-hidden="true" tabindex="-1"><div class="settings-head"><div><span class="eyebrow" data-i18n="settingsEyebrow">PERSONALIZZAZIONE</span><h2 id="settingsTitle" data-i18n="settingsTitle">IMPOSTAZIONI.</h2></div><button id="settingsClose" type="button" class="close" aria-label="Chiudi impostazioni">×</button></div><div class="settings-scroll" id="settingsContent"></div><div class="settings-foot"><span data-i18n="savedLocally">Le preferenze vengono salvate sul dispositivo.</span><button class="btn primary" id="settingsDone" type="button" data-i18n="done">Fatto ✓</button></div></aside>
 <div class="toast" role="status" id="toast" aria-live="polite"></div>
-<noscript><p style="padding:20px">Per compilare e condividere la valutazione serve JavaScript.</p></noscript>
-</body>
-</html>
+<noscript><p style="padding:20px">Attiva JavaScript per compilare il questionario.</p></noscript>
+</body></html>
