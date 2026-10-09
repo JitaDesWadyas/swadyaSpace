@@ -7,9 +7,9 @@
 <meta name="description" content="Content Review — un modo semplice e dettagliato per recensire un contenuto.">
 <title>Content Review · SwadyaSpace</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="reel-review.css?v=8">
+<link rel="stylesheet" href="reel-review.css?v=9">
 <script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.13/dist/html-to-image.min.js" defer></script>
-<script src="reel-review.js?v=8" defer></script>
+<script src="reel-review.js?v=9" defer></script>
 </head>
 <body data-theme="dark" data-accent="classic" data-vision="normal">
 <a class="skip" href="#survey" data-i18n="skip">Vai alla recensione</a>
@@ -31,6 +31,7 @@
 
 <section class="survey" id="survey" aria-labelledby="surveyTitle">
   <div class="section-heading"><div><span class="eyebrow" id="surveyKicker" data-i18n="surveyEyebrow">QUESTIONARIO / VALUTAZIONE</span><h2 id="surveyTitle" data-i18n="surveyTitle">LA RECENSIONE.</h2></div><p class="side-note" id="surveyAside" data-i18n="surveyAside">Seleziona il livello che descrive meglio la tua esperienza.</p></div>
+  <p id="reviewSubject" class="review-subject" hidden></p>
   <div id="reviewShell" class="review-shell">
     <div class="review-top"><span id="chapterLabel">SEZIONE 01 / 05</span><span class="review-top-right"><button type="button" id="resetCorner" class="reset-corner" title="Ricomincia" aria-label="Ricomincia la recensione">↻</button><span id="completedLabel">00 / 08</span></span></div>
     <div class="progress-track" id="progressTrack" role="progressbar" aria-label="Avanzamento" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="progressFill" class="progress-fill"></span></div>
@@ -42,6 +43,10 @@
 <section id="creator" class="creator" aria-labelledby="creatorTitle" hidden>
   <div class="creator-head"><div><span class="eyebrow" data-i18n="creatorEyebrow">CREAZIONE / CONDIVISIONE</span><h2 id="creatorTitle" data-i18n="creatorTitle">CREA UN QUESTIONARIO.</h2></div><p data-i18n="creatorDesc">Scegli il tipo di valutazione, genera un link e invialo. Chi lo apre comincia da zero; se torna, ritrova le proprie risposte.</p></div>
   <div class="creator-types" role="group" aria-label="Tipo di questionario"><button class="creator-type" type="button" data-mode="personal" aria-pressed="true"><span class="creator-type-mark">01 /</span><strong data-i18n="personalTitle">Esperienza personale</strong><span data-i18n="personalDesc">Reazioni, interesse, risate, attenzione e impatto.</span><span class="creator-type-arrow">↗</span></button><button class="creator-type" type="button" data-mode="technical" aria-pressed="false"><span class="creator-type-mark">02 /</span><strong data-i18n="technicalTitle">Analisi tecnica</strong><span data-i18n="technicalDesc">Esperienza personale e domande su realizzazione e qualità.</span><span class="creator-type-arrow">↗</span></button></div>
+  <div class="creator-content-field field">
+    <label for="creatorContentName" data-i18n="contentNameLabel">Nome del contenuto</label>
+    <input id="creatorContentName" class="input" name="contentName" type="text" maxlength="80" autocomplete="off" placeholder="Es. Quel video che ti ho mandato">
+  </div>
   <div class="creator-actions"><button type="button" id="createLink" class="hero-cta"><span data-i18n="generateLink">Genera link</span><span aria-hidden="true">↗</span></button><p id="creatorInfo" data-i18n="creatorInfo">Ogni link identifica un questionario indipendente.</p></div>
   <div class="creator-link" id="createdLinkBox" hidden><div><span class="eyebrow" data-i18n="generatedLinkLabel">LINK DEL QUESTIONARIO</span><p id="createdLinkText"></p></div><div class="creator-link-actions"><button id="copyLink" type="button" class="btn primary" data-i18n="copyLink">Copia link</button><button id="shareLink" type="button" class="btn" data-i18n="shareLink">Condividi</button></div></div>
 </section>

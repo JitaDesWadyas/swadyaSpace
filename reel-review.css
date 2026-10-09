@@ -374,3 +374,182 @@ body.integrity-flash:after {
   .report-poster.is-liar {border:2px solid #bc5969!important}
   .poster-lie {color:#bc5969!important}
 }
+
+/* V9 — 9:16 story render, same DOM for preview and export */
+.creator-content-field {margin:24px 0 0;max-width:590px}
+.creator-content-field label {font-size:13px}
+.creator-content-field .input {background:var(--bg);border-color:var(--line)}
+.review-subject {
+  border-left:3px solid var(--accent);
+  margin:0 0 22px;
+  padding:7px 0 7px 17px;
+  font-weight:700;
+  font-size:clamp(15px,2vw,19px);
+  overflow-wrap:anywhere;
+}
+.poster-preview {
+  --story-scale:1;
+  position:relative;
+  display:block;
+  width:100%;
+  max-width:540px;
+  aspect-ratio:9/16;
+  margin-inline:auto;
+  overflow:hidden;
+}
+.poster-preview .report-poster {
+  position:absolute!important;
+  inset:0 auto auto 0;
+  box-sizing:border-box!important;
+  width:540px!important;
+  min-width:540px!important;
+  max-width:none!important;
+  height:960px!important;
+  min-height:960px!important;
+  max-height:960px!important;
+  margin:0!important;
+  padding:32px 34px!important;
+  transform:scale(var(--story-scale))!important;
+  transform-origin:top left!important;
+  display:flex!important;
+  flex-direction:column;
+  overflow:hidden;
+  background:var(--bg);
+  border:1px solid var(--line);
+}
+.poster-preview .poster-kicker {
+  flex:none;
+  padding-bottom:15px;
+  font-size:10px;
+  min-height:30px;
+}
+.poster-content-name {
+  flex:none;
+  display:flex;
+  gap:6px;
+  flex-direction:column;
+  padding:15px 0 0;
+  max-width:100%;
+}
+.poster-content-name small {
+  display:block;
+  color:var(--muted);
+  font-size:10px;
+  font-weight:750;
+  text-transform:uppercase;
+  letter-spacing:.1em;
+}
+.poster-content-name strong {
+  display:-webkit-box;
+  -webkit-box-orient:vertical;
+  -webkit-line-clamp:2;
+  overflow:hidden;
+  overflow-wrap:anywhere;
+  max-height:58px;
+  font-size:24px;
+  font-weight:800;
+  line-height:1.2;
+}
+.poster-preview .poster-main {
+  flex:none;
+  padding:24px 0 16px;
+}
+.poster-preview .poster-title {
+  font-size:61px!important;
+  line-height:.9!important;
+  letter-spacing:-.025em;
+  margin:12px 0 19px!important;
+  max-width:460px;
+}
+.poster-preview .poster-score-row {
+  display:flex!important;
+  align-items:flex-end!important;
+  justify-content:space-between!important;
+  gap:16px!important;
+  padding-bottom:17px;
+}
+.poster-preview .poster-score {
+  font-size:145px!important;
+  line-height:.78!important;
+  letter-spacing:-.045em!important;
+  margin-top:14px;
+}
+.poster-preview .poster-verdict {
+  font-size:19px!important;
+  line-height:1.25;
+  max-width:175px;
+  flex:1 1 160px;
+  padding-bottom:4px;
+}
+.poster-preview .poster-rows {
+  flex:none;
+  padding:13px 0;
+  border-bottom:1px solid var(--line);
+}
+.poster-preview .poster-row {
+  grid-template-columns:150px minmax(45px,1fr) 34px!important;
+  gap:11px!important;
+  padding:8px 0!important;
+  min-height:35px;
+}
+.poster-preview .poster-row > span {
+  font-size:12px!important;
+  line-height:1.25;
+}
+.poster-preview .poster-row > strong {
+  font-size:12px!important;
+}
+.poster-preview .poster-details {
+  flex:none;
+  grid-template-columns:1fr 1fr;
+  gap:18px;
+  padding:16px 0;
+}
+.poster-preview .poster-details>div {
+  min-width:0;
+}
+.poster-preview .poster-details span {
+  font-size:13px!important;
+  overflow-wrap:anywhere;
+  line-height:1.35;
+}
+.poster-preview .poster-quote {
+  flex:none;
+  display:-webkit-box;
+  -webkit-box-orient:vertical;
+  -webkit-line-clamp:4;
+  max-height:95px;
+  overflow:hidden;
+  padding:13px 0;
+  font-size:13px!important;
+  line-height:1.4;
+}
+.poster-preview .poster-signature {
+  flex:none;
+  padding:14px 0 0;
+}
+.poster-preview .poster-lie {
+  flex:none;
+  margin-top:5px;
+  padding-top:4px;
+}
+.poster-preview .poster-foot {
+  flex:none;
+  margin-top:auto;
+  padding-top:19px;
+  font-size:9px;
+  gap:10px;
+}
+.poster-preview .poster-deco {font-size:275px!important}
+@media print {
+  .poster-preview {
+    width:540px!important;
+    height:960px!important;
+    overflow:visible!important;
+    margin:0!important;
+  }
+  .poster-preview .report-poster {
+    transform:none!important;
+    position:relative!important;
+  }
+}
