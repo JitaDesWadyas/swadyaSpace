@@ -74,7 +74,7 @@ h2,.section-head h2,.deep-title{color:#153047!important}
 <script>
 const days=[["Santiago","Quartieri, non monumenti","Arrivo, metro e prima passeggiata a Providencia. Cena a Barrio Italia e rientro con trasporto affidabile.","Fermati in una panadería, guarda come ci si muove davvero.","Evita strade deserte e telefono esposto dopo il buio."],["Santiago","La città in un giorno normale","La Vega Central al mattino, pranzo in una fuente de soda, Cerro San Cristóbal e pomeriggio libero a Ñuñoa.","Mercati, mezzi pubblici e negozi quotidiani valgono più di dieci musei.","La Vega è affollata: zaino davanti e attenzione agli oggetti."],["Villarrica","Arrivare al lago","Volo per Temuco e collegamento a Villarrica oppure bus notturno da Santiago. Sistemazione in centro, Costanera al tramonto.","Compra al minimarket di quartiere e cena in una piccola picada.","Verifica prima il bus dall'aeroporto e non arrivare troppo tardi."],["Villarrica","Un giorno da abitante","Panadería, Mercado Fritz, botteghe, spiaggia di sabbia scura, lungolago e ristorantino.","Giornata volutamente senza attrazioni: osserva il ritmo del posto.","La sera resta sulle strade illuminate e frequentate."],["Pucón","La giornata adrenalinica","Bus locale verso Pucón, rafting sul Trancura con guida certificata oppure kayak; cena in centro.","Guarda i negozi di attrezzatura e i piccoli locali dietro la via principale.","Rientro: controlla l'ultima corsa, altrimenti dormi a Pucón."],["Huerquehue","Boschi preistorici","Trekking fra araucarie e laghi nel parco nazionale, accesso dalla zona di Pucón.","Porta pranzo acquistato in paese e lascia il pomeriggio al paesaggio.","Sentieri e biglietti CONAF dipendono da meteo e aperture."],["Rientro","Un ultimo caffè","Ultima passeggiata sul lago, trasferimento per Temuco e Santiago. Se serve, pernottamento cuscinetto.","Meglio ricordare una mattina normale che correre a un'ultima attrazione.","Non rischiare il volo internazionale con coincidenze strette."],["Licán Ray","L'altro lago","Bus o auto a Licán Ray sul lago Calafquén, picnic e spiaggia; rientro a Villarrica.","Villaggio più piccolo, chioschi e famiglie in vacanza.","Orari bus variabili: controlla andata e ritorno."],["Puerto Varas","Verso il sud profondo","Trasferimento attraverso la regione dei laghi; arrivo a Puerto Varas, passeggiata lungolago.","Fai la spesa in un supermercato locale, esplora vie non turistiche.","È un giorno di spostamento, non aggiungere tour."],["Frutillar","Dolci, lago e case di legno","Escursione a Frutillar, case storiche e Lago Llanquihue, ritorno a Puerto Varas.","Prova kuchen in una pasticceria e fermati sul lungolago.","Meteo variabile anche d'estate: antivento."],["Petrohué","Fiumi e vulcani","Saltos del Petrohué e scorci sul vulcano Osorno, con trasporto locale o escursione condivisa.","Una sola escursione bella, senza pacchetti premium.","Verifica accessi al parco e i collegamenti."],["Castro","Sbarcare a Chiloé","Trasferimento via Puerto Montt e traghetto per Chiloé; passeggiata fra palafitos e porto.","La vita insulare ha un ritmo diverso: mercati, traghetti, pioggia.","I trasferimenti richiedono gran parte della giornata."],["Dalcahue","Un'isola che lavora","Mercato artigianale, chiese in legno e cucina chilota; ritorno a Castro.","Milcao, empanadas e conversazioni nei piccoli locali.","Controlla il giorno effettivo del mercato e gli orari dei bus."],["Santiago","Ritorno senza stress","Rientro verso Puerto Montt, volo per Santiago e notte vicina a trasporti comodi.","Ultima cena semplice, senza inseguire la città.","Lascia margine prima del volo internazionale."]];
 const root=document.getElementById('days');let long=false;
-function render(){if(typeof assignedPhotos!=='undefined')assignedPhotos.clear();const positions=long?[0,1,2,3,4,5,7,8,9,10,11,12,13,6]:[0,1,2,3,4,5,6];
+function render(){if(typeof usedPhotos!=='undefined')usedPhotos.clear();const positions=long?[0,1,2,3,4,5,7,8,9,10,11,12,13,6]:[0,1,2,3,4,5,6];
 root.innerHTML=positions.map((j,i)=>{
 const d=days[j],entries=hourPlans[j].split('|');const stops=[];
 for(let k=0;k<entries.length;k+=4){
@@ -101,10 +101,7 @@ const galleryData=[["Villarrica, lago e vulcano","https://commons.wikimedia.org/
 const phraseData=[["Hola, ¿cómo está?","Ciao, come sta?","ola, komo està"],["¿Cuánto cuesta?","Quanto costa?","kuànto kuèsta"],["¿Dónde queda...?","Dove si trova...?","dònde kèda"],["¿Me puede ayudar?","Può aiutarmi?","me puède aiudàr"],["Quisiera una empanada, por favor.","Vorrei un'empanada, per favore.","kisièra ùna empanàda"],["¿Aceptan tarjeta?","Accettate carta?","asèptan tarhèta"],["¿A qué hora sale la micro?","A che ora parte l'autobus?","a ke òra sàle la mìkro"],["¿Dónde tomo el colectivo?","Dove prendo il taxi collettivo?","dònde tòmo el kolektìvo"],["La cuenta, por favor.","Il conto, per favore.","la kuènta"],["¿Puede hablar más despacio?","Può parlare più lentamente?","puède ablàr mas despàsio"],["¿Es seguro caminar por aquí de noche?","È sicuro camminare qui di notte?","es segùro kaminàr"],["¿Me recomienda un lugar para comer?","Mi consiglia un posto dove mangiare?","me rekomiènda"],["Bacán","Figo, fantastico (colloquiale)","bakàn"],["Cachai?","Capisci? (cileno, informale)","kachài"],["Po","Particella colloquiale cilena, non da inserire ovunque","po"],["Pololo / polola","Ragazzo / ragazza (partner)","polòlo"],["Luca","Mille pesos cileni (informale)","lùka"],["Once","Merenda/cena leggera nel tardo pomeriggio","ònse"],["¿Está abierto hoy?","È aperto oggi?","està abièrto oi"],["¿Hay otra micro de regreso?","C'è un altro bus per tornare?","ai òtra mìkro"]];
 const extraPhotos=['https://commons.wikimedia.org/wiki/Special:FilePath/Costanera%20de%20Villarrica.%20Chile.jpg','https://portavillarrica.cl/images/home/morado.jpg','https://services.meteored.com/img/article/puerto-varas-la-ciudad-de-las-rosas-que-deslumbra-por-su-arquitectura-y-tradicion-1731767179574_1024.jpeg'];
 function maps(q){return 'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(q);}
-function buildGallery(){
-const photos=Object.entries(locationPhotos).flatMap(([place,files])=>files.map(file=>({place,file})));
-document.getElementById('chileGallery').innerHTML=photos.map(({place,file})=>'<figure><img loading="lazy" decoding="async" src="'+fileUrl(file,850)+'" alt="'+place+'"><figcaption>'+place+' · <a target="_blank" rel="noopener noreferrer" href="'+fileSource(file)+'">Fonte ↗</a></figcaption></figure>').join('');
-}
+function buildGallery(){const el=document.getElementById('chileGallery');el.innerHTML=photoSlots.map(([f,label])=>'<figure><img loading="lazy" decoding="async" src="'+fileUrl(f,850)+'" alt="'+label+'"><figcaption>'+label+' · <a href="'+fileSource(f)+'" rel="noopener noreferrer" target="_blank">Fonte ↗</a></figcaption></figure>').join('');el.querySelectorAll('img').forEach(img=>img.addEventListener('error',()=>img.closest('figure').remove()))}
 function buildHours(){const positions=long?[0,1,2,3,4,5,7,8,9,10,11,12,13,6]:[0,1,2,3,4,5,6];document.getElementById('hourly').innerHTML=positions.map((j,i)=>{let entries=hourPlans[j].split('|'),rows=[];for(let a=0;a<entries.length;a+=4){rows.push('<div class="hour-item"><div class="hour-time">'+entries[a]+'</div><div><h4>'+entries[a+1]+'</h4><p>'+entries[a+2]+'</p><a href="'+maps(entries[a+3])+'" target="_blank" rel="noopener noreferrer">📍 Apri su Maps ↗</a></div></div>')}return '<details class="hour-day" '+(i===0?'open':'')+'><summary>Giorno '+(i+1)+' · '+days[j][0]+' · '+days[j][1]+' <span>＋</span></summary><div class="photo-strip">'+extraPhotos.map(url=>'<img loading="lazy" alt="Paesaggio del Cile meridionale (immagine illustrativa)" src="'+url+'" onerror="this.hidden=true">').join('')+'</div>'+rows.join('')+'</details>'}).join('')}
 function buildPhrases(mode){const arr=phraseData.filter((p,i)=>mode==='all'||(mode==='base'?i<12:i>=12));document.getElementById('phrases').innerHTML=arr.map(p=>'<article class="phrase"><h3 lang="es-CL">'+p[0]+'</h3><p>'+p[1]+'</p><small>Pronuncia indicativa: '+p[2]+'</small><div><button type="button" data-say="'+phraseData.indexOf(p)+'">▶ Ascolta</button></div></article>').join('')}
 for(const [id,mode] of [['langBase','base'],['langLocal','local'],['langAll','all']])document.getElementById(id).addEventListener('click',()=>{document.querySelectorAll('.course-controls button').forEach(b=>b.setAttribute('aria-pressed',String(b.id===id)));buildPhrases(mode)});
@@ -112,32 +109,44 @@ document.getElementById('phrases').addEventListener('click',e=>{const b=e.target
 
 
 
-const locationPhotos={"Santiago":["Santiago de Chile skyline.jpg","Santiago Chile.jpg"],"Villarrica":["Villarrica town and volcano.jpg","Villarrica, Lago Villarrica, 2019 (05).jpg","Villarrica, Lago Villarrica, 2019 (06).jpg","Volcan Villarrica desde el lago 2025 Chile.jpg","Villarrica Volcano Chile.jpg"],"Pucón":["Villarrica Volcano.jpg","Villarrica, Lago Villarrica, 2019 (02).jpg"],"Huerquehue":[],"Licán Ray":[],"Puerto Varas":[],"Frutillar":["Frutillar Chile.jpg"],"Petrohué":[],"Castro":["Palafitos de Castro en la costa de Chiloé.jpg","PalafitosCastro2016.jpg","Palafitos de Castro.jpg"],"Dalcahue":[]};
-function fileUrl(name,width=900){return 'https://commons.wikimedia.org/wiki/Special:FilePath/'+encodeURIComponent(name)+'?width='+width;}
-function fileSource(name){return 'https://commons.wikimedia.org/wiki/File:'+encodeURIComponent(name.replace(/ /g,'_'));}
-function selectPhoto(query){
- const q=query.toLowerCase();
- for(const k of ['Dalcahue','Castro','Frutillar','Puerto Varas','Petrohué','Huerquehue','Licán Ray','Pucón','Villarrica','Santiago'])
- if(q.includes(k.toLowerCase()))return locationPhotos[k];
- if(/chilo|palafito/.test(q))return locationPhotos.Castro;
- if(/volc|trancura/.test(q))return locationPhotos['Pucón'];
- return null;
-}
-const assignedPhotos=new Set();
-function renderPhoto(slot){
- const q=decodeURIComponent(slot.dataset.photoQuery),pool=selectPhoto(q)||[];
- const chosen=pool.find(file=>!assignedPhotos.has(file));
- const fallback=()=>{slot.classList.add('no-photo');slot.innerHTML='<a class="photo-lookup" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(q)+'">📍 Foto e dettagli su Maps ↗</a>'};
- if(!chosen){fallback();return}
- assignedPhotos.add(chosen);
- const img=new Image(),anchor=document.createElement('a');
- anchor.href=fileSource(chosen);anchor.target='_blank';anchor.rel='noopener noreferrer';anchor.className='photo-credit';anchor.textContent='Foto · fonte/licenza ↗';
- img.loading='lazy';img.decoding='async';img.alt='Fotografia della zona: '+q;img.src=fileUrl(chosen,900);
- img.onerror=fallback;slot.replaceChildren(img,anchor);
-}
-function setupStopPhotography(){
- document.querySelectorAll('.route-day').forEach(details=>{const run=()=>{if(details.open)details.querySelectorAll('.route-photo:not([data-started])').forEach(slot=>{slot.dataset.started='1';renderPhoto(slot)})};details.addEventListener('toggle',run);run()});
-}
 
+const verifiedImages={
+"Santiago":["Santiago de Chile skyline.jpg"],
+"Villarrica":["Costanera de Villarrica. Chile.jpg","Villarrica town and volcano.jpg","Villarrica, Lago Villarrica, 2019 (04).jpg","Villarrica, Lago Villarrica, 2019 (05).jpg","Avenida Costanera Pucará en Villarrica hacia el sur.jpg","Botes en el Lago de Villarrica.jpg","Atardecer en Lago Villarrica.jpg","Embarcadero del Lago de Villarrica.JPG","Volcán y lago Villarrica.jpg","J25 018 Lago Villarrica.jpg"],
+"Pucón":["J25 043 Lago Villarrica, Hafenbucht Pucón.jpg","J25 044 Lago Villarrica, Peninsula.jpg","J25 045 Lago, Volcán Villarrica.jpg","J25 046 Lago Villarrica, Katamarane.jpg","J25 048 Lago Villarrica, Hafenbucht Pucón.jpg"],
+};
+const photoSlots=[
+["Costanera de Villarrica. Chile.jpg","Villarrica · Costanera"],
+["Villarrica town and volcano.jpg","Villarrica · città e vulcano"],
+["Villarrica, Lago Villarrica, 2019 (04).jpg","Villarrica · lungolago"],
+["Villarrica, Lago Villarrica, 2019 (05).jpg","Villarrica · lago al tramonto"],
+["Avenida Costanera Pucará en Villarrica hacia el sur.jpg","Villarrica · Costanera Pucará"],
+["Botes en el Lago de Villarrica.jpg","Villarrica · barche"],
+["Atardecer en Lago Villarrica.jpg","Villarrica · tramonto"],
+["Embarcadero del Lago de Villarrica.JPG","Villarrica · imbarcadero"],
+["Volcán y lago Villarrica.jpg","Villarrica · vulcano"],
+["J25 018 Lago Villarrica.jpg","Lago Villarrica"],
+["J25 043 Lago Villarrica, Hafenbucht Pucón.jpg","Pucón · porto"],
+["J25 044 Lago Villarrica, Peninsula.jpg","Pucón · penisola"],
+["J25 045 Lago, Volcán Villarrica.jpg","Pucón · vulcano"],
+["J25 046 Lago Villarrica, Katamarane.jpg","Pucón · catamarano"],
+["J25 048 Lago Villarrica, Hafenbucht Pucón.jpg","Pucón · baia"]
+];
+function fileUrl(name,width=850){return 'https://commons.wikimedia.org/wiki/Special:FilePath/'+encodeURIComponent(name)+'?width='+width}
+function fileSource(name){return 'https://commons.wikimedia.org/wiki/File:'+encodeURIComponent(name.replace(/ /g,'_'))}
+const usedPhotos=new Set();
+function categoryFor(q){if(/puc[oó]n|trancura/i.test(q))return 'Pucón';if(/villarrica|pucar[aá]|mercado fritz/i.test(q))return 'Villarrica';if(/santiago/i.test(q))return 'Santiago';return null}
+function renderPhoto(slot){
+ const q=decodeURIComponent(slot.dataset.photoQuery),category=categoryFor(q);
+ const candidates=verifiedImages[category]||[];
+ const file=candidates.find(name=>!usedPhotos.has(name));
+ if(!file){slot.classList.add('no-photo');slot.innerHTML='<a class="photo-lookup" href="https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(q)+'" target="_blank" rel="noopener noreferrer">📍 Foto e posizione del luogo su Google Maps ↗</a>';return}
+ usedPhotos.add(file);
+ const img=new Image();img.loading='lazy';img.decoding='async';img.src=fileUrl(file,900);img.alt='Foto della zona '+category;
+ const source=document.createElement('a');source.className='photo-credit';source.href=fileSource(file);source.target='_blank';source.rel='noopener noreferrer';source.textContent='Fonte foto ↗';
+ img.addEventListener('error',()=>{slot.innerHTML='<a class="photo-lookup" href="https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(q)+'" target="_blank" rel="noopener noreferrer">📍 Foto su Google Maps ↗</a>'});
+ slot.replaceChildren(img,source);
+}
+function setupStopPhotography(){document.querySelectorAll('.route-day').forEach(details=>{const go=()=>{if(details.open)details.querySelectorAll('.route-photo:not([data-started])').forEach(slot=>{slot.dataset.started='1';renderPhoto(slot)})};details.addEventListener('toggle',go);go()})}
 buildGallery();render();buildPhrases('base');
 </script></body></html>
