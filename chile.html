@@ -90,7 +90,7 @@ async function loadStopPhoto(slot){
   if(!photoCache.has(preferred)){
    const url=new URL('https://commons.wikimedia.org/w/api.php');
    Object.entries({action:'query',generator:'search',gsrsearch:'filetype:bitmap '+preferred,gsrnamespace:'6',gsrlimit:'5',prop:'imageinfo',iiprop:'url',iiurlwidth:'680',format:'json',origin:'*'}).forEach(([k,v])=>url.searchParams.set(k,v));
-   photoCache.set(preferred,fetch(url).then(r=>r.ok?r.json():null).then(v=>Object.values(v?.query?.pages||{}).find(p=>p.imageinfo?.[0]?.thumburl&&/\\.(jpe?g|png|webp)$/i.test(p.title))||null).catch(()=>null));
+   photoCache.set(preferred,fetch(url).then(r=>r.ok?r.json():null).then(v=>Object.values(v?.query?.pages||{}).find(p=>p.imageinfo?.[0]?.thumburl&&/\.(jpe?g|png|webp)$/i.test(p.title))||null).catch(()=>null));
   }
   const p=await photoCache.get(preferred);
   if(!slot.isConnected)return;
