@@ -59,4 +59,36 @@ for(const [id,mode] of [['langBase','base'],['langLocal','local'],['langAll','al
 document.getElementById('phrases').addEventListener('click',e=>{const b=e.target.closest('button[data-say]');if(!b||!('speechSynthesis' in window))return;window.speechSynthesis.cancel();const utterance=new SpeechSynthesisUtterance(phraseData[Number(b.dataset.say)][0]);utterance.lang='es-CL';utterance.rate=.86;window.speechSynthesis.speak(utterance)});
 for(const id of ['week','fortnight'])document.getElementById(id).addEventListener('click',buildHours);
 buildGallery();buildHours();buildPhrases('base');
+/* Optional live Wikimedia Commons photo atlas. Each search is tied to the actual
+   destination; Commons returns attribution and thumbnail URLs. Static gallery
+   remains available when network/API are unavailable. */
+const photoDestinations=[
+['Santiago','Santiago Chile city skyline'],['Villarrica','Villarrica Chile lake'],['Pucón','Pucon Chile'],['Huerquehue','Huerquehue National Park'],['Licán Ray','Lican Ray Chile'],
+['Puerto Varas','Puerto Varas Chile'],['Frutillar','Frutillar Chile'],['Petrohué','Petrohue Chile waterfalls'],['Chiloé','Castro Chiloe palafitos'],['Dalcahue','Dalcahue Chile']
+];
+async function loadDestinationPhotos(){
+ const gallery=document.getElementById('chileGallery');const status=document.createElement('p');status.style.color='var(--muted)';
+ status.textContent='Cerco altre fotografie reali dei luoghi su Wikimedia Commons…';gallery.insertAdjacentElement('afterend',status);
+ let added=0;
+ for(const [name,search] of photoDestinations){
+  try{
+   const api=new URL('https://commons.wikimedia.org/w/api.php');
+   for(const [k,v] of Object.entries({action:'query',generator:'search',gsrsearch:'filetype:bitmap '+search,gsrnamespace:'6',gsrlimit:'8',prop:'imageinfo',iiprop:'url|extmetadata',iiurlwidth:'760',format:'json',origin:'*'}))api.searchParams.set(k,v);
+   const controller=new AbortController();const cutoff=setTimeout(()=>controller.abort(),6500);
+   let response;try{response=await fetch(api.toString(),{signal:controller.signal})}finally{clearTimeout(cutoff)}
+   if(!response.ok)continue;
+   const json=await response.json();const files=Object.values(json.query?.pages||{}).filter(p=>p.imageinfo?.[0]?.thumburl&&/\.(jpe?g|png|webp)$/i.test(p.title));
+   for(const file of files.slice(0,5)){
+    const info=file.imageinfo[0],fig=document.createElement('figure'),img=document.createElement('img'),caption=document.createElement('figcaption');
+    img.src=info.thumburl;img.loading='lazy';img.decoding='async';img.alt=name+' — '+file.title.replace(/^File:/,'');img.onerror=()=>fig.remove();
+    caption.textContent=name+' · Wikimedia Commons';fig.append(img,caption);fig.title='Foto: '+file.title+' · Apri su Wikimedia Commons';
+    fig.tabIndex=0;fig.setAttribute('role','link');const open=()=>window.open(info.descriptionurl,'_blank','noopener,noreferrer');
+    fig.addEventListener('click',open);fig.addEventListener('keydown',e=>{if(e.key==='Enter')open()});gallery.append(fig);added++;
+   }
+  }catch(e){/* network fail: retain built-in photography */}
+ }
+ status.textContent=added?'Galleria ampliata con '+added+' foto di Wikimedia Commons. Tocca una foto per fonte e licenza.':'Galleria base disponibile; fotografie aggiuntive non raggiungibili in questo momento.';
+}
+loadDestinationPhotos();
+
 </script></body></html>
