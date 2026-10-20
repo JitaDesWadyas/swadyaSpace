@@ -1,0 +1,29 @@
+name: Build Chile photo atlas
+on:
+  push:
+    paths:
+      - scripts/build_chile_photos.py
+      - .github/workflows/chile-photos.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --quiet pillow
+      - name: Collect photos and license references
+        run: python scripts/build_chile_photos.py
+      - name: Commit checked local photographs
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add assets/chile
+          git diff --cached --quiet || (git commit -m "Build local Chile photo atlas" && git push)
