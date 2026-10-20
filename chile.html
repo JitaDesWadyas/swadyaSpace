@@ -45,7 +45,7 @@ h2,.section-head h2,.deep-title{color:#153047!important}
 .end{color:#567084!important}
 .sticky-mobile{background:#fffdf7f5!important;border-color:#d2d8d2!important;box-shadow:0 8px 28px #1e455f26!important}
 .sticky-mobile a{color:#193c4e!important}
-</style></head><body>
+</style><style>.atlas-status{padding:14px 18px;margin:0 0 18px;border:1px solid #d5dcd7;border-radius:13px;background:#fffefa;color:#355467;font-weight:800}.gallery figure{min-height:185px}.gallery figure:first-child{grid-row:span 1;grid-column:span 1}@media(max-width:600px){.gallery figure img{height:175px;min-height:175px}}</style></head><body>
 <header class="top shell"><a href="index.html" class="logo">✳ SwadyaSpace</a><a class="back" href="index.html">← Tutti i viaggi</a></header>
 <main><div class="hero"><div class="shell hero-in"><div class="eyebrow">🇨🇱 Cile / Non solo da visitare. Da vivere.</div><h1>Cile.<em>La vita oltre<br>il vulcano.</em></h1><p class="lead">Una città sul lago dove svegliarsi senza programmi. Un vulcano vivo all'orizzonte. Mercati, autobus, rafting, araucarie, quartieri veri e serate spontanee. Il Cile spettacolare, senza dimenticarsi della gente che ci abita.</p><div class="pillset"><span class="pill">🌋 Villarrica protagonista</span><span class="pill">🚌 Senza auto possibile</span><span class="pill">💰 Budget ragionato</span></div><div class="switch" role="group" aria-label="Durata del viaggio"><button id="week" class="active" type="button" aria-pressed="true">7 giorni</button><button id="fortnight" type="button" aria-pressed="false">14 giorni</button></div></div></div>
 <nav class="nav"><div class="shell"><a href="#visione">Il viaggio</a><a href="#giorni">Giorno per giorno</a><a href="#vita">Vita vera</a><a href="#budget">Costi</a><a href="#mappa">Mappa</a><a href="#pratico">Prima di partire</a><a href="#fotografie">Foto</a><a href="#giorni">Orari</a><a href="#lingua">Spagnolo</a></div></nav>
@@ -132,4 +132,64 @@ function renderPhoto(slot){
 }
 function setupStopPhotography(){document.querySelectorAll('.route-day').forEach(details=>{const go=()=>{if(details.open)details.querySelectorAll('.route-photo:not([data-started])').forEach(slot=>{slot.dataset.started='1';renderPhoto(slot)})};details.addEventListener('toggle',go);go()})}
 buildGallery();render();buildPhrases('base');
+
+/* Restore the large photographic atlas (removed by mistake in later revisions).
+   Commons returns actual Wikimedia filenames and thumbnail URLs, never invented
+   filenames. Gallery is cumulative and retains curated images above. */
+const chileAtlasPlaces=[
+['Santiago · città','Santiago Chile city architecture'],
+['Santiago · quartieri','Barrio Lastarria Santiago Chile'],
+['Villarrica · lago','Lago Villarrica Chile'],
+['Villarrica · cittadina','Villarrica town Chile'],
+['Villarrica · vulcano','Volcan Villarrica Chile'],
+['Pucón · città','Pucon Chile town'],
+['Pucón · avventura','Rio Trancura Pucon rafting'],
+['Huerquehue · foreste','Parque Nacional Huerquehue'],
+['Licán Ray · lago','Lican Ray Lago Calafquen'],
+['Puerto Varas · lago','Puerto Varas Llanquihue'],
+['Frutillar · lungolago','Frutillar Chile Lago Llanquihue'],
+['Petrohué · cascate','Saltos del Petrohue Chile'],
+['Chiloé · palafitos','Castro Chiloe palafitos'],
+['Dalcahue · villaggio','Dalcahue Chiloe Chile']
+];
+async function restoreChilePhotoAtlas(){
+ const gallery=document.getElementById('chileGallery');
+ if(!gallery)return;
+ const label=document.createElement('div');label.className='atlas-status';label.setAttribute('role','status');
+ label.textContent='Caricamento archivio fotografico: 0 nuove immagini';
+ gallery.before(label);
+ const seen=new Set([...gallery.querySelectorAll('img')].map(x=>x.currentSrc||x.src));
+ let count=0,available=0;
+ async function loadDestination([place,search]){
+  const params=new URLSearchParams({action:'query',generator:'search',gsrsearch:'filetype:bitmap '+search,gsrnamespace:'6',gsrlimit:'20',prop:'imageinfo',iiprop:'url',iiurlwidth:'900',format:'json',origin:'*'});
+  const url='https://commons.wikimedia.org/w/api.php?'+params.toString();
+  try{
+   const response=await fetch(url,{mode:'cors'});
+   if(!response.ok)throw new Error('HTTP '+response.status);
+   const json=await response.json();
+   const pages=Object.values(json.query?.pages||{});
+   let local=0;
+   for(const page of pages){
+    const info=page.imageinfo?.[0];if(!info?.thumburl||!/\.(jpg|jpeg|png|webp)$/i.test(page.title))continue;
+    if(seen.has(info.thumburl)||seen.has(info.url)||seen.has(page.title))continue;
+    seen.add(info.thumburl);seen.add(info.url);seen.add(page.title);
+    const fig=document.createElement('figure'),img=document.createElement('img'),caption=document.createElement('figcaption');
+    img.loading='lazy';img.decoding='async';img.src=info.thumburl;img.alt=place+': '+page.title.replace(/^File:/,'');
+    img.addEventListener('error',()=>{fig.remove();count--;label.textContent='Archivio fotografico: '+Math.max(0,count)+' foto aggiuntive'});
+    const link=document.createElement('a');link.href=info.descriptionurl||info.url;link.target='_blank';link.rel='noopener noreferrer';link.textContent='Fonte ↗';
+    caption.append(document.createTextNode(place+' · '),link);fig.append(img,caption);gallery.append(fig);
+    count++;local++;
+   }
+   if(local)available++;
+  }catch(e){/* Keep all other destinations visible when a search fails */}
+  label.textContent='Archivio fotografico: '+count+' foto aggiuntive · '+available+'/'+chileAtlasPlaces.length+' zone caricate';
+ }
+ await Promise.all(Array.from({length:4},async(_,worker)=>{
+  for(let i=worker;i<chileAtlasPlaces.length;i+=4)await loadDestination(chileAtlasPlaces[i]);
+ }));
+ if(count===0)label.textContent='Foto aggiuntive temporaneamente non disponibili. Restano visibili le immagini selezionate e i link alle fonti.';
+ else label.textContent='Archivio fotografico: '+count+' foto aggiuntive, oltre alle immagini selezionate. Tocca Fonte per aprire il file originale.';
+}
+restoreChilePhotoAtlas();
+
 </script></body></html>
