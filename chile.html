@@ -74,7 +74,7 @@ h2,.section-head h2,.deep-title{color:#153047!important}
 <script>
 const days=[["Santiago","Quartieri, non monumenti","Arrivo, metro e prima passeggiata a Providencia. Cena a Barrio Italia e rientro con trasporto affidabile.","Fermati in una panadería, guarda come ci si muove davvero.","Evita strade deserte e telefono esposto dopo il buio."],["Santiago","La città in un giorno normale","La Vega Central al mattino, pranzo in una fuente de soda, Cerro San Cristóbal e pomeriggio libero a Ñuñoa.","Mercati, mezzi pubblici e negozi quotidiani valgono più di dieci musei.","La Vega è affollata: zaino davanti e attenzione agli oggetti."],["Villarrica","Arrivare al lago","Volo per Temuco e collegamento a Villarrica oppure bus notturno da Santiago. Sistemazione in centro, Costanera al tramonto.","Compra al minimarket di quartiere e cena in una piccola picada.","Verifica prima il bus dall'aeroporto e non arrivare troppo tardi."],["Villarrica","Un giorno da abitante","Panadería, Mercado Fritz, botteghe, spiaggia di sabbia scura, lungolago e ristorantino.","Giornata volutamente senza attrazioni: osserva il ritmo del posto.","La sera resta sulle strade illuminate e frequentate."],["Pucón","La giornata adrenalinica","Bus locale verso Pucón, rafting sul Trancura con guida certificata oppure kayak; cena in centro.","Guarda i negozi di attrezzatura e i piccoli locali dietro la via principale.","Rientro: controlla l'ultima corsa, altrimenti dormi a Pucón."],["Huerquehue","Boschi preistorici","Trekking fra araucarie e laghi nel parco nazionale, accesso dalla zona di Pucón.","Porta pranzo acquistato in paese e lascia il pomeriggio al paesaggio.","Sentieri e biglietti CONAF dipendono da meteo e aperture."],["Rientro","Un ultimo caffè","Ultima passeggiata sul lago, trasferimento per Temuco e Santiago. Se serve, pernottamento cuscinetto.","Meglio ricordare una mattina normale che correre a un'ultima attrazione.","Non rischiare il volo internazionale con coincidenze strette."],["Licán Ray","L'altro lago","Bus o auto a Licán Ray sul lago Calafquén, picnic e spiaggia; rientro a Villarrica.","Villaggio più piccolo, chioschi e famiglie in vacanza.","Orari bus variabili: controlla andata e ritorno."],["Puerto Varas","Verso il sud profondo","Trasferimento attraverso la regione dei laghi; arrivo a Puerto Varas, passeggiata lungolago.","Fai la spesa in un supermercato locale, esplora vie non turistiche.","È un giorno di spostamento, non aggiungere tour."],["Frutillar","Dolci, lago e case di legno","Escursione a Frutillar, case storiche e Lago Llanquihue, ritorno a Puerto Varas.","Prova kuchen in una pasticceria e fermati sul lungolago.","Meteo variabile anche d'estate: antivento."],["Petrohué","Fiumi e vulcani","Saltos del Petrohué e scorci sul vulcano Osorno, con trasporto locale o escursione condivisa.","Una sola escursione bella, senza pacchetti premium.","Verifica accessi al parco e i collegamenti."],["Castro","Sbarcare a Chiloé","Trasferimento via Puerto Montt e traghetto per Chiloé; passeggiata fra palafitos e porto.","La vita insulare ha un ritmo diverso: mercati, traghetti, pioggia.","I trasferimenti richiedono gran parte della giornata."],["Dalcahue","Un'isola che lavora","Mercato artigianale, chiese in legno e cucina chilota; ritorno a Castro.","Milcao, empanadas e conversazioni nei piccoli locali.","Controlla il giorno effettivo del mercato e gli orari dei bus."],["Santiago","Ritorno senza stress","Rientro verso Puerto Montt, volo per Santiago e notte vicina a trasporti comodi.","Ultima cena semplice, senza inseguire la città.","Lascia margine prima del volo internazionale."]];
 const root=document.getElementById('days');let long=false;
-function render(){const positions=long?[0,1,2,3,4,5,7,8,9,10,11,12,13,6]:[0,1,2,3,4,5,6];
+function render(){if(typeof assignedPhotos!=='undefined')assignedPhotos.clear();const positions=long?[0,1,2,3,4,5,7,8,9,10,11,12,13,6]:[0,1,2,3,4,5,6];
 root.innerHTML=positions.map((j,i)=>{
 const d=days[j],entries=hourPlans[j].split('|');const stops=[];
 for(let k=0;k<entries.length;k+=4){
@@ -112,7 +112,7 @@ document.getElementById('phrases').addEventListener('click',e=>{const b=e.target
 
 
 
-const locationPhotos={"Santiago":["Santiago de Chile skyline.jpg","Santiago Chile.jpg"],"Villarrica":["Villarrica town and volcano.jpg","Villarrica, Lago Villarrica, 2019 (05).jpg","Villarrica, Lago Villarrica, 2019 (06).jpg","Volcan Villarrica desde el lago 2025 Chile.jpg","Villarrica Volcano Chile.jpg"],"Pucón":["Villarrica Volcano.jpg","Villarrica, Lago Villarrica, 2019 (02).jpg"],"Huerquehue":["Villarrica Volcano.jpg","Villarrica, Lago Villarrica, 2019 (04).jpg"],"Licán Ray":["Villarrica, Lago Villarrica, 2019 (06).jpg"],"Puerto Varas":["Frutillar Chile.jpg"],"Frutillar":["Frutillar Chile.jpg"],"Petrohué":["Frutillar Chile.jpg"],"Castro":["Palafitos de Castro en la costa de Chiloé.jpg","PalafitosCastro2016.jpg","Palafitos de Castro.jpg"],"Dalcahue":["Palafitos Chiloe.jpg","Palafitos de Castro, Chiloé.jpg"]};
+const locationPhotos={"Santiago":["Santiago de Chile skyline.jpg","Santiago Chile.jpg"],"Villarrica":["Villarrica town and volcano.jpg","Villarrica, Lago Villarrica, 2019 (05).jpg","Villarrica, Lago Villarrica, 2019 (06).jpg","Volcan Villarrica desde el lago 2025 Chile.jpg","Villarrica Volcano Chile.jpg"],"Pucón":["Villarrica Volcano.jpg","Villarrica, Lago Villarrica, 2019 (02).jpg"],"Huerquehue":[],"Licán Ray":[],"Puerto Varas":[],"Frutillar":["Frutillar Chile.jpg"],"Petrohué":[],"Castro":["Palafitos de Castro en la costa de Chiloé.jpg","PalafitosCastro2016.jpg","Palafitos de Castro.jpg"],"Dalcahue":[]};
 function fileUrl(name,width=900){return 'https://commons.wikimedia.org/wiki/Special:FilePath/'+encodeURIComponent(name)+'?width='+width;}
 function fileSource(name){return 'https://commons.wikimedia.org/wiki/File:'+encodeURIComponent(name.replace(/ /g,'_'));}
 function selectPhoto(query){
@@ -123,15 +123,17 @@ function selectPhoto(query){
  if(/volc|trancura/.test(q))return locationPhotos['Pucón'];
  return null;
 }
+const assignedPhotos=new Set();
 function renderPhoto(slot){
- const q=decodeURIComponent(slot.dataset.photoQuery),pool=selectPhoto(q);
- if(!pool){slot.innerHTML='<a class="photo-lookup" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(q)+'">📍 Guarda foto e scheda del luogo su Maps ↗</a>';return;}
- const index=Array.from(document.querySelectorAll('.route-photo')).indexOf(slot);
- const chosen=pool[Math.abs(index)%pool.length],img=new Image(),anchor=document.createElement('a');
- anchor.href=fileSource(chosen);anchor.target='_blank';anchor.rel='noopener noreferrer';anchor.className='photo-credit';anchor.textContent='Foto reale · fonte/licenza ↗';
+ const q=decodeURIComponent(slot.dataset.photoQuery),pool=selectPhoto(q)||[];
+ const chosen=pool.find(file=>!assignedPhotos.has(file));
+ const fallback=()=>{slot.classList.add('no-photo');slot.innerHTML='<a class="photo-lookup" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(q)+'">📍 Foto e dettagli su Maps ↗</a>'};
+ if(!chosen){fallback();return}
+ assignedPhotos.add(chosen);
+ const img=new Image(),anchor=document.createElement('a');
+ anchor.href=fileSource(chosen);anchor.target='_blank';anchor.rel='noopener noreferrer';anchor.className='photo-credit';anchor.textContent='Foto · fonte/licenza ↗';
  img.loading='lazy';img.decoding='async';img.alt='Fotografia della zona: '+q;img.src=fileUrl(chosen,900);
- img.onerror=()=>{const fallback=pool.find(n=>n!==chosen);if(fallback&&!img.dataset.fallback){img.dataset.fallback='yes';img.src=fileUrl(fallback,900);anchor.href=fileSource(fallback)}else{slot.innerHTML='<a class="photo-lookup" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(q)+'">Foto su Google Maps ↗</a>'}};
- slot.replaceChildren(img,anchor);
+ img.onerror=fallback;slot.replaceChildren(img,anchor);
 }
 function setupStopPhotography(){
  document.querySelectorAll('.route-day').forEach(details=>{const run=()=>{if(details.open)details.querySelectorAll('.route-photo:not([data-started])').forEach(slot=>{slot.dataset.started='1';renderPhoto(slot)})};details.addEventListener('toggle',run);run()});
