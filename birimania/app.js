@@ -146,7 +146,34 @@
   const videoDialog = $('#video-dialog');
   const featuredVideo = $('#featured-video');
   const videoClose = $('#video-close');
-  let availableMedia = new Set();
+  const availableMedia = new Set();
+  const previews = [];
+  const previewAllowed = !reducedMotion && !(navigator.connection && navigator.connection.saveData);
+  const previewIsVisible = (video) => {
+    const bounds = video.getBoundingClientRect();
+    return bounds.bottom > 0 && bounds.top < innerHeight;
+  };
+  const installPreview = (selector, source, afterPlay = () => {}) => {
+    if (!previewAllowed) return;
+    const video = $(selector);
+    video.src = source;
+    video.preload = 'metadata';
+    video.muted = true;
+    previews.push(video);
+    const enter = () => video.play().then(() => {
+      video.classList.add('is-ready');
+      afterPlay();
+    }).catch(() => {});
+    if ('IntersectionObserver' in window) {
+      const watcher = new IntersectionObserver((entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting && !videoDialog.open) enter();
+          else video.pause();
+        }
+      }, { threshold: .15 });
+      watcher.observe(video);
+    } else if (previewIsVisible(video)) enter();
+  };
   const activateMedia = (key) => {
     if (availableMedia.has(key)) return;
     availableMedia.add(key);
@@ -160,18 +187,8 @@
     probe.playsInline = true;
     probe.addEventListener('loadedmetadata', () => {
       activateMedia(key);
-      if (key === 'faceoff' && !reducedMotion) {
-        const faceoffFilm = $('#faceoff-preview');
-        faceoffFilm.src = item.src;
-        faceoffFilm.preload = 'auto';
-        faceoffFilm.play().then(() => { faceoffFilm.classList.add('is-ready'); $('#faceoff-stage').classList.add('has-film'); }).catch(() => {});
-      }
-      if (key === 'trailer' && !reducedMotion) {
-        const heroFilm = $('#hero-film');
-        heroFilm.src = item.src;
-        heroFilm.preload = 'auto';
-        heroFilm.play().then(() => heroFilm.classList.add('is-ready')).catch(() => {});
-      }
+      if (key === 'faceoff') installPreview('#faceoff-preview', item.src, () => $('#faceoff-stage').classList.add('has-film'));
+      if (key === 'trailer') installPreview('#hero-film', item.src);
     }, { once: true });
     probe.addEventListener('error', () => {}, { once: true }); // Buttons remain disabled until an actual film loads.
     probe.src = item.src;
@@ -191,6 +208,7 @@
     $('#video-dialog-title').textContent = item.title;
     $('#video-description').textContent = item.detail;
     featuredVideo.src = item.src;
+    previews.forEach((video) => video.pause());
     videoDialog.showModal();
     document.body.classList.add('modal-open');
     featuredVideo.play().catch(() => {}); // Native play control is always available.
@@ -202,7 +220,9 @@
     featuredVideo.pause();
     featuredVideo.removeAttribute('src');
     featuredVideo.load();
+    previews.forEach((video) => { if (previewIsVisible(video) && previewAllowed) video.play().catch(() => {}); });
   });
+  addEventListener('pagehide', () => previews.forEach((video) => video.pause()));
 
   Object.entries(portraitSources).forEach(([key, src]) => {
     const target = $(`[data-portrait="${key}"]`);
