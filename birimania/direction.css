@@ -1,0 +1,122 @@
+/* BIRIMANIA / DIRECTOR'S CUT
+   Composited transforms only during scrolling. Video keeps its native 16:9 composition. */
+:root { --stage-black:#09090a; --stage-cream:#ece6d8; --stage-red:#711e2a; }
+
+/* The film belongs to the event stage, not a small video tile. */
+.hero { background:radial-gradient(ellipse at 50% 39%,#26211c 0%,#0c0c0e 55%,#070709 100%); }
+.arena-scene { width:min(1010px,88vw); margin:12px auto 3px; perspective:1600px; }
+.arena-screen-shell { padding:4px; border:1px solid #8c8173; border-radius:2px; background:linear-gradient(135deg,#777063,#111216 13%,#151515 88%,#7b7063); box-shadow:0 0 0 5px #090a0c,0 19px 60px #000c,0 0 58px #9a27382e; }
+.arena-frame-top,.arena-frame-bottom { position:absolute; left:10px;right:10px;z-index:4;pointer-events:none;padding:9px 10px; color:#f2e9d7; font-size:10px; text-shadow:0 1px 8px #000; }
+.arena-frame-top { top:0; background:linear-gradient(#0008,transparent); }
+.arena-frame-bottom { bottom:0; background:linear-gradient(transparent,#0009); }
+.arena-plinth,.arena-floor { opacity:.3; }
+.hero-trailer-card { background:#030304; border:0; aspect-ratio:16/9; cursor:zoom-in; }
+.hero-trailer-card .hero-film { object-fit:contain; filter:brightness(.96) saturate(1.01); }
+.hero-trailer-card .hero-trailer-overlay { left:auto; right:15px; bottom:27px; background:rgba(7,7,9,.66); padding:8px 13px; border:1px solid #e6d6b56b; backdrop-filter:blur(8px); font-size:10px; width:auto; }
+.hero-trailer-card .button-play{width:28px;height:28px;}
+.hero-cutout { opacity:.3; filter:brightness(.56) contrast(1.08); }
+.experience-audio { position:absolute;left:50%;bottom:13%;transform:translateX(-50%);z-index:20;display:flex;align-items:center;justify-content:center;gap:12px;min-height:49px;white-space:nowrap;padding:0 19px;background:#e9e4d9;color:#131313;border:0;box-shadow:0 12px 35px #000a;font:800 11px var(--body);letter-spacing:.13em;transition:opacity .22s,transform .22s; }
+.experience-audio:hover {transform:translateX(-50%) translateY(-3px)}
+.experience-pulse{font-size:21px;font-weight:600;}
+.experience-arrow{font-size:18px}
+.audio-is-on .experience-audio{opacity:0;visibility:hidden;pointer-events:none;transform:translate(-50%,8px)}
+.hero.is-playing .hero-cutout{opacity:.28}
+
+/* FULL-SCREEN FIGHTER CHAPTER — transform/opacity only; never a clip-path every scroll frame. */
+.fighters-scroll{height:240svh;min-height:1250px}
+.fighter-grid{height:100svh;min-height:600px;background:#0a0a0a;contain:layout paint}
+.fighter,.fighter-art img,.fighter-content{backface-visibility:hidden}
+.fighter-red,.fighter-cream{inset:0; clip-path:none!important;}
+.fighter-red{z-index:1;background:radial-gradient(ellipse at 70% 30%,#932d3b,#42151d 70%,#240d13)}
+.fighter-cream{z-index:2;background:radial-gradient(ellipse at 30% 32%,#b7ae9c,#696255 76%,#332e2b);clip-path:polygon(27% 0,100% 0,100% 100%,0 100%)!important;transform:translate3d(112%,0,0)}
+.fighter-red .fighter-art img,.fighter-cream .fighter-art img { filter:none!important;object-fit:contain;object-position:center bottom;height:88%;width:100%;left:0;top:auto;bottom:0;transform:none; }
+.fighter-art::before {background:linear-gradient(180deg,#0005,transparent 30%,#0007 98%)}
+.fighter-cream .fighter-art::before {background:linear-gradient(180deg,#0005,transparent 30%,#0007 98%)}
+.fighter-content {transform:none!important; opacity:1!important;}
+.fighter-heading{max-width:95%}
+.fighter-heading h3{font-size:clamp(88px,12vw,186px);}
+.fighter-cream .fighter-content{color:#fff}
+.fighter-watermark{opacity:.06}
+.fighters-center-vs{display:none!important}
+.fighter-film-hint{font-size:9px}
+.fighter-film-progress{z-index:16}
+.fighter-duo { position:absolute;inset:0;z-index:12;opacity:0;visibility:hidden;pointer-events:none;transform:translate3d(0,5%,0);will-change:opacity,transform;background:#0c0b0c; }
+.duo-shot { position:absolute;left:0;right:0;overflow:hidden;isolation:isolate;}
+.duo-red {top:0;height:55%;z-index:2;background:radial-gradient(ellipse at 82% 38%,#9c3341 0%,#631c2a 56%,#330e19 100%);clip-path:polygon(0 0,100% 0,100% 87%,0 100%)}
+.duo-black{top:46%;height:54%;z-index:1;background:radial-gradient(ellipse at 20% 52%,#b6ad99,#6b6254 73%,#302923 100%);clip-path:polygon(0 20%,100% 0,100% 100%,0 100%)}
+.duo-shot::after {content:"";position:absolute;inset:0;z-index:2;background:linear-gradient(90deg,#0005,transparent 55%,#0004)}
+.duo-shot img {position:absolute;z-index:1;width:67%;height:100%;object-fit:contain;object-position:center bottom;filter:contrast(1.02);}
+.duo-red img{right:4%;bottom:0}
+.duo-black img{left:4%;bottom:0}
+.duo-word {position:absolute;z-index:3;font:900 clamp(58px,9vw,140px)/.92 var(--display);text-transform:uppercase;letter-spacing:-.01em;color:#fff;text-shadow:0 5px 30px #0008}
+.duo-word small{display:block;font-size:.57em;line-height:1.1}
+.duo-red .duo-word{left:6%;top:29%}
+.duo-black .duo-word{right:6%;bottom:26%;color:#f9f2e6}
+.duo-versus{position:absolute;z-index:5;top:49.6%;left:50%;transform:translate(-50%,-50%) rotate(-6deg);font:900 clamp(75px,10vw,150px)/1 var(--display);color:#fff;text-shadow:0 7px 24px #000b,0 0 40px #0007}
+
+/* Films are embedded in the layout. The detail viewer feels like the same arena, not a pop-up card. */
+.faceoff{padding-block:82px 125px; background:radial-gradient(ellipse at 50% 70%,#242022 0%,#0b0b0d 70%)}
+.faceoff-head{margin:52px 0 29px}
+.faceoff-stage{max-width:none;aspect-ratio:16/9;border:1px solid #605c55;outline:none;box-shadow:0 0 0 6px #0a0a0b,0 25px 90px #000a;}
+.faceoff-preview {filter:brightness(1) contrast(1.04);}
+.faceoff-stage .stage-cta {bottom:8px;left:auto;right:6px;width:auto;padding:9px;}
+.faceoff-stage .stage-cta .outline-action{width:auto;background:#090909b8;border-color:#e3d4b28a;min-height:44px;}
+.faceoff-stage .stage-chrome{font-size:9px;letter-spacing:.15em;background:linear-gradient(#0008,transparent);}
+.faceoff-stage .stage-vignette{background:linear-gradient(#0007,transparent 20%,transparent 82%,#0007)}
+
+/* Full-view cinema sits at the center of the screen; never a video at the top and 70% empty black below. */
+.video-dialog[open]{display:grid;place-items:center}
+.video-dialog{position:fixed;inset:0;margin:0;width:100vw;max-width:none;height:100dvh;max-height:none;overflow:hidden;padding:0;border:0;background:#080809;color:#f5efe4;isolation:isolate;}
+.video-dialog::backdrop{background:#000}
+.video-dialog::before{content:"";position:absolute;z-index:-1;inset:-50px;background:radial-gradient(ellipse at 50% 44%,#64304182,transparent 58%),url('./media/poster.webp') center / cover no-repeat;filter:blur(54px) brightness(.27);transform:scale(1.12);pointer-events:none;}
+.video-dialog[data-film="faceoff"]::before{background-image:radial-gradient(ellipse at center,#967f6444,transparent 60%),url('./media/faceoff-still.jpg')}
+.video-dialog-inner{position:relative;display:flex;flex-direction:column;width:min(1280px,calc(100% - 32px));height:auto;max-height:calc(100dvh - 20px);padding:0;box-shadow:0 24px 100px #0008;background:#070708;overflow:hidden;border:1px solid #776d5e70;}
+.video-dialog-head{min-height:49px;flex:none;padding:8px 16px;border-bottom:1px solid #ffffff25;background:#0e0e0f;font-size:10px;}
+.video-container{flex:none;width:100%;aspect-ratio:16/9;max-height:calc(100dvh - 155px);background:#000;overflow:hidden;}
+.video-container video{width:100%;height:100%;object-fit:contain}
+.cinema-player-bar{flex:none;height:55px;padding:0 14px;}
+.dialog-bottom{flex:none;min-height:27px;padding:9px 16px;color:#bab1a5;font-size:9px;}
+.video-dialog .dialog-close{min-height:34px}
+.video-dialog .cinema-big-play{border-radius:50%}
+
+@media(max-width:760px){
+ .hero{min-height:max(790px,100svh);}
+ .arena-scene{width:100%;margin:12px auto 0;}
+ .arena-screen-shell{padding:3px;}
+ .hero-trailer-card .hero-trailer-overlay{right:6px;bottom:22px;font-size:9px;gap:7px;padding:5px 8px;}
+ .hero-trailer-card .button-play{width:26px;height:26px;}
+ .arena-frame-top,.arena-frame-bottom{font-size:8px;padding:6px;left:5px;right:5px}
+ .experience-audio{font-size:10px;bottom:17%;min-height:45px;}
+ .hero-cutout{opacity:.28;}
+ .fighters-scroll{height:215svh;min-height:950px}
+ .fighter-grid{min-height:490px}
+ .fighter-red .fighter-art img,.fighter-cream .fighter-art img{height:82%;width:100%;object-fit:contain;object-position:center bottom;}
+ .fighter-heading h3{font-size:clamp(74px,18vw,133px)}
+ .fighter-cream{clip-path:polygon(24% 0,100% 0,100% 100%,0 100%)!important}
+ .duo-red{height:54%;clip-path:polygon(0 0,100% 0,100% 87%,0 100%)}
+ .duo-black{top:47%;height:53%;clip-path:polygon(0 17%,100% 0,100% 100%,0 100%)}
+ .duo-shot img{width:69%;height:95%;object-position:center bottom;}
+ .duo-red img{right:-4%;bottom:2%}
+ .duo-black img{left:-7%;bottom:0}
+ .duo-word{font-size:clamp(47px,14vw,79px)}
+ .duo-red .duo-word{left:5%;top:22%}
+ .duo-black .duo-word{right:4%;bottom:23%}
+ .duo-versus{font-size:clamp(74px,20vw,116px)}
+ .fighter-film-hint{bottom:20px}
+ .faceoff{padding-top:66px;padding-bottom:75px}
+ .faceoff-stage{aspect-ratio:16/9; border-width:2px;}
+ .faceoff-stage .stage-cta{right:3px;bottom:1px}
+ .faceoff-stage .stage-cta .outline-action{font-size:8px;min-height:36px;gap:7px;padding:0 8px}
+ .faceoff-stage .button-play{height:23px;width:23px}
+ .faceoff-stage .stage-chrome{font-size:8px;padding:6px 8px}
+ .video-dialog-inner{width:100%;max-height:100dvh;border-left:0;border-right:0;}
+ .video-dialog-head{min-height:48px;padding:7px 13px}
+ .video-container{max-height:calc(100dvh - 140px);}
+ .cinema-player-bar{height:57px;padding:0 10px;gap:8px;}
+ .dialog-bottom{min-height:25px;font-size:8px;padding:7px 13px}
+}
+@media(prefers-reduced-motion:reduce){
+ .fighter-cream{transform:none!important;clip-path:polygon(0 0,100% 0,100% 100%,0 100%)!important;opacity:0!important}
+ .fighter-duo{opacity:1!important;visibility:visible!important;transform:none!important}
+ .fighters-scroll{height:100svh!important;min-height:560px!important}
+}

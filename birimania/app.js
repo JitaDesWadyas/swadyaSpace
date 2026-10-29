@@ -125,6 +125,7 @@
   const videoClose = $('#video-close');
   const availableMedia = new Set();
   let ambientSound = false;
+  let previouslyEnabledSound = false;
   const previews = [];
   const previewAllowed = !reducedMotion && !(navigator.connection && navigator.connection.saveData);
   const previewIsVisible = (video) => {
@@ -187,10 +188,13 @@
     ambientSound = !!event.detail?.enabled;
     previews.forEach(video => {
       const active = ambientSound && previewIsVisible(video) && !videoDialog.open;
+      // On first sound activation, restart the visible film from its first frame.
+      if (active && !previouslyEnabledSound && video.readyState >= 1) video.currentTime = 0;
       video.muted = !active;
       video.volume = .6;
       if (active) video.play().catch(() => {video.muted = true; video.play().catch(() => {});});
     });
+    if (ambientSound) previouslyEnabledSound = true;
   });
 
   const videoContainer = $('#cinema-video-wrap');
