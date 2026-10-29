@@ -228,6 +228,18 @@
   // Mobile autoplay restrictions are explicit: a visible, intentional TAP is
   // required. Do not unlock audio on scroll/pointerdown or claim it is playing.
   const startButton = $('#start-fight-audio');
+  const lockIntroScroll = (locked) => {
+    document.documentElement.classList.toggle('intro-locked', locked);
+    document.body.classList.toggle('intro-locked', locked);
+    if (locked) window.scrollTo(0, 0);
+  };
+  lockIntroScroll(true);
+  const stopIntroScroll = (event) => {
+    if (!document.body.classList.contains('intro-locked')) return;
+    event.preventDefault();
+  };
+  ['wheel','touchmove'].forEach(type => startButton?.addEventListener(type, stopIntroScroll, { passive: false }));
+  startButton?.addEventListener('keydown', event => { if (['Space','ArrowDown','ArrowUp','PageDown','PageUp'].includes(event.code || event.key)) event.preventDefault(); });
   const showSoundPrompt = message => {
     if(!startButton) return;
     startButton.hidden=false;
@@ -262,7 +274,7 @@
       audioUnlocked=true;
       activeFilm='trailer';
       startButton?.classList.add('is-started');
-      document.body.classList.remove('intro-locked');
+      lockIntroScroll(false);
       document.documentElement.classList.add('audio-is-on');
       if(initial==='faceoff') switchSoundtrack('faceoff');
       else requestAmbient();
