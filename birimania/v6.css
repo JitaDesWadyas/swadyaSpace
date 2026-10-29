@@ -1,0 +1,24 @@
+/* BIRIMANIA V6: stable scroll composition, visible GPU-friendly fire layers */
+.fighter-grid.is-cinematic .fighter-duo{transform:none!important;transform-origin:center center!important;will-change:auto}
+.fighter-grid.is-cinematic .duo-shot img{transition:none!important;animation:none!important}
+.fighter-grid.is-cinematic .duo-shot .stage-fire{position:absolute;left:0;bottom:-1%;width:100%;height:73%;z-index:1;pointer-events:none;opacity:.93;mix-blend-mode:screen;filter:blur(1.7px);transform:translateZ(0)}
+.fighter-grid.is-cinematic .duo-shot .arena-embers{z-index:0;opacity:.94!important;animation:biri-heat 4.8s ease-in-out infinite alternate}
+.fighter-grid.is-cinematic .duo-shot img{z-index:3!important}
+.fighter-grid.is-cinematic .duo-shot::after{z-index:4!important;pointer-events:none}
+.fighter-grid.is-cinematic .duo-word{z-index:5!important}
+.fighter-grid.is-cinematic .duo-versus{z-index:8}
+.fighter-grid.is-cinematic .duo-red{background:radial-gradient(ellipse at 75% 85%,rgba(204,66,37,.45),transparent 67%),linear-gradient(145deg,#3a0d18,#9b2b38 72%,#310c10)}
+.fighter-grid.is-cinematic .duo-black{background:radial-gradient(ellipse at 20% 90%,rgba(255,169,68,.34),transparent 70%),linear-gradient(130deg,#393026,#8c816e 68%,#352e26)}
+.fighter-grid.is-cinematic .duo-red img{max-width:none}
+.fighter-grid.is-cinematic .duo-black img{max-width:none}
+@media(max-width:760px){
+  .fighter-grid.is-cinematic{height:100svh;min-height:0;contain:layout paint}
+  .fighters-scroll{height:205svh;min-height:0}
+  .fighter-grid.is-cinematic .duo-red img{height:88%;bottom:0}
+  .fighter-grid.is-cinematic .duo-black img{height:95%;bottom:0}
+  .fighter-grid.is-cinematic .duo-shot .stage-fire{height:69%}
+}
+@media(prefers-reduced-motion:reduce){
+  .fighter-grid.is-cinematic .duo-shot .stage-fire{display:none}
+  .fighter-grid.is-cinematic .duo-shot .arena-embers{animation:none}
+}

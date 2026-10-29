@@ -24,36 +24,6 @@
     $$('.scene-words').forEach(node=>obs.observe(node));
   } else $$('.scene-words').forEach(node=>node.classList.add('scene-done'));
 
-  const AudioCtor=window.AudioContext||window.webkitAudioContext;
-  let audioContext=null, soundOn=false,hitAt=0;
-  const unlockSound=event=>{
-    if(soundOn || document.hidden || !event.isTrusted) return;
-    soundOn=true;
-    if(AudioCtor){
-      try {audioContext=new AudioCtor();audioContext.resume().catch(()=>{});}catch{}
-    }
-    // The media handler plays the selected preview immediately in this gesture.
-    dispatchEvent(new CustomEvent('birimania:sound',{detail:{enabled:true}}));
-  };
-  document.addEventListener('pointerdown',unlockSound,{capture:true,passive:true});
-  document.addEventListener('keydown',event=>{
-    if(['Enter',' ','ArrowDown','PageDown'].includes(event.key)) unlockSound(event);
-  },{capture:true});
-
-  const whoosh=()=>{
-    if(!soundOn||!audioContext||audioContext.state!=='running'||document.hidden||$('#video-dialog')?.open)return;
-    const now=performance.now();if(now-hitAt<1100)return;hitAt=now;
-    const t=audioContext.currentTime+.01;
-    const oscillator=audioContext.createOscillator(),gain=audioContext.createGain();
-    oscillator.type='triangle';oscillator.frequency.setValueAtTime(280,t);
-    oscillator.frequency.exponentialRampToValueAtTime(54,t+.28);
-    gain.gain.setValueAtTime(.0001,t);
-    gain.gain.exponentialRampToValueAtTime(.028,t+.015);
-    gain.gain.exponentialRampToValueAtTime(.0001,t+.29);
-    oscillator.connect(gain).connect(audioContext.destination);
-    oscillator.start(t);oscillator.stop(t+.3);
-  };
-
   const chapter=$('#fighters-scroll');
   const duo=$('#fighter-duo');
   const topShot=$('.duo-red');
@@ -66,30 +36,27 @@
   const progressLine=$('.fighter-film-progress span');
   const arena=$('#arena-scene');
   const screen=$('#arena-screen-shell');
-  let frame=0,previousStage=-1,pointerYaw=0;
+  let frame=0,pointerYaw=0;
   function draw(){
     frame=0;
     if(chapter && duo && !limited){
       const rect=chapter.getBoundingClientRect(),vh=innerHeight;
       if(rect.bottom>0 && rect.top<vh){
         const progress=clamp(-rect.top/Math.max(1,rect.height-vh));
-        // Small deliberate camera choreography: tighten on GRB, reveal the lower
-        // fighter on the diagonal, pull back to the complete two-shot.
-        const intro=smooth(progress/.28);
-        const reveal=smooth((progress-.22)/.32);
-        const finale=smooth((progress-.56)/.35);
-        const overall=1+.055*(1-finale);
-        duo.style.transform=`translate3d(0,0,0) scale(${overall.toFixed(3)})`;
-        if(topImage) topImage.style.transform=`translate3d(0,${(-intro*1.5+finale*1.5).toFixed(2)}%,0) scale(${(1+.065*intro-.065*finale).toFixed(3)})`;
-        if(bottomImage) bottomImage.style.transform=`translate3d(0,${((1-reveal)*6).toFixed(2)}%,0) scale(${(1+.05*(1-finale)).toFixed(3)})`;
-        if(bottomShot) bottomShot.style.opacity=String(.42+.58*reveal);
-        if(bottomWord) bottomWord.style.opacity=String(.5+.5*reveal);
-        if(topWord) topWord.style.transform=`translate3d(${(-1.8*intro+1.8*finale).toFixed(2)}%,0,0)`;
-        if(versus) versus.style.transform=`translate(-50%,-50%) rotate(${(-7+7*finale).toFixed(2)}deg) scale(${(.78+.22*reveal).toFixed(3)})`;
+        // Absolute scroll progress, no springs/tweens: backtracking reproduces
+        // the exact same position with no sticky drift or whole-scene scaling.
+        const focus=smooth(progress/.25);
+        const reveal=smooth((progress-.21)/.38);
+        const settle=smooth((progress-.55)/.35);
+        duo.style.transform='translate3d(0,0,0)';
+        if(topImage) topImage.style.transform=`translate3d(0,${(-1.2*focus+1.2*settle).toFixed(2)}%,0) scale(${(1+.045*focus-.045*settle).toFixed(3)})`;
+        if(bottomImage) bottomImage.style.transform=`translate3d(0,${(4*(1-reveal)).toFixed(2)}%,0) scale(${(1+.045*(1-settle)).toFixed(3)})`;
+        if(bottomShot) bottomShot.style.opacity=String(.72+.28*reveal);
+        if(bottomWord) bottomWord.style.opacity=String(.64+.36*reveal);
+        if(topWord) topWord.style.transform='translate3d(0,0,0)';
+        if(versus) versus.style.transform=`translate(-50%,-50%) rotate(${(-4+4*settle).toFixed(2)}deg) scale(${(.90+.10*reveal).toFixed(3)})`;
         if(progressLine) progressLine.style.transform=`scaleX(${progress.toFixed(3)})`;
-        const stage=progress<.24?0:progress<.58?1:2;
-        if(stage!==previousStage){if(progress>.1) whoosh();previousStage=stage;}
-      } else previousStage=-1;
+      }
     }
     if(!limited&&arena&&screen){
       const bounds=arena.getBoundingClientRect();
@@ -111,5 +78,60 @@
     arena.addEventListener('pointerleave',()=>{pointerYaw=0;schedule()});
   }
   schedule();
-  addEventListener('pagehide',()=>audioContext?.suspend?.().catch(()=>{}));
+
+
+  // Procedural flames drawn behind portraits at ~24fps. Low internal resolution,
+  // no high-cost blur/clip-path updates during scroll; no AI images or libraries.
+  const fireCanvases = $$('.duo-shot .stage-fire');
+  const flames = fireCanvases.map((canvas,index)=>{
+    const ctx=canvas.getContext('2d',{alpha:true});
+    return {ctx,canvas,index,particles:Array.from({length:24},(_,i)=>({
+      x:(i*47%97)/97,y:(i*29%89)/89,r:1.2+(i%4)*.55,s:.003+(i%5)*.0006
+    }))};
+  }).filter(x=>x.ctx);
+  let lastFire=0,fireFrame=0,fireActive=false;
+  const prng=(a,b)=>Math.sin(a*18.117+b*117.33)*0.5+0.5;
+  function paintFlames(now){
+    fireFrame=0;
+    if(!fireActive||document.hidden||limited)return;
+    if(now-lastFire<40){fireFrame=requestAnimationFrame(paintFlames);return;}
+    lastFire=now;
+    flames.forEach(({ctx,canvas,index,particles})=>{
+      const w=canvas.width,h=canvas.height,t=now*.001;
+      ctx.clearRect(0,0,w,h);
+      // Red arena: saturated orange tongues. Gold arena: warm amber light.
+      ctx.globalCompositeOperation='lighter';
+      for(let i=0;i<19;i++){
+        const x=i*w/18, phase=t*(1.9+i%3*.14)+i*1.81;
+        const gust=Math.sin(phase)*14+Math.sin(phase*.7+i)*8;
+        const height=(29+prng(i,4)*58)*(0.76+0.24*Math.sin(phase*.55));
+        const flameWidth=13+(i%3)*4;
+        const baseY=h+4, tipY=h-height;
+        const grad=ctx.createLinearGradient(x,baseY,x+gust,tipY);
+        grad.addColorStop(0,index?'rgba(255,192,70,.55)':'rgba(255,74,21,.72)');
+        grad.addColorStop(.45,index?'rgba(240,125,39,.45)':'rgba(245,110,17,.50)');
+        grad.addColorStop(1,'rgba(205,35,12,0)');
+        ctx.fillStyle=grad;
+        ctx.beginPath();ctx.moveTo(x-flameWidth,baseY);
+        ctx.bezierCurveTo(x-flameWidth*.9,h-height*.35,x+gust-flameWidth*.24,tipY+19,x+gust,tipY);
+        ctx.bezierCurveTo(x+gust+flameWidth*.12,tipY+18,x+flameWidth*.8,h-height*.24,x+flameWidth,baseY);
+        ctx.closePath();ctx.fill();
+      }
+      for(const p of particles){
+        const yy=(p.y - (t*p.s*50)%1+1)%1;
+        const px=(p.x*w+Math.sin(t*.7+p.x*7)*14+w)%w;
+        ctx.fillStyle=index?'rgba(255,205,95,.63)':'rgba(255,145,46,.65)';
+        ctx.beginPath();ctx.arc(px,yy*h,p.r,0,Math.PI*2);ctx.fill();
+      }
+      ctx.globalCompositeOperation='source-over';
+    });
+    fireFrame=requestAnimationFrame(paintFlames);
+  }
+  const fireObserver = ('IntersectionObserver' in window && duo) ? new IntersectionObserver(entries=>{
+    fireActive=entries[0]?.isIntersecting ?? false;
+    if(fireActive&&!fireFrame&&!limited)fireFrame=requestAnimationFrame(paintFlames);
+    if(!fireActive&&fireFrame){cancelAnimationFrame(fireFrame);fireFrame=0;}
+  },{threshold:0}):null;
+  if(fireObserver)fireObserver.observe(duo);
+  else if(duo&&!limited){fireActive=true;fireFrame=requestAnimationFrame(paintFlames);}
 })();

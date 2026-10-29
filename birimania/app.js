@@ -123,36 +123,36 @@
   const videoDialog = $('#video-dialog');
   const featuredVideo = $('#featured-video');
   const videoClose = $('#video-close');
-  // Only one ambient film can ever be audible. The trailer continues as a soundtrack
-  // during the fighter chapter, then hands off to the faceoff as it enters view.
   const availableMedia = new Set();
-  const previewVideos = {
-    trailer: $('#hero-film'),
-    faceoff: $('#faceoff-preview'),
-  };
+  const previewVideos = {trailer:$('#hero-film'),faceoff:$('#faceoff-preview')};
   const previews = Object.values(previewVideos).filter(Boolean);
-  let audioUnlocked = false;
-  let activeFilm = null;
-  let syncPending = false;
-  const previewAllowed = !reducedMotion && !(navigator.connection && navigator.connection.saveData);
-  const previewIsVisible = (video) => {
+  const AudioClass = window.AudioContext || window.webkitAudioContext;
+  let audioUnlocked = false, audioContext = null, activeFilm = null, syncPending = false;
+  const gains = {};
+  let fadeTimer = null, handoffVersion = 0;
+  const previewAllowed = !reducedMotion && !navigator.connection?.saveData;
+  const clampVolume = amount => Math.min(1,Math.max(0,amount));
+  const previewIsVisible = video => {
     if (!video) return false;
     const rect = video.getBoundingClientRect();
     return rect.bottom > 0 && rect.top < innerHeight;
   };
-  const activateMedia = (key) => {
+  const activateMedia = key => {
     if (availableMedia.has(key)) return;
     availableMedia.add(key);
     $$(`[data-media="${key}"]`).forEach(button => button.disabled = false);
     $$(`[data-media-label="${key}"]`).forEach(label => { label.textContent = media[key].label; });
   };
+  // The small MP4s are loaded early: a first gesture cannot unlock sound on a
+  // video with no decoded metadata. Video is allowed to autoplay *muted* only.
   for (const [key, item] of Object.entries(media)) {
     const video = previewVideos[key];
     if (!video) continue;
     video.muted = true;
+    video.volume = 1;
     video.loop = true;
     video.playsInline = true;
-    video.preload = 'metadata';
+    video.preload = key === 'trailer' ? 'auto' : 'metadata';
     video.addEventListener('loadedmetadata', () => {
       activateMedia(key);
       video.classList.add('is-ready');
@@ -160,68 +160,126 @@
       else $('#faceoff-stage')?.classList.add('has-film');
       requestAmbient();
     });
-    video.addEventListener('error', () => {}, { once: true });
+    video.addEventListener('error', () => {}, {once:true});
     video.src = item.src;
     video.load();
   }
-
-  const chosenFilm = () => {
-    const faceoff = $('#faceoff');
-    if (faceoff?.getBoundingClientRect().top < innerHeight * .58) return 'faceoff';
-    return 'trailer';
-  };
-  const pausePreviews = () => {
-    previews.forEach(video => { video.muted = true; video.pause(); });
-  };
-  function syncAmbient() {
-    syncPending = false;
-    if (document.hidden || videoDialog?.open) {
-      pausePreviews(); return;
+  // Web Audio gain fades work on Android AND iOS, unlike HTMLMediaElement.volume.
+  // If Web Audio is unavailable the media volume remains a safe fallback.
+  const unlockAudio = () => {
+    if (audioUnlocked || document.hidden || videoDialog?.open) return;
+    audioUnlocked = true;
+    if (AudioClass) {
+      try {
+        audioContext = new AudioClass();
+        for (const [key, video] of Object.entries(previewVideos)) {
+          if (!video) continue;
+          const source = audioContext.createMediaElementSource(video);
+          const gain = audioContext.createGain();
+          gain.gain.value = 0;
+          source.connect(gain).connect(audioContext.destination);
+          gains[key] = gain;
+        }
+        audioContext.resume().catch(() => {});
+      } catch (error) { audioContext = null; }
     }
+    // Prime both media elements inside the same trusted gesture. Safari/WebView
+    // may block a later unmuted play if the second film was never authorized.
+    const wanted = chosenFilm();
+    for (const [key, video] of Object.entries(previewVideos)) {
+      if (!video) continue;
+      video.muted = false;
+      video.play().catch(() => {});
+      if (key !== wanted) fadeGain(key,0,.05);
+    }
+    // Calling play() in the *original pointerdown* is critical; a deferred
+    // callback may lose the browser's transient user activation.
+    syncAmbient(true);
+    const skip = wanted === 'trailer' ? 'faceoff' : 'trailer';
+    setTimeout(() => {
+      if (activeFilm !== skip) previewVideos[skip]?.pause();
+    }, 120);
+  };
+  document.addEventListener('pointerdown', unlockAudio, {capture:true,passive:true});
+  document.addEventListener('keydown', event => {
+    if (['Enter',' ','ArrowDown','PageDown'].includes(event.key)) unlockAudio();
+  }, {capture:true});
+  const chosenFilm = () => {
+    const faceoff = $('#faceoff-stage');
+    if (!faceoff) return 'trailer';
+    const rect = faceoff.getBoundingClientRect();
+    // The faceoff becomes the soundtrack only when the movie actually enters.
+    return rect.top < innerHeight * .7 && rect.bottom > innerHeight * .16 ? 'faceoff' : 'trailer';
+  };
+  const fadeGain = (key, target, seconds=.45, delay=0) => {
+    const video = previewVideos[key];
+    if (!video) return;
+    const gain = gains[key];
+    if (audioContext && gain) {
+      const t = audioContext.currentTime + delay;
+      gain.gain.cancelScheduledValues(t);
+      gain.gain.setValueAtTime(gain.gain.value, t);
+      gain.gain.linearRampToValueAtTime(target, t + seconds);
+    } else {
+      // volume is sometimes read-only on Safari; gain graph above is preferred.
+      try { video.volume = clampVolume(target); } catch {}
+    }
+  };
+  const silenceAll = () => {
+    clearTimeout(fadeTimer);
+    ++handoffVersion;
+    for (const [key, video] of Object.entries(previewVideos)) {
+      if (!video) continue;
+      fadeGain(key,0,.12);
+      video.pause();
+      video.muted = true;
+    }
+    activeFilm = null;
+  };
+  function syncAmbient(immediateGesture=false) {
+    syncPending = false;
+    if (document.hidden || videoDialog?.open) { silenceAll(); return; }
     if (!audioUnlocked) {
       if (!previewAllowed) return;
-      for (const video of previews) {
-        video.muted = true;
-        if (previewIsVisible(video)) video.play().catch(() => {});
-        else video.pause();
-      }
+      const trailer = previewVideos.trailer;
+      if (trailer && trailer.paused && previewIsVisible(trailer)) trailer.play().catch(()=>{});
       return;
     }
-    const key = chosenFilm();
-    const chosen = previewVideos[key];
+    const key=chosenFilm(),chosen=previewVideos[key];
     if (!chosen) return;
-    const switched = key !== activeFilm;
-    activeFilm = key;
-    for (const [name, video] of Object.entries(previewVideos)) {
-      if (!video || name === key) continue;
-      video.muted = true;
-      video.pause();
-    }
-    if (switched && chosen.readyState >= 1) chosen.currentTime = 0;
-    chosen.volume = .75;
-    chosen.muted = false;
-    if (chosen.paused || switched) chosen.play().catch(() => {
-      // Some embedded browsers still deny unmuted play after a gesture.
-      // Maintain the film preview without opening a second player.
+    // Remove HTML mute inside the gesture; output is controlled by the gain node.
+    chosen.muted=false;
+    if (immediateGesture) chosen.pause();
+    if (immediateGesture || chosen.paused) chosen.play().catch(() => {
+      // A few embedded browsers require another explicit tap. We never pretend
+      // that playback succeeded; the next pointerdown retries this path.
       chosen.muted = true;
-      chosen.play().catch(() => {});
+      chosen.play().catch(()=>{});
+      audioUnlocked = false;
     });
+    if (activeFilm === key) return;
+    const old = activeFilm;
+    activeFilm = key;
+    const version=++handoffVersion;
+    clearTimeout(fadeTimer);
+    if (old && previewVideos[old]) fadeGain(old,0,.23);
+    fadeGain(key,.85,old ? .40 : .55, old ? .22 : 0);
+    if (old && previewVideos[old]) {
+      fadeTimer=setTimeout(() => {
+        if (version!==handoffVersion) return;
+        previewVideos[old].pause();
+        previewVideos[old].muted=true;
+      },510);
+    }
   }
   function requestAmbient() {
     if (syncPending) return;
-    syncPending = true;
-    requestAnimationFrame(syncAmbient);
+    syncPending=true;
+    requestAnimationFrame(() => syncAmbient());
   }
-  // Invoked synchronously from the very first trusted pointer/keyboard gesture.
-  // The browser, not the site, ultimately decides whether sound may play.
-  addEventListener('birimania:sound', event => {
-    if (!event.detail?.enabled) return;
-    audioUnlocked = true;
-    syncAmbient();
-  });
-  addEventListener('scroll', requestAmbient, {passive:true});
-  addEventListener('resize', requestAmbient, {passive:true});
-  document.addEventListener('visibilitychange', requestAmbient);
+  addEventListener('scroll',requestAmbient,{passive:true});
+  addEventListener('resize',requestAmbient,{passive:true});
+  document.addEventListener('visibilitychange',requestAmbient);
   requestAmbient();
 
   const videoContainer = $('#cinema-video-wrap');
@@ -300,7 +358,7 @@
     featuredVideo.src = item.src;
     featuredVideo.muted = false; // Click is an explicit user gesture.
     featuredVideo.volume = 1;
-    previews.forEach(video => {video.pause(); video.muted=true;});
+    silenceAll();
     videoDialog.showModal();
     document.body.classList.add('modal-open');
     featuredVideo.play().catch(syncFilm);
@@ -318,7 +376,7 @@
     requestAmbient();
     syncFilm();
   });
-  addEventListener('pagehide', () => previews.forEach(video => video.pause()));
+  addEventListener('pagehide', () => { silenceAll(); audioContext?.suspend().catch(()=>{}); });
 
   Object.entries(portraitSources).forEach(([key, src]) => {
     const target = $(`[data-portrait="${key}"]`);
