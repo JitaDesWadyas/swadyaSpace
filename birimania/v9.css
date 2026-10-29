@@ -1,0 +1,89 @@
+/* BIRIMANIA V9 — single entrance, three camera shots, one uninterrupted diagonal finale. */
+body.intro-locked{overflow:hidden!important;touch-action:none}
+/* A true entry screen, not a floating control over the site. */
+#start-fight-audio.start-fight-audio{
+  position:fixed!important;inset:0!important;top:0!important;left:0!important;bottom:0!important;
+  width:100%!important;height:100dvh!important;min-width:0!important;max-width:none!important;
+  z-index:1000!important;display:block!important;overflow:hidden!important;padding:0!important;
+  background:#090a0c;color:#f3ede2;border:0!important;border-radius:0!important;
+  transform:none!important;box-shadow:none!important;text-align:left;cursor:pointer;
+  opacity:1;visibility:visible;clip-path:inset(0 0 0 0);
+  transition:clip-path .88s cubic-bezier(.78,0,.18,1),opacity .6s ease,visibility .9s;
+  -webkit-tap-highlight-color:transparent;touch-action:manipulation;
+}
+#start-fight-audio.start-fight-audio.is-started{
+  opacity:0;visibility:hidden;pointer-events:none;clip-path:inset(0 0 100% 0);transform:none!important;
+}
+#start-fight-audio .intro-atmosphere{position:absolute;inset:0;overflow:hidden;pointer-events:none;background:
+  radial-gradient(ellipse 58% 34% at 20% 74%,rgba(128,19,31,.33),transparent 82%),
+  radial-gradient(ellipse 48% 35% at 81% 25%,rgba(180,117,56,.17),transparent 83%),
+  linear-gradient(138deg,#090a0c,#131013 45%,#0b0a0b)}
+#start-fight-audio .intro-atmosphere span{position:absolute;width:130vw;height:1px;left:-15vw;background:linear-gradient(90deg,transparent,#b7a08855,transparent);transform:rotate(-24deg);transform-origin:center;top:29%;}
+#start-fight-audio .intro-atmosphere span:nth-child(2){top:68%;opacity:.43}
+#start-fight-audio .intro-atmosphere span:nth-child(3){top:67.7%;height:120px;opacity:.12;background:linear-gradient(180deg,transparent,#b13b2d,transparent);filter:blur(25px)}
+#start-fight-audio .intro-header{position:absolute;left:clamp(24px,5vw,84px);right:clamp(24px,5vw,84px);top:max(28px,env(safe-area-inset-top) + 22px);display:flex;justify-content:space-between;align-items:center;font:800 clamp(10px,1vw,14px)/1.3 var(--body);letter-spacing:.15em;color:#c5ad8c}
+#start-fight-audio .intro-content{position:absolute;left:clamp(24px,6vw,112px);right:clamp(20px,5vw,88px);top:50%;transform:translateY(-49%);display:flex;flex-direction:column;gap:clamp(20px,4vh,44px)}
+#start-fight-audio .intro-overline{font:800 clamp(10px,1vw,14px)/1.2 var(--body);letter-spacing:.2em;color:#c2ab8e}
+#start-fight-audio .intro-statement{display:block;font:900 clamp(42px,8.9vw,152px)/.95 var(--display);letter-spacing:.006em;max-width:1480px;text-wrap:balance;color:#faf4ea;text-shadow:0 10px 45px #0009}
+#start-fight-audio .intro-statement em{font-style:normal;color:#c43b42;font-size:.76em;letter-spacing:-.02em;white-space:nowrap}
+#start-fight-audio .intro-event-name{font:700 clamp(10px,1.1vw,15px)/1.3 var(--body);letter-spacing:.16em;color:#c8beaf}
+#start-fight-audio .intro-event-name b{color:#ac3338;margin:0 8px}
+#start-fight-audio .intro-enter{position:absolute;bottom:max(74px,env(safe-area-inset-bottom) + 58px);left:clamp(24px,6vw,112px);display:flex;align-items:center;gap:18px;color:#faf3e9;animation:intro-breathe 3.2s ease-in-out infinite}
+#start-fight-audio .intro-enter-ring{width:64px;height:64px;flex:none;display:grid;place-items:center;border:1px solid #c8a87f;border-radius:50%;font:500 29px/1 var(--body);color:#f3dfc5;box-shadow:0 0 0 8px #c8a87f13}
+#start-fight-audio .start-copy{display:flex;flex-direction:column;gap:5px}
+#start-fight-audio .start-copy strong{font:800 clamp(15px,1.5vw,20px)/1.1 var(--body);letter-spacing:.10em;color:#f4ede4}
+#start-fight-audio .start-copy small{font:700 11px/1.2 var(--body);letter-spacing:.15em;color:#bcb0a3}
+#start-fight-audio .intro-foot{position:absolute;left:clamp(24px,5vw,84px);right:clamp(24px,5vw,84px);bottom:max(17px,env(safe-area-inset-bottom) + 12px);padding-top:12px;border-top:1px solid #b4a38c57;display:flex;justify-content:space-between;font:800 10px/1.3 var(--body);letter-spacing:.17em;color:#bfb7ab}
+@keyframes intro-breathe{0%,100%{opacity:1;transform:translateY(0)}50%{opacity:.72;transform:translateY(-3px)}}
+@media(max-width:760px){
+  #start-fight-audio .intro-header{font-size:9px;letter-spacing:.11em}
+  #start-fight-audio .intro-content{left:24px;right:19px;top:46%;gap:24px}
+  #start-fight-audio .intro-statement{font-size:clamp(45px,10.6vw,85px);line-height:1.02;letter-spacing:0;max-width:100%}
+  #start-fight-audio .intro-overline{font-size:10px}
+  #start-fight-audio .intro-event-name{font-size:10px;line-height:1.6;letter-spacing:.1em}
+  #start-fight-audio .intro-enter{left:24px;bottom:max(80px,env(safe-area-inset-bottom) + 58px);gap:14px}
+  #start-fight-audio .intro-enter-ring{width:53px;height:53px;font-size:24px}
+  #start-fight-audio .start-copy strong{font-size:15px}
+  #start-fight-audio .start-copy small{font-size:9px}
+}
+@media(max-height:670px){#start-fight-audio .intro-content{top:44%;gap:10px}#start-fight-audio .intro-statement{font-size:clamp(37px,9.7vw,90px)}#start-fight-audio .intro-enter{bottom:56px}#start-fight-audio .intro-enter-ring{width:42px;height:42px}}
+
+/* New scroll director: one opaque fighter at a time; behind the black curtain,
+   the finished diagonal card zooms from a distant frame into its final position. */
+#fighters-scroll{height:340svh!important;min-height:0!important}
+#fighter-grid.biri-v9{position:sticky!important;top:0!important;left:0;height:100svh!important;min-height:0!important;width:100%;overflow:hidden!important;contain:layout paint;background:#080808;isolation:isolate}
+#fighter-grid.biri-v9 .fighter-duo{display:block!important;position:absolute;inset:0;z-index:1!important;opacity:1!important;visibility:visible!important;
+  transform:translateZ(0) scale(var(--v9-scale,.35))!important;transform-origin:center center!important;
+  will-change:transform;background:#0b0b0c}
+#fighter-grid.biri-v9 .duo-word,#fighter-grid.biri-v9 .duo-versus{opacity:var(--v9-names,0);transition:none!important}
+#fighter-grid.biri-v9 .duo-shot img{transition:none!important;animation:none!important;transform:none!important}
+#fighter-grid.biri-v9 .v9-curtain{position:absolute;inset:-1px;z-index:4;pointer-events:none;background:#08080a;opacity:var(--v9-curtain,1);will-change:opacity}
+#fighter-grid.biri-v9 .v9-solo{position:absolute;inset:0;overflow:hidden;background:#100c0f;z-index:5;pointer-events:none;contain:paint;backface-visibility:hidden;will-change:transform;}
+#fighter-grid.biri-v9 .v9-grb{background:radial-gradient(ellipse 68% 76% at 67% 71%,#bd4a50 0%,#6e1b29 55%,#220b14 100%);transform:translateZ(0)}
+#fighter-grid.biri-v9 .v9-oe{z-index:6;background:radial-gradient(ellipse 80% 65% at 38% 65%,#b8ad99 0%,#756c60 57%,#2a2522 100%);transform:translate3d(105%,0,0)}
+#fighter-grid.biri-v9 .v9-solo-light{position:absolute;inset:0;z-index:0;opacity:.5;pointer-events:none;background:radial-gradient(ellipse at 60% 99%,#ff783a76,transparent 54%)}
+#fighter-grid.biri-v9 .v9-oe .v9-solo-light{background:radial-gradient(ellipse at 34% 93%,#f2b2626b,transparent 53%)}
+#fighter-grid.biri-v9 .v9-flame{position:absolute;z-index:1;bottom:0;left:0;width:100%;height:51%;pointer-events:none;opacity:.32;background:url('./media/fire-sprite.webp') center bottom/100% 100% no-repeat;animation:v9-fire 4.5s ease-in-out infinite alternate}
+#fighter-grid.biri-v9 .v9-oe .v9-flame{opacity:.22;animation-delay:-2s}
+#fighter-grid.biri-v9 .v9-solo img{position:absolute;z-index:2;width:100%;height:91%;left:0;bottom:0;object-fit:contain;object-position:center bottom;transform:translate3d(0,0,0) scale(1.02);transform-origin:center 46%;will-change:transform;filter:none!important;transition:none!important;animation:none!important}
+#fighter-grid.biri-v9 .v9-solo-title{position:absolute;left:clamp(22px,6vw,90px);bottom:clamp(35px,7vh,100px);z-index:3;display:flex;flex-direction:column;gap:10px;text-shadow:0 8px 30px #000b}
+#fighter-grid.biri-v9 .v9-oe .v9-solo-title{left:auto;right:clamp(22px,6vw,90px);text-align:right}
+#fighter-grid.biri-v9 .v9-solo-title span{font:800 clamp(11px,1.2vw,17px)/1.2 var(--body);letter-spacing:.2em;color:#f4e9d8}
+#fighter-grid.biri-v9 .v9-solo-title strong{font:900 clamp(75px,14vw,185px)/.9 var(--display);color:#fff6eb;letter-spacing:0}
+#fighter-grid.biri-v9 .v9-solo-title strong small{display:block;font:900 .5em/.85 var(--display)}
+#fighter-grid.biri-v9 .fighter-film-progress{z-index:11}
+@keyframes v9-fire{from{transform:translate3d(-2%,4%,0) scale(.98)}to{transform:translate3d(2%,-2%,0) scale(1.04)}}
+@media(max-width:760px){
+ #fighters-scroll{height:320svh!important}
+ #fighter-grid.biri-v9 .v9-solo img{height:84%;width:112%;left:-6%;object-position:center bottom}
+ #fighter-grid.biri-v9 .v9-grb img{left:-2%}
+ #fighter-grid.biri-v9 .v9-oe img{left:-8%}
+ #fighter-grid.biri-v9 .v9-solo-title{left:6%;bottom:9%}
+ #fighter-grid.biri-v9 .v9-oe .v9-solo-title{right:5%}
+ #fighter-grid.biri-v9 .v9-solo-title strong{font-size:clamp(79px,23vw,132px)}
+ #fighter-grid.biri-v9 .v9-oe .v9-solo-title strong{font-size:clamp(75px,19vw,118px)}
+}
+@media(prefers-reduced-motion:reduce){#fighters-scroll{height:100svh!important}#fighter-grid.biri-v9 .v9-solo,#fighter-grid.biri-v9 .v9-curtain{display:none!important}#fighter-grid.biri-v9 .fighter-duo{transform:none!important}#fighter-grid.biri-v9 .duo-word,#fighter-grid.biri-v9 .duo-versus{opacity:1!important}#fighter-grid.biri-v9 .v9-flame{animation:none}}
+
+/* Dark cinematic cut between solo Oeloves and the distant two-fighter frame. */
+#fighter-grid.biri-v9 .v9-oe{will-change:transform,opacity}

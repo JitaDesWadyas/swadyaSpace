@@ -23,12 +23,13 @@
   <link rel="stylesheet" href="./v5.css">
   <link rel="stylesheet" href="./v6.css">
   <link rel="stylesheet" href="./v7.css">
-  <link rel="stylesheet" href="./v8.css">
+  <link rel="stylesheet" href="./v9.css">
   <script defer src="./app.js"></script>
-  <script defer src="./cinema.js"></script>
+  <script defer src="./v9.js"></script>
   <title>BIRIMANIA | GRB_imisaj vs Oeloves</title>
 </head>
-<body>
+<body class="intro-locked">
+  <noscript><style>.start-fight-audio{display:none!important}body.intro-locked{overflow:auto!important}</style></noscript>
   <a class="skip-link" href="#main">Salta al contenuto</a>
   <div class="opening-wipe" aria-hidden="true"></div>
   <div class="reading-progress" aria-hidden="true"><span id="reading-bar"></span></div>
@@ -46,8 +47,16 @@
   </nav>
   <audio id="trailer-soundtrack" src="./media/trailer-audio.m4a" preload="auto" loop aria-hidden="true"></audio>
   <audio id="faceoff-soundtrack" src="./media/faceoff-audio.m4a" preload="auto" loop aria-hidden="true"></audio>
-  <button id="start-fight-audio" class="start-fight-audio" type="button" aria-label="Entra nell’arena e avvia la musica">
-    <span class="start-play" aria-hidden="true">▶</span><span class="start-copy"><strong>ENTRA NELL’ARENA</strong><small>AVVIA LA MUSICA</small></span>
+  <button id="start-fight-audio" class="start-fight-audio" type="button" aria-label="Tocca ovunque per entrare in BIRIMANIA con la musica">
+    <span class="intro-atmosphere" aria-hidden="true"><span></span><span></span><span></span></span>
+    <span class="intro-header"><span>SWADYASPACE</span><span>30.10.2026 · 19:00</span></span>
+    <span class="intro-content">
+      <span class="intro-overline">UN EVENTO. DUE SFIDANTI.</span>
+      <strong class="intro-statement">QUESTO SARÀ<br>L’INCONTRO PIÙ<br><em>SPETTACOLARE</em><br>DEL MONDO.</strong>
+      <span class="intro-event-name">BIRIMANIA <b>·</b> GRB_IMISAJ VS OELOVES</span>
+    </span>
+    <span class="intro-enter"><span class="intro-enter-ring" aria-hidden="true"><span>↗</span></span><span class="start-copy"><strong>TOCCA OVUNQUE</strong><small>PER ENTRARE NELL’ARENA</small></span></span>
+    <span class="intro-foot"><span>FIGHT NIGHT</span><span>CASA DI FARI</span></span>
   </button>
   <main id="main">
     <section class="hero" aria-labelledby="hero-title">
@@ -88,24 +97,31 @@
     </section>
     <section class="fighters" id="fighters" aria-labelledby="fighters-heading"><div class="section-shell fighters-top"><div class="section-index"><span>02 / THE CONTENDERS</span><span>GRB_IMISAJ / OELOVES</span></div><h2 id="fighters-heading" class="visually-hidden">I due sfidanti</h2></div>
       <div class="fighters-scroll" id="fighters-scroll">
-        <div class="fighter-grid is-cinematic" id="fighter-grid" aria-label="GRB imisaj contro Oeloves, entrambi i combattenti inquadrati">
-          <div class="fighter-duo" id="fighter-duo">
+        <div class="fighter-grid is-cinematic biri-v9" id="fighter-grid" aria-label="Presentazione cinematografica: GRB imisaj, poi Oeloves, poi entrambi">
+          <div class="fighter-duo" id="fighter-duo" aria-hidden="true">
             <div class="duo-shot duo-red">
               <div class="arena-embers" aria-hidden="true"></div><div class="fire-ribbon" aria-hidden="true"></div><div class="fire-ribbon" aria-hidden="true"></div>
-              <img src="./media/grb-imisaj.webp" alt="GRB imisaj in posizione di guardia" loading="lazy" decoding="async">
+              <img src="./media/grb-imisaj.webp" alt="" decoding="async">
               <span class="duo-word">GRB<small>_IMISAJ</small></span>
             </div>
             <div class="duo-shot duo-black">
               <div class="arena-embers" aria-hidden="true"></div><div class="fire-ribbon" aria-hidden="true"></div><div class="fire-ribbon" aria-hidden="true"></div>
-              <img src="./media/oeloves.webp" alt="Oeloves in posizione di guardia" loading="lazy" decoding="async">
+              <img src="./media/oeloves.webp" alt="" decoding="async">
               <span class="duo-word">OELOVES</span>
             </div>
             <strong class="duo-versus" aria-hidden="true">VS</strong>
           </div>
-          <div class="scene-impact" aria-hidden="true"><span>BIRIMANIA</span><strong>VS</strong><span>30.10.26</span></div>
-          <div class="intro-solo solo-grb" aria-hidden="true"><div class="solo-glow"></div><img src="./media/grb-imisaj.webp" alt="" decoding="async"><div class="solo-caption"><small>01 / RED CORNER</small><strong>GRB<span>_IMISAJ</span></strong></div></div>
-          <div class="intro-solo solo-oe" aria-hidden="true"><div class="solo-glow"></div><img src="./media/oeloves.webp" alt="" decoding="async"><div class="solo-caption"><small>02 / BLACK CORNER</small><strong>OELOVES</strong></div></div>
-          <div class="fighter-seam" aria-hidden="true"></div>
+          <div class="v9-curtain" aria-hidden="true"></div>
+          <div class="v9-solo v9-grb" aria-hidden="true">
+            <div class="v9-solo-light"></div><div class="v9-flame"></div>
+            <img src="./media/grb-imisaj.webp" alt="" decoding="async">
+            <div class="v9-solo-title"><span>RED CORNER · 01</span><strong>GRB<small>_IMISAJ</small></strong></div>
+          </div>
+          <div class="v9-solo v9-oe" aria-hidden="true">
+            <div class="v9-solo-light"></div><div class="v9-flame"></div>
+            <img src="./media/oeloves.webp" alt="" decoding="async">
+            <div class="v9-solo-title"><span>BLACK CORNER · 02</span><strong>OELOVES</strong></div>
+          </div>
           <div class="fighter-film-progress" aria-hidden="true"><span></span></div>
         </div>
       </div>

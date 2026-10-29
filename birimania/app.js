@@ -262,13 +262,14 @@
       audioUnlocked=true;
       activeFilm='trailer';
       startButton?.classList.add('is-started');
+      document.body.classList.remove('intro-locked');
       document.documentElement.classList.add('audio-is-on');
       if(initial==='faceoff') switchSoundtrack('faceoff');
       else requestAmbient();
     }).catch(()=>{
       audioUnlocked=false;
       activeFilm=null;
-      showSoundPrompt('TOCCA PER ATTIVARE AUDIO');
+      showSoundPrompt('RIPROVA PER AVVIARE LA MUSICA');
     });
   };
   startButton?.addEventListener('click',startOnTap);
