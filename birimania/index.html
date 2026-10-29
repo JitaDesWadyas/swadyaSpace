@@ -20,6 +20,7 @@
   <link rel="stylesheet" href="./styles.css">
   <link rel="stylesheet" href="./cinema.css">
   <link rel="stylesheet" href="./direction.css">
+  <link rel="stylesheet" href="./v5.css">
   <script defer src="./app.js"></script>
   <script defer src="./cinema.js"></script>
   <title>BIRIMANIA | GRB_imisaj vs Oeloves</title>
@@ -33,7 +34,7 @@
     <nav class="desktop-nav" aria-label="Navigazione principale">
       <a href="#fight">THE FIGHT</a><a href="#faceoff">FACEOFF</a><a href="#odds">ODDS</a><a href="#event">EVENT INFO</a>
     </nav>
-    <div class="header-actions"><button id="sound-toggle" class="sound-toggle" type="button" aria-label="Attiva audio ed effetti" aria-pressed="false"><span class="sound-glyph" aria-hidden="true">◖</span><span class="sound-label">AUDIO OFF</span></button><span class="header-date">30.10.26 <span class="header-dot" aria-hidden="true"></span> 19:00</span><button class="menu-toggle" id="menu-toggle" aria-label="Apri menu" aria-controls="mobile-menu" aria-expanded="false"><span></span><span></span></button></div>
+    <div class="header-actions"><span class="header-date">30.10.26 <span class="header-dot" aria-hidden="true"></span> 19:00</span><button class="menu-toggle" id="menu-toggle" aria-label="Apri menu" aria-controls="mobile-menu" aria-expanded="false"><span></span><span></span></button></div>
   </header>
   <nav class="mobile-menu" id="mobile-menu" aria-label="Menu mobile" inert>
     <div class="mobile-menu-top"><span>JUMP TO</span><span>30 / 10 / 26</span></div>
@@ -50,7 +51,6 @@
         <p class="hero-intro reveal">THE MAIN EVENT · 30 OCTOBER 2026</p>
         <h1 id="hero-title" class="hero-title"><span>BIRI</span><span>MANIA</span></h1>
         <div class="arena-scene reveal" id="arena-scene">
-          <button type="button" class="experience-audio" id="experience-audio" aria-label="Attiva l'audio del sito"><span class="experience-pulse" aria-hidden="true">◖))</span> ATTIVA AUDIO <span class="experience-arrow" aria-hidden="true">↗</span></button>
           <div class="arena-beam arena-beam-left" aria-hidden="true"></div><div class="arena-beam arena-beam-right" aria-hidden="true"></div>
           <div class="arena-floor" aria-hidden="true"></div>
           <div class="arena-screen-shell" id="arena-screen-shell">
@@ -80,24 +80,23 @@
     </section>
     <section class="fighters" id="fighters" aria-labelledby="fighters-heading"><div class="section-shell fighters-top"><div class="section-index"><span>02 / THE CONTENDERS</span><span>GRB_IMISAJ / OELOVES</span></div><h2 id="fighters-heading" class="visually-hidden">I due sfidanti</h2></div>
       <div class="fighters-scroll" id="fighters-scroll">
-      <div class="fighter-grid" id="fighter-grid" aria-label="Presentazione cinematografica dei combattenti">
-        <article class="fighter fighter-red reveal-fighter" data-fighter="grb">
-          <div class="fighter-art" aria-hidden="true"><div class="fighter-stripe"></div><div class="fighter-watermark">01</div><img data-portrait="grb" src="./media/grb-imisaj.webp" alt="" loading="lazy" decoding="async"><div class="fighter-shadow"></div></div>
-          <div class="fighter-content"><span class="fighter-number">01 <span>RED CORNER</span></span><div class="fighter-heading"><span class="fighter-label">GRB</span><h3>GRB<span>_imisaj</span></h3></div><div class="fighter-bottom"><span>GRB_IMISAJ</span><span class="corner-symbol" aria-hidden="true">✳</span></div></div>
-        </article>
-        <article class="fighter fighter-cream reveal-fighter" data-fighter="oe">
-          <div class="fighter-art" aria-hidden="true"><div class="fighter-stripe"></div><div class="fighter-watermark">02</div><img data-portrait="oe" src="./media/oeloves.webp" alt="" loading="lazy" decoding="async"><div class="fighter-shadow"></div></div>
-          <div class="fighter-content"><span class="fighter-number">02 <span>BLACK CORNER</span></span><div class="fighter-heading"><span class="fighter-label">OELOVES</span><h3>Oeloves</h3></div><div class="fighter-bottom"><span>OELOVES</span><span class="corner-symbol" aria-hidden="true">✳</span></div></div>
-        </article>
-        <div class="fighter-duo" id="fighter-duo" aria-label="GRB imisaj contro Oeloves">
-          <div class="duo-shot duo-red"><img src="./media/grb-imisaj.webp" alt="" loading="lazy" decoding="async"><span class="duo-word">GRB<small>_IMISAJ</small></span></div>
-          <div class="duo-shot duo-black"><img src="./media/oeloves.webp" alt="" loading="lazy" decoding="async"><span class="duo-word">OELOVES</span></div>
-          <strong class="duo-versus" aria-hidden="true">VS</strong>
+        <div class="fighter-grid is-cinematic" id="fighter-grid" aria-label="GRB imisaj contro Oeloves, entrambi i combattenti inquadrati">
+          <div class="fighter-duo" id="fighter-duo">
+            <div class="duo-shot duo-red">
+              <div class="arena-embers" aria-hidden="true"></div>
+              <img src="./media/grb-imisaj.webp" alt="GRB imisaj in posizione di guardia" loading="lazy" decoding="async">
+              <span class="duo-word">GRB<small>_IMISAJ</small></span>
+            </div>
+            <div class="duo-shot duo-black">
+              <div class="arena-embers" aria-hidden="true"></div>
+              <img src="./media/oeloves.webp" alt="Oeloves in posizione di guardia" loading="lazy" decoding="async">
+              <span class="duo-word">OELOVES</span>
+            </div>
+            <strong class="duo-versus" aria-hidden="true">VS</strong>
+          </div>
+          <div class="fighter-film-progress" aria-hidden="true"><span></span></div>
         </div>
-        <div class="fighters-center-vs" aria-hidden="true">VS</div>
-        <div class="fighter-film-progress" aria-hidden="true"><span></span></div>
-        <div class="fighter-film-hint" aria-hidden="true">SCORRI <span>↓</span></div>
-      </div></div>
+      </div>
       <div class="match-banner"><div><span>30 OCT · 19:00</span><strong>GRB_imisaj <em>VS</em> Oeloves</strong></div><span>CASA DI FARI</span></div>
     </section>
     <section class="faceoff section-shell" id="faceoff" aria-labelledby="faceoff-heading">

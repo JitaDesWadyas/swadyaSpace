@@ -1,0 +1,64 @@
+/* BIRIMANIA · 30/10/2026 · one cinematic duo / native audio hand-off */
+#sound-toggle,#experience-audio{display:none!important}
+.header-actions{gap:15px}
+/* The end-card is the entire fighter story: no giant faces sliding over each other. */
+.fighters-scroll{height:205svh;min-height:1050px}
+.fighter-grid.is-cinematic{height:100svh;min-height:510px;overflow:hidden;contain:layout paint;background:#100e0f}
+.fighter-grid.is-cinematic .fighter-duo{
+  display:block!important;visibility:visible!important;opacity:1!important;inset:0;
+  transform:translate3d(0,0,0) scale(1.055);transform-origin:center center;
+  will-change:transform;
+}
+.fighter-grid.is-cinematic .duo-shot{overflow:hidden}
+.fighter-grid.is-cinematic .duo-red{top:0;height:54%;z-index:2;
+  clip-path:polygon(0 0,100% 0,100% 86%,0 100%)}
+.fighter-grid.is-cinematic .duo-black{top:46.5%;height:53.5%;z-index:1;
+  clip-path:polygon(0 19%,100% 0,100% 100%,0 100%)}
+.fighter-grid.is-cinematic .duo-shot img{z-index:2;transform-origin:center bottom;will-change:transform;max-width:none}
+.fighter-grid.is-cinematic .duo-red img{height:100%;width:67%;right:4%;bottom:0;object-position:center bottom}
+.fighter-grid.is-cinematic .duo-black img{height:99%;width:67%;left:3%;bottom:0;object-position:center bottom}
+.fighter-grid.is-cinematic .duo-word{z-index:4;text-shadow:0 4px 30px #0009}
+.fighter-grid.is-cinematic .duo-versus{z-index:6;will-change:transform}
+/* Flame-like stage lights, entirely CSS, behind the people. Only transforms/opacity animate. */
+.fighter-grid.is-cinematic .arena-embers{position:absolute;inset:-12% -8%;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 33% 36% at 24% 94%,#ff853067 0%,#ce402130 48%,transparent 79%),
+    radial-gradient(ellipse 21% 48% at 79% 93%,#ffb84b55 0%,#e5482738 49%,transparent 86%),
+    radial-gradient(ellipse 22% 65% at 51% 111%,#ffa4483b 0%,transparent 83%);
+  mix-blend-mode:screen;opacity:.85;transform:translate3d(0,0,0);
+  animation:biri-heat 6.5s ease-in-out infinite alternate}
+.fighter-grid.is-cinematic .duo-black .arena-embers{opacity:.5;filter:saturate(.6);animation-delay:-2.5s}
+.fighter-grid.is-cinematic .duo-shot::before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:radial-gradient(ellipse at 50% 100%,#ff7f322e,transparent 65%);
+  opacity:.72;animation:biri-flare 4.5s ease-in-out infinite alternate}
+.fighter-grid.is-cinematic .duo-shot::after{z-index:3;background:linear-gradient(90deg,#0003,transparent 55%,#0003)}
+@keyframes biri-heat{0%{transform:translate3d(-1%,3%,0) scale(.97);opacity:.67}100%{transform:translate3d(1%,-3%,0) scale(1.04);opacity:.95}}
+@keyframes biri-flare{0%,100%{opacity:.4}55%{opacity:.78}}
+/* The divider and names remain unobstructed at the end of the sequence. */
+.fighter-grid.is-cinematic .duo-versus{font-size:clamp(68px,10vw,140px);top:49.5%;text-shadow:0 8px 24px #000c}
+.fighter-film-progress{z-index:20}
+.fighter-film-hint,.fighters-center-vs{display:none!important}
+@media(max-width:760px){
+  .fighters-scroll{height:175svh;min-height:880px}
+  .fighter-grid.is-cinematic{height:100svh;min-height:480px}
+  .fighter-grid.is-cinematic .duo-red{height:53%;clip-path:polygon(0 0,100% 0,100% 88%,0 100%)}
+  .fighter-grid.is-cinematic .duo-black{top:47%;height:53%;clip-path:polygon(0 17%,100% 0,100% 100%,0 100%)}
+  .fighter-grid.is-cinematic .duo-red img{right:0;width:79%;height:100%}
+  .fighter-grid.is-cinematic .duo-black img{left:-9%;width:82%;height:98%}
+  .fighter-grid.is-cinematic .duo-red .duo-word{left:5%;top:20%;font-size:clamp(39px,12vw,64px)}
+  .fighter-grid.is-cinematic .duo-black .duo-word{right:4%;bottom:24%;font-size:clamp(43px,12vw,65px)}
+  .fighter-grid.is-cinematic .duo-versus{font-size:clamp(66px,18vw,100px)}
+}
+@media(max-width:360px){
+  .fighter-grid.is-cinematic .duo-red img{width:77%;right:-2%}
+  .fighter-grid.is-cinematic .duo-black img{width:80%;left:-9%}
+  .fighter-grid.is-cinematic .duo-black .duo-word{font-size:11vw}
+}
+@media(prefers-reduced-motion:reduce){
+  .fighters-scroll{height:100svh!important;min-height:540px!important}
+  .fighter-grid.is-cinematic .fighter-duo{transform:none!important;opacity:1!important;visibility:visible!important}
+  .fighter-grid.is-cinematic .duo-shot img,.fighter-grid.is-cinematic .duo-versus{transform:none!important}
+  .fighter-grid.is-cinematic .arena-embers,.fighter-grid.is-cinematic .duo-shot::before{animation:none!important}
+}
+
+@media(max-width:760px){.fighter-grid.is-cinematic .duo-red img{height:88%;bottom:0}.fighter-grid.is-cinematic .duo-black img{height:95%}}

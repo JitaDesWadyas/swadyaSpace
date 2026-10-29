@@ -123,79 +123,106 @@
   const videoDialog = $('#video-dialog');
   const featuredVideo = $('#featured-video');
   const videoClose = $('#video-close');
+  // Only one ambient film can ever be audible. The trailer continues as a soundtrack
+  // during the fighter chapter, then hands off to the faceoff as it enters view.
   const availableMedia = new Set();
-  let ambientSound = false;
-  let previouslyEnabledSound = false;
-  const previews = [];
+  const previewVideos = {
+    trailer: $('#hero-film'),
+    faceoff: $('#faceoff-preview'),
+  };
+  const previews = Object.values(previewVideos).filter(Boolean);
+  let audioUnlocked = false;
+  let activeFilm = null;
+  let syncPending = false;
   const previewAllowed = !reducedMotion && !(navigator.connection && navigator.connection.saveData);
   const previewIsVisible = (video) => {
-    const bounds = video.getBoundingClientRect();
-    return bounds.bottom > 0 && bounds.top < innerHeight;
-  };
-  const installPreview = (selector, source, afterPlay = () => {}) => {
-    const video = $(selector);
-    if (!video || !previewAllowed) return;
-    video.src = source;
-    video.preload = 'metadata';
-    video.muted = true;
-    video.playsInline = true;
-    previews.push(video);
-    const enter = () => {
-      video.muted = !(ambientSound && !videoDialog.open);
-      video.volume = .6;
-      return video.play().then(() => {
-      video.classList.add('is-ready');
-      afterPlay();
-    }).catch(() => {
-      // If unmuted autoplay was denied by the browser, fall back to muted preview.
-      video.muted = true;
-      video.play().then(() => {video.classList.add('is-ready'); afterPlay();}).catch(() => {});
-    });
-    };
-    if ('IntersectionObserver' in window) {
-      const watcher = new IntersectionObserver((entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting && !videoDialog.open) enter();
-          else video.pause();
-        }
-      }, { threshold: .2 });
-      watcher.observe(video);
-    } else if (previewIsVisible(video)) enter();
+    if (!video) return false;
+    const rect = video.getBoundingClientRect();
+    return rect.bottom > 0 && rect.top < innerHeight;
   };
   const activateMedia = (key) => {
     if (availableMedia.has(key)) return;
     availableMedia.add(key);
-    $$(`[data-media="${key}"]`).forEach((button) => button.disabled = false);
-    $$(`[data-media-label="${key}"]`).forEach((label) => { label.textContent = media[key].label; });
+    $$(`[data-media="${key}"]`).forEach(button => button.disabled = false);
+    $$(`[data-media-label="${key}"]`).forEach(label => { label.textContent = media[key].label; });
   };
-  Object.entries(media).forEach(([key, item]) => {
-    const probe = document.createElement('video');
-    probe.preload = 'metadata';
-    probe.muted = true;
-    probe.playsInline = true;
-    probe.addEventListener('loadedmetadata', () => {
+  for (const [key, item] of Object.entries(media)) {
+    const video = previewVideos[key];
+    if (!video) continue;
+    video.muted = true;
+    video.loop = true;
+    video.playsInline = true;
+    video.preload = 'metadata';
+    video.addEventListener('loadedmetadata', () => {
       activateMedia(key);
-      if (key === 'trailer') installPreview('#hero-film', item.src, () => $('.hero')?.classList.add('is-playing'));
-      if (key === 'faceoff') installPreview('#faceoff-preview', item.src, () => $('#faceoff-stage')?.classList.add('has-film'));
-    }, { once: true });
-    probe.addEventListener('error', () => {}, { once: true });
-    probe.src = item.src;
-    probe.load();
-  });
-
-  // Ambient sound is user-controlled. Previews default to silent and never override playback policy.
-  addEventListener('birimania:sound', event => {
-    ambientSound = !!event.detail?.enabled;
-    previews.forEach(video => {
-      const active = ambientSound && previewIsVisible(video) && !videoDialog.open;
-      // On first sound activation, restart the visible film from its first frame.
-      if (active && !previouslyEnabledSound && video.readyState >= 1) video.currentTime = 0;
-      video.muted = !active;
-      video.volume = .6;
-      if (active) video.play().catch(() => {video.muted = true; video.play().catch(() => {});});
+      video.classList.add('is-ready');
+      if (key === 'trailer') $('.hero')?.classList.add('is-playing');
+      else $('#faceoff-stage')?.classList.add('has-film');
+      requestAmbient();
     });
-    if (ambientSound) previouslyEnabledSound = true;
+    video.addEventListener('error', () => {}, { once: true });
+    video.src = item.src;
+    video.load();
+  }
+
+  const chosenFilm = () => {
+    const faceoff = $('#faceoff');
+    if (faceoff?.getBoundingClientRect().top < innerHeight * .58) return 'faceoff';
+    return 'trailer';
+  };
+  const pausePreviews = () => {
+    previews.forEach(video => { video.muted = true; video.pause(); });
+  };
+  function syncAmbient() {
+    syncPending = false;
+    if (document.hidden || videoDialog?.open) {
+      pausePreviews(); return;
+    }
+    if (!audioUnlocked) {
+      if (!previewAllowed) return;
+      for (const video of previews) {
+        video.muted = true;
+        if (previewIsVisible(video)) video.play().catch(() => {});
+        else video.pause();
+      }
+      return;
+    }
+    const key = chosenFilm();
+    const chosen = previewVideos[key];
+    if (!chosen) return;
+    const switched = key !== activeFilm;
+    activeFilm = key;
+    for (const [name, video] of Object.entries(previewVideos)) {
+      if (!video || name === key) continue;
+      video.muted = true;
+      video.pause();
+    }
+    if (switched && chosen.readyState >= 1) chosen.currentTime = 0;
+    chosen.volume = .75;
+    chosen.muted = false;
+    if (chosen.paused || switched) chosen.play().catch(() => {
+      // Some embedded browsers still deny unmuted play after a gesture.
+      // Maintain the film preview without opening a second player.
+      chosen.muted = true;
+      chosen.play().catch(() => {});
+    });
+  }
+  function requestAmbient() {
+    if (syncPending) return;
+    syncPending = true;
+    requestAnimationFrame(syncAmbient);
+  }
+  // Invoked synchronously from the very first trusted pointer/keyboard gesture.
+  // The browser, not the site, ultimately decides whether sound may play.
+  addEventListener('birimania:sound', event => {
+    if (!event.detail?.enabled) return;
+    audioUnlocked = true;
+    syncAmbient();
   });
+  addEventListener('scroll', requestAmbient, {passive:true});
+  addEventListener('resize', requestAmbient, {passive:true});
+  document.addEventListener('visibilitychange', requestAmbient);
+  requestAmbient();
 
   const videoContainer = $('#cinema-video-wrap');
   const filmPlay = $('#film-play');
@@ -287,11 +314,8 @@
     featuredVideo.pause();
     featuredVideo.removeAttribute('src');
     featuredVideo.load();
-    previews.forEach(video => {
-      if (!previewIsVisible(video) || !previewAllowed) return;
-      video.muted = !ambientSound;
-      video.play().catch(() => {video.muted=true;video.play().catch(() => {});});
-    });
+    activeFilm = null;
+    requestAmbient();
     syncFilm();
   });
   addEventListener('pagehide', () => previews.forEach(video => video.pause()));

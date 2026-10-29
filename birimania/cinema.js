@@ -1,170 +1,115 @@
-/* BIRIMANIA / director's cut: one scroll animation owner, media sound after a user gesture.
-   No libraries; no frame-by-frame clip-path, canvas or forced scrolling. */
+/* BIRIMANIA cinematic duo. Only transforms and opacity change during scroll.
+   Sound unlock happens during the first trusted pointer / keyboard interaction. */
 (() => {
   'use strict';
-  const $ = selector => document.querySelector(selector);
-  const $$ = selector => [...document.querySelectorAll(selector)];
-  const clamp = (value, min=0, max=1) => Math.max(min, Math.min(max, value));
-  const ease = value => { const x = clamp(value); return x*x*(3-2*x); };
+  const $ = s => document.querySelector(s);
+  const $$ = s => [...document.querySelectorAll(s)];
+  const clamp = (x,min=0,max=1) => Math.min(max,Math.max(min,x));
+  const smooth = x => {x=clamp(x);return x*x*(3-2*x)};
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const saveData = !!navigator.connection?.saveData;
   const limited = reduced || saveData;
   document.documentElement.classList.add('js-cinema');
 
-  for (const heading of $$('.scene-words')) {
-    [...heading.children].forEach((part,i) => part.style.setProperty('--word-index', i));
-    if (limited || !('IntersectionObserver' in window)) heading.classList.add('scene-done');
+  for(const heading of $$('.scene-words')) {
+    [...heading.children].forEach((node,i)=>node.style.setProperty('--word-index',i));
+    if(limited) heading.classList.add('scene-done');
   }
-  if (!limited && 'IntersectionObserver' in window) {
-    const observer = new IntersectionObserver((entries,watcher) => {
-      for (const entry of entries) if (entry.isIntersecting) {
-        entry.target.classList.add('scene-done'); watcher.unobserve(entry.target);
+  if(!limited && 'IntersectionObserver' in window) {
+    const obs=new IntersectionObserver((entries,io)=>{
+      for(const item of entries) if(item.isIntersecting) {
+        item.target.classList.add('scene-done');io.unobserve(item.target);
       }
-    }, { threshold:.15 });
-    $$('.scene-words').forEach(heading => observer.observe(heading));
-  }
+    },{threshold:.1});
+    $$('.scene-words').forEach(node=>obs.observe(node));
+  } else $$('.scene-words').forEach(node=>node.classList.add('scene-done'));
 
-  const soundToggle = $('#sound-toggle');
-  const soundCTA = $('#experience-audio');
-  const AudioCtor = window.AudioContext || window.webkitAudioContext;
-  let audioContext = null;
-  let soundOn = false;
-  let userChoseSound = false;
-  let lastHit = 0;
-
-  const updateSoundUI = () => {
-    document.documentElement.classList.toggle('audio-is-on', soundOn);
-    if (!soundToggle) return;
-    soundToggle.setAttribute('aria-pressed',String(soundOn));
-    soundToggle.setAttribute('aria-label', soundOn?'Disattiva la colonna sonora':'Attiva la colonna sonora');
-    const label = soundToggle.querySelector('.sound-label');
-    if (label) label.textContent = soundOn?'AUDIO ON':'AUDIO OFF';
-    const glyph = soundToggle.querySelector('.sound-glyph');
-    if (glyph) glyph.textContent = soundOn?'◖))':'◖';
-  };
-  const setSound = enabled => {
-    userChoseSound = true;
-    soundOn = !!enabled;
-    if (soundOn && AudioCtor) {
-      try {
-        audioContext ||= new AudioCtor();
-        // Invocation begins inside the pointer/keyboard event, not after a timer or observer.
-        audioContext.resume().catch(() => {});
-      } catch { audioContext = null; }
+  const AudioCtor=window.AudioContext||window.webkitAudioContext;
+  let audioContext=null, soundOn=false,hitAt=0;
+  const unlockSound=event=>{
+    if(soundOn || document.hidden || !event.isTrusted) return;
+    soundOn=true;
+    if(AudioCtor){
+      try {audioContext=new AudioCtor();audioContext.resume().catch(()=>{});}catch{}
     }
-    updateSoundUI();
-    dispatchEvent(new CustomEvent('birimania:sound',{detail:{enabled:soundOn}}));
+    // The media handler plays the selected preview immediately in this gesture.
+    dispatchEvent(new CustomEvent('birimania:sound',{detail:{enabled:true}}));
   };
-  soundToggle?.addEventListener('click',() => setSound(!soundOn));
-  soundCTA?.addEventListener('click',event => {event.stopPropagation();setSound(true);});
+  document.addEventListener('pointerdown',unlockSound,{capture:true,passive:true});
+  document.addEventListener('keydown',event=>{
+    if(['Enter',' ','ArrowDown','PageDown'].includes(event.key)) unlockSound(event);
+  },{capture:true});
 
-  // The first deliberate touch unlocks the soundscape, as requested. It is never
-  // re-enabled automatically after the user switches it off.
-  const firstInteraction = event => {
-    if (userChoseSound || document.hidden) return;
-    if (event.target?.closest?.('#sound-toggle,#experience-audio,#video-dialog')) return;
-    setSound(true);
-  };
-  document.addEventListener('pointerup',firstInteraction,{capture:true,passive:true});
-  document.addEventListener('keydown',event => {
-    if (!userChoseSound && ['Enter',' ','ArrowDown','PageDown'].includes(event.key)) firstInteraction(event);
-  });
-  updateSoundUI();
-
-  const stinger = type => {
-    if (!soundOn || !audioContext || audioContext.state!=='running' || document.hidden || $('#video-dialog')?.open) return;
-    if (performance.now()-lastHit < 900) return;
-    lastHit = performance.now();
-    const t=audioContext.currentTime+.015;
-    const playTone=(f1,f2,duration,gainValue,wave) => {
-      const osc=audioContext.createOscillator(),gain=audioContext.createGain();
-      osc.type=wave;
-      osc.frequency.setValueAtTime(f1,t);
-      osc.frequency.exponentialRampToValueAtTime(Math.max(f2,30),t+duration);
-      gain.gain.setValueAtTime(.0001,t);
-      gain.gain.exponentialRampToValueAtTime(gainValue,t+.012);
-      gain.gain.exponentialRampToValueAtTime(.0001,t+duration);
-      osc.connect(gain);gain.connect(audioContext.destination);
-      osc.start(t);osc.stop(t+duration+.02);
-    };
-    if(type==='sweep'){
-      playTone(600,90,.32,.035,'triangle');
-    }else{
-      playTone(110,42,.36,.075,'sine');
-      playTone(410,65,.18,.026,'triangle');
-    }
+  const whoosh=()=>{
+    if(!soundOn||!audioContext||audioContext.state!=='running'||document.hidden||$('#video-dialog')?.open)return;
+    const now=performance.now();if(now-hitAt<1100)return;hitAt=now;
+    const t=audioContext.currentTime+.01;
+    const oscillator=audioContext.createOscillator(),gain=audioContext.createGain();
+    oscillator.type='triangle';oscillator.frequency.setValueAtTime(280,t);
+    oscillator.frequency.exponentialRampToValueAtTime(54,t+.28);
+    gain.gain.setValueAtTime(.0001,t);
+    gain.gain.exponentialRampToValueAtTime(.028,t+.015);
+    gain.gain.exponentialRampToValueAtTime(.0001,t+.29);
+    oscillator.connect(gain).connect(audioContext.destination);
+    oscillator.start(t);oscillator.stop(t+.3);
   };
 
   const chapter=$('#fighters-scroll');
-  const stage=$('#fighter-grid');
-  const red=$('.fighter-red');
-  const cream=$('.fighter-cream');
-  const redFigure=$('.fighter-red .fighter-art img');
-  const creamFigure=$('.fighter-cream .fighter-art img');
-  const redContent=$('.fighter-red .fighter-content');
-  const creamContent=$('.fighter-cream .fighter-content');
   const duo=$('#fighter-duo');
-  const progress=$('.fighter-film-progress span');
-  const hint=$('.fighter-film-hint');
+  const topShot=$('.duo-red');
+  const bottomShot=$('.duo-black');
+  const topImage=$('.duo-red img');
+  const bottomImage=$('.duo-black img');
+  const topWord=$('.duo-red .duo-word');
+  const bottomWord=$('.duo-black .duo-word');
+  const versus=$('.duo-versus');
+  const progressLine=$('.fighter-film-progress span');
   const arena=$('#arena-scene');
   const screen=$('#arena-screen-shell');
-  const faceoff=$('#faceoff-stage');
-  let lastPhase=-1, frame=0, pointerYaw=0;
-
-  const paint=() => {
+  let frame=0,previousStage=-1,pointerYaw=0;
+  function draw(){
     frame=0;
-    if (!document.hidden && chapter && stage && !reduced) {
-      const rect=chapter.getBoundingClientRect();
-      const vh=innerHeight;
+    if(chapter && duo && !limited){
+      const rect=chapter.getBoundingClientRect(),vh=innerHeight;
       if(rect.bottom>0 && rect.top<vh){
-        const progressY=clamp(-rect.top/Math.max(1,rect.height-vh));
-        const enterCream=ease((progressY-.22)/.39);
-        const revealDuo=ease((progressY-.69)/.25);
-        const creamX=112*(1-enterCream);
-        if(cream) cream.style.transform=`translate3d(${creamX.toFixed(2)}%,0,0)`;
-        if(redFigure) redFigure.style.transform=`translate3d(${(-2*progressY).toFixed(2)}%,0,0) scale(${(1+ease(progressY/.3)*.075).toFixed(3)})`;
-        if(creamFigure) creamFigure.style.transform=`scale(${(1.045-.025*enterCream).toFixed(3)})`;
-        if(redContent) redContent.style.opacity=String(clamp(1-enterCream*.48-revealDuo*.18,.3,1));
-        if(creamContent) creamContent.style.opacity=String(clamp(.55+enterCream*.45-revealDuo*.3,.3,1));
-        if(duo){
-          duo.style.visibility=revealDuo>.005?'visible':'hidden';
-          duo.style.opacity=revealDuo.toFixed(3);
-          duo.style.transform=`translate3d(0,${((1-revealDuo)*5).toFixed(2)}%,0)`;
-        }
-        if(progress) progress.style.transform=`scaleX(${progressY.toFixed(3)})`;
-        if(hint) hint.style.opacity=String(1-ease((progressY-.12)/.15));
-        const phase=progressY<.24?0:progressY<.70?1:2;
-        if(phase!==lastPhase){
-          if(progressY>.015) stinger(phase===1?'sweep':'impact');
-          lastPhase=phase;
-        }
-      }else lastPhase=-1;
+        const progress=clamp(-rect.top/Math.max(1,rect.height-vh));
+        // Small deliberate camera choreography: tighten on GRB, reveal the lower
+        // fighter on the diagonal, pull back to the complete two-shot.
+        const intro=smooth(progress/.28);
+        const reveal=smooth((progress-.22)/.32);
+        const finale=smooth((progress-.56)/.35);
+        const overall=1+.055*(1-finale);
+        duo.style.transform=`translate3d(0,0,0) scale(${overall.toFixed(3)})`;
+        if(topImage) topImage.style.transform=`translate3d(0,${(-intro*1.5+finale*1.5).toFixed(2)}%,0) scale(${(1+.065*intro-.065*finale).toFixed(3)})`;
+        if(bottomImage) bottomImage.style.transform=`translate3d(0,${((1-reveal)*6).toFixed(2)}%,0) scale(${(1+.05*(1-finale)).toFixed(3)})`;
+        if(bottomShot) bottomShot.style.opacity=String(.42+.58*reveal);
+        if(bottomWord) bottomWord.style.opacity=String(.5+.5*reveal);
+        if(topWord) topWord.style.transform=`translate3d(${(-1.8*intro+1.8*finale).toFixed(2)}%,0,0)`;
+        if(versus) versus.style.transform=`translate(-50%,-50%) rotate(${(-7+7*finale).toFixed(2)}deg) scale(${(.78+.22*reveal).toFixed(3)})`;
+        if(progressLine) progressLine.style.transform=`scaleX(${progress.toFixed(3)})`;
+        const stage=progress<.24?0:progress<.58?1:2;
+        if(stage!==previousStage){if(progress>.1) whoosh();previousStage=stage;}
+      } else previousStage=-1;
     }
-    if(!limited && arena && screen){
+    if(!limited&&arena&&screen){
       const bounds=arena.getBoundingClientRect();
-      if(bounds.bottom>0&&bounds.top<innerHeight){
-        const focus=clamp(1-Math.abs((bounds.top+bounds.height*.5-innerHeight*.51)/(innerHeight*.85)));
-        screen.style.transform=`rotateX(${(2-focus*1.7).toFixed(2)}deg) rotateY(${pointerYaw.toFixed(2)}deg) translateZ(${(focus*12).toFixed(2)}px)`;
+      if(bounds.bottom>0 && bounds.top<innerHeight){
+        const focus=clamp(1-Math.abs((bounds.top+bounds.height*.5-innerHeight*.5)/(innerHeight*.9)));
+        screen.style.transform=`rotateX(${(1.6-focus).toFixed(2)}deg) rotateY(${pointerYaw.toFixed(2)}deg)`;
       }
     }
-    if(!limited && faceoff){
-      // No animated brightness/filter on an active H.264 video: decoding remains cheap.
-      const rect=faceoff.getBoundingClientRect();
-      if(rect.bottom>0&&rect.top<innerHeight) faceoff.style.setProperty('--film-spot','1');
-    }
-  };
-  function requestPaint(){if(!frame)frame=requestAnimationFrame(paint);}
-  addEventListener('scroll',requestPaint,{passive:true});
-  addEventListener('resize',requestPaint,{passive:true});
-  addEventListener('pageshow',requestPaint);
-  if(arena && !limited && matchMedia('(hover:hover)').matches){
-    arena.addEventListener('pointermove',event=>{
-      const box=arena.getBoundingClientRect();
-      pointerYaw=clamp((event.clientX-box.left-box.width/2)/box.width,-.5,.5)*-3;
-      requestPaint();
-    },{passive:true});
-    arena.addEventListener('pointerleave',()=>{pointerYaw=0;requestPaint();});
   }
-  requestPaint();
+  function schedule(){if(!frame)frame=requestAnimationFrame(draw)}
+  addEventListener('scroll',schedule,{passive:true});
+  addEventListener('resize',schedule,{passive:true});
+  addEventListener('pageshow',schedule);
+  if(arena&&!limited&&matchMedia('(hover:hover)').matches){
+    arena.addEventListener('pointermove',e=>{
+      const box=arena.getBoundingClientRect();pointerYaw=clamp((e.clientX-box.left-box.width/2)/box.width,-.5,.5)*-2;
+      schedule();
+    },{passive:true});
+    arena.addEventListener('pointerleave',()=>{pointerYaw=0;schedule()});
+  }
+  schedule();
   addEventListener('pagehide',()=>audioContext?.suspend?.().catch(()=>{}));
 })();
