@@ -57,43 +57,16 @@
     revealTargets.forEach((node) => observer.observe(node));
   } else revealTargets.forEach(markVisible);
 
+  // Lightweight reading progress; cinematic sequences live in cinema.js.
   const progressBar = $('#reading-bar');
-  const hero = $('.hero');
-  const heroCutoutOne = $('.hero-cutout-one');
-  const heroCutoutTwo = $('.hero-cutout-two');
-  const trailerCard = $('.hero-trailer-card');
-  const faceoffStage = $('#faceoff-stage');
-  const faceoffPreview = $('#faceoff-preview');
-  let scrollFrame = false;
-  const paintScroll = () => {
-    scrollFrame = false;
-    const y = scrollY;
+  let progressFrame = 0;
+  const paintReading = () => {
+    progressFrame = 0;
     const total = document.documentElement.scrollHeight - innerHeight;
-    if (total > 0 && progressBar) progressBar.style.transform = `scaleX(${clamp(y / total, 0, 1)})`;
-    if (reducedMotion) return;
-
-    if (hero && y < innerHeight * 1.4) {
-      const depth = Math.min(y * .08, 60);
-      if (heroCutoutOne) heroCutoutOne.style.transform = `translate3d(${-depth * .22}px, ${-depth * .08}px, 0)`;
-      if (heroCutoutTwo) heroCutoutTwo.style.transform = `translate3d(${depth * .22}px, ${-depth * .12}px, 0)`;
-      if (trailerCard) trailerCard.style.transform = `translate3d(0, ${Math.min(y * .03, 18)}px, 0)`;
-    }
-
-    if (faceoffStage && faceoffPreview) {
-      const rect = faceoffStage.getBoundingClientRect();
-      const progress = clamp(1 - Math.abs((rect.top + rect.height * .5) - innerHeight * .5) / (innerHeight * .8), 0, 1);
-      faceoffPreview.style.transform = `scale(${1 + progress * .025})`;
-      faceoffStage.style.boxShadow = `0 ${28 + progress * 18}px ${80 + progress * 18}px rgba(0,0,0,.42)`;
-    }
+    if (progressBar && total > 0) progressBar.style.transform = `scaleX(${clamp(scrollY / total, 0, 1)})`;
   };
-  addEventListener('scroll', () => {
-    if (!scrollFrame) {
-      scrollFrame = true;
-      requestAnimationFrame(paintScroll);
-    }
-  }, { passive: true });
-  addEventListener('resize', () => requestAnimationFrame(paintScroll), { passive: true });
-  paintScroll();
+  addEventListener('scroll', () => { if (!progressFrame) progressFrame = requestAnimationFrame(paintReading); }, {passive:true});
+  paintReading();
 
   const choiceButtons = $$('.odds-choice');
   const stakeInput = $('#stake');
@@ -151,6 +124,7 @@
   const featuredVideo = $('#featured-video');
   const videoClose = $('#video-close');
   const availableMedia = new Set();
+  let ambientSound = false;
   const previews = [];
   const previewAllowed = !reducedMotion && !(navigator.connection && navigator.connection.saveData);
   const previewIsVisible = (video) => {
@@ -165,10 +139,18 @@
     video.muted = true;
     video.playsInline = true;
     previews.push(video);
-    const enter = () => video.play().then(() => {
+    const enter = () => {
+      video.muted = !(ambientSound && !videoDialog.open);
+      video.volume = .6;
+      return video.play().then(() => {
       video.classList.add('is-ready');
       afterPlay();
-    }).catch(() => {});
+    }).catch(() => {
+      // If unmuted autoplay was denied by the browser, fall back to muted preview.
+      video.muted = true;
+      video.play().then(() => {video.classList.add('is-ready'); afterPlay();}).catch(() => {});
+    });
+    };
     if ('IntersectionObserver' in window) {
       const watcher = new IntersectionObserver((entries) => {
         for (const entry of entries) {
@@ -192,45 +174,123 @@
     probe.playsInline = true;
     probe.addEventListener('loadedmetadata', () => {
       activateMedia(key);
-      if (key === 'trailer') installPreview('#hero-film', item.src, () => hero?.classList.add('is-playing'));
-      if (key === 'faceoff') installPreview('#faceoff-preview', item.src, () => faceoffStage?.classList.add('has-film'));
+      if (key === 'trailer') installPreview('#hero-film', item.src, () => $('.hero')?.classList.add('is-playing'));
+      if (key === 'faceoff') installPreview('#faceoff-preview', item.src, () => $('#faceoff-stage')?.classList.add('has-film'));
     }, { once: true });
     probe.addEventListener('error', () => {}, { once: true });
     probe.src = item.src;
     probe.load();
   });
 
+  // Ambient sound is user-controlled. Previews default to silent and never override playback policy.
+  addEventListener('birimania:sound', event => {
+    ambientSound = !!event.detail?.enabled;
+    previews.forEach(video => {
+      const active = ambientSound && previewIsVisible(video) && !videoDialog.open;
+      video.muted = !active;
+      video.volume = .6;
+      if (active) video.play().catch(() => {video.muted = true; video.play().catch(() => {});});
+    });
+  });
+
+  const videoContainer = $('#cinema-video-wrap');
+  const filmPlay = $('#film-play');
+  const bigPlay = $('#cinema-big-play');
+  const filmMute = $('#film-mute');
+  const filmProgress = $('#film-progress');
+  const filmFullscreen = $('#film-fullscreen');
+  const filmTime = $('#film-time');
+  const filmDuration = $('#film-duration');
+  const displayTime = seconds => {
+    const secs = Number.isFinite(seconds) ? Math.max(0, Math.floor(seconds)) : 0;
+    return `${String(Math.floor(secs / 60)).padStart(2,'0')}:${String(secs % 60).padStart(2,'0')}`;
+  };
+  const syncFilm = () => {
+    if (!featuredVideo || !filmProgress) return;
+    const duration = featuredVideo.duration || 0;
+    const pct = duration ? clamp(featuredVideo.currentTime / duration, 0, 1) : 0;
+    filmProgress.value = String(Math.round(pct * 1000));
+    filmProgress.style.setProperty('--film-position', `${pct*100}%`);
+    filmTime.textContent = displayTime(featuredVideo.currentTime);
+    filmDuration.textContent = displayTime(duration);
+    const paused = featuredVideo.paused;
+    filmPlay.textContent = paused ? '▶' : 'Ⅱ';
+    filmPlay.setAttribute('aria-label', paused ? 'Riproduci' : 'Metti in pausa');
+    bigPlay.classList.toggle('is-paused', paused);
+    filmMute.textContent = featuredVideo.muted ? '◌' : '◖';
+    filmMute.setAttribute('aria-label', featuredVideo.muted ? 'Attiva audio del video' : 'Disattiva audio del video');
+  };
+  const toggleFilm = () => {
+    if (!featuredVideo || !videoDialog.open) return;
+    if (featuredVideo.paused) featuredVideo.play().catch(syncFilm);
+    else featuredVideo.pause();
+    syncFilm();
+  };
+  for (const eventName of ['loadedmetadata','timeupdate','play','pause','ended','volumechange']) {
+    featuredVideo?.addEventListener(eventName, syncFilm);
+  }
+  filmPlay?.addEventListener('click', toggleFilm);
+  bigPlay?.addEventListener('click', toggleFilm);
+  featuredVideo?.addEventListener('click', toggleFilm);
+  filmProgress?.addEventListener('input', () => {
+    if (Number.isFinite(featuredVideo.duration) && featuredVideo.duration > 0)
+      featuredVideo.currentTime = featuredVideo.duration * (Number(filmProgress.value) / 1000);
+    syncFilm();
+  });
+  filmMute?.addEventListener('click', () => {featuredVideo.muted = !featuredVideo.muted; syncFilm();});
+  filmFullscreen?.addEventListener('click', () => {
+    if (document.fullscreenElement) document.exitFullscreen?.();
+    else if (videoContainer?.requestFullscreen) videoContainer.requestFullscreen().catch(() => {});
+    else featuredVideo?.webkitEnterFullscreen?.();
+  });
+  addEventListener('keydown', event => {
+    if (!videoDialog?.open) return;
+    if (event.code === 'Space' && !['INPUT','BUTTON'].includes(document.activeElement?.tagName)) {
+      event.preventDefault(); toggleFilm();
+    }
+    if (event.key === 'ArrowRight' && document.activeElement === filmProgress) featuredVideo.currentTime += 5;
+  });
   const closeFilm = () => {
     if (!featuredVideo) return;
     featuredVideo.pause();
     featuredVideo.removeAttribute('src');
     featuredVideo.load();
+    if (document.fullscreenElement) document.exitFullscreen?.().catch(() => {});
     document.body.classList.remove('modal-open');
     if (videoDialog.open) videoDialog.close();
+    syncFilm();
   };
-  $$('[data-media]').forEach((button) => button.addEventListener('click', () => {
+  $$('[data-media]').forEach(button => button.addEventListener('click', () => {
     const key = button.dataset.media;
     if (!availableMedia.has(key) || !videoDialog || !featuredVideo) return;
     const item = media[key];
     setText('#video-dialog-title', item.title);
     setText('#video-description', item.detail);
     featuredVideo.src = item.src;
-    previews.forEach((video) => video.pause());
+    featuredVideo.muted = false; // Click is an explicit user gesture.
+    featuredVideo.volume = 1;
+    previews.forEach(video => {video.pause(); video.muted=true;});
     videoDialog.showModal();
     document.body.classList.add('modal-open');
-    featuredVideo.play().catch(() => {});
+    featuredVideo.play().catch(syncFilm);
+    syncFilm();
   }));
   videoClose?.addEventListener('click', closeFilm);
-  videoDialog?.addEventListener('click', (event) => { if (event.target === videoDialog) closeFilm(); });
+  videoDialog?.addEventListener('click', event => {if (event.target === videoDialog) closeFilm();});
   videoDialog?.addEventListener('close', () => {
     document.body.classList.remove('modal-open');
     if (!featuredVideo) return;
     featuredVideo.pause();
     featuredVideo.removeAttribute('src');
     featuredVideo.load();
-    previews.forEach((video) => { if (previewIsVisible(video) && previewAllowed) video.play().catch(() => {}); });
+    previews.forEach(video => {
+      if (!previewIsVisible(video) || !previewAllowed) return;
+      video.muted = !ambientSound;
+      video.play().catch(() => {video.muted=true;video.play().catch(() => {});});
+    });
+    syncFilm();
   });
-  addEventListener('pagehide', () => previews.forEach((video) => video.pause()));
+  addEventListener('pagehide', () => previews.forEach(video => video.pause()));
 
   Object.entries(portraitSources).forEach(([key, src]) => {
     const target = $(`[data-portrait="${key}"]`);

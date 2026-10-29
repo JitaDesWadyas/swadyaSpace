@@ -16,9 +16,11 @@
   <link rel="icon" type="image/svg+xml" href="./favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Anton&family=DM+Sans:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800;900&family=DM+Sans:wght@400;500;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="./cinema.css">
   <script defer src="./app.js"></script>
+  <script defer src="./cinema.js"></script>
   <title>BIRIMANIA | GRB_imisaj vs Oeloves</title>
 </head>
 <body>
@@ -30,7 +32,7 @@
     <nav class="desktop-nav" aria-label="Navigazione principale">
       <a href="#fight">THE FIGHT</a><a href="#faceoff">FACEOFF</a><a href="#odds">ODDS</a><a href="#event">EVENT INFO</a>
     </nav>
-    <div class="header-actions"><span class="header-date">30.10.26 <span class="header-dot" aria-hidden="true"></span> 19:00</span><button class="menu-toggle" id="menu-toggle" aria-label="Apri menu" aria-controls="mobile-menu" aria-expanded="false"><span></span><span></span></button></div>
+    <div class="header-actions"><button id="sound-toggle" class="sound-toggle" type="button" aria-label="Attiva audio ed effetti" aria-pressed="false"><span class="sound-glyph" aria-hidden="true">◖</span><span class="sound-label">AUDIO OFF</span></button><span class="header-date">30.10.26 <span class="header-dot" aria-hidden="true"></span> 19:00</span><button class="menu-toggle" id="menu-toggle" aria-label="Apri menu" aria-controls="mobile-menu" aria-expanded="false"><span></span><span></span></button></div>
   </header>
   <nav class="mobile-menu" id="mobile-menu" aria-label="Menu mobile" inert>
     <div class="mobile-menu-top"><span>JUMP TO</span><span>30 / 10 / 26</span></div>
@@ -42,16 +44,23 @@
       <div class="hero-noise" aria-hidden="true"></div>
       <div class="hero-light hero-light-left" aria-hidden="true"></div><div class="hero-light hero-light-right" aria-hidden="true"></div>
       <div class="hero-grid" aria-hidden="true"></div><img class="hero-cutout hero-cutout-one" src="./media/grb-imisaj.webp" alt="" aria-hidden="true" decoding="async" fetchpriority="high"><img class="hero-cutout hero-cutout-two" src="./media/oeloves.webp" alt="" aria-hidden="true" decoding="async" fetchpriority="high">
-      <div class="hero-meta"><span class="status-line"><span class="status-pip"></span> THE MAIN EVENT</span><span>30.10.26 <span class="header-dot" aria-hidden="true"></span> 19:00</span></div>
+      <div class="hero-meta"><span class="status-line"><span class="status-pip"></span> FIGHT NIGHT</span><span>30.10.26 <span class="header-dot" aria-hidden="true"></span> 19:00</span></div>
       <div class="hero-center">
-        <p class="hero-intro reveal">SWADYASPACE PRESENTS</p>
+        <p class="hero-intro reveal">THE MAIN EVENT · 30 OCTOBER 2026</p>
         <h1 id="hero-title" class="hero-title"><span>BIRI</span><span>MANIA</span></h1>
-        <button class="hero-trailer-card media-trigger reveal" type="button" data-media="trailer" disabled>
-          <div class="hero-trailer-top"><span>OFFICIAL TRAILER</span><span>FILM 01 / 02</span></div>
-          <video class="hero-film" id="hero-film" poster="./media/poster.jpg" muted playsinline loop preload="none" aria-hidden="true"></video>
-          <div class="hero-trailer-sheen" aria-hidden="true"></div>
-          <div class="hero-trailer-overlay"><span class="button-play" aria-hidden="true">▶</span><span data-media-label="trailer">GUARDA IL TRAILER</span></div>
-        </button>
+        <div class="arena-scene reveal" id="arena-scene">
+          <div class="arena-beam arena-beam-left" aria-hidden="true"></div><div class="arena-beam arena-beam-right" aria-hidden="true"></div>
+          <div class="arena-floor" aria-hidden="true"></div>
+          <div class="arena-screen-shell" id="arena-screen-shell">
+            <div class="arena-frame-top" aria-hidden="true"><span>SWADYASPACE // BIRIMANIA</span><span>SCREEN 01</span></div>
+            <button class="hero-trailer-card media-trigger" type="button" data-media="trailer" disabled aria-label="Riproduci il trailer BIRIMANIA con audio">
+              <video class="hero-film" id="hero-film" poster="./media/poster.webp" muted playsinline loop preload="none" aria-hidden="true"></video>
+              <span class="hero-trailer-overlay"><span class="button-play" aria-hidden="true">▶</span><span data-media-label="trailer">GUARDA IL TRAILER</span></span>
+            </button>
+            <div class="arena-frame-bottom" aria-hidden="true"><span>OFFICIAL FILM</span><span>01 / 02</span></div>
+          </div>
+          <div class="arena-plinth" aria-hidden="true"></div>
+        </div>
       </div>
       <div class="hero-matchup reveal">
         <div class="hero-contender contender-one"><span class="hero-corner-label">RED CORNER</span><strong>GRB<span>_imisaj</span></strong></div>
@@ -64,26 +73,30 @@
     <div class="ticker" aria-label="Birimania, 30 ottobre, GRB_imisaj contro Oeloves"><div class="ticker-track" aria-hidden="true"><span>BIRIMANIA</span><i>✳</i><span>OCTOBER 30</span><i>✳</i><span>GRB_IMISAJ VS OELOVES</span><i>✳</i><span>ONE NIGHT ONLY</span><i>✳</i><span>BIRIMANIA</span><i>✳</i><span>OCTOBER 30</span><i>✳</i><span>GRB_IMISAJ VS OELOVES</span><i>✳</i><span>ONE NIGHT ONLY</span><i>✳</i></div></div>
     <section class="statement section-shell" id="fight" aria-labelledby="statement-heading">
       <div class="section-index reveal"><span>01 / THE FIGHT</span><span>ONLY THE FIGHT MATTERS</span></div>
-      <div class="statement-layout"><p class="kicker reveal">30 OTTOBRE.</p><div><h2 id="statement-heading" class="statement-heading reveal">DUE NOMI.<br><em>UN SOLO</em><br>RING.</h2><p class="statement-copy reveal">Una notte, due sfidanti, zero scuse. Il resto si decide quando parte il match.</p></div></div>
-      <div class="line-crop reveal"><span>NO EXCUSES.</span><span>JUST THE FIGHT.</span></div>
+      <div class="statement-layout"><p class="kicker reveal">30 OTTOBRE.</p><div><h2 id="statement-heading" class="statement-heading scene-words"><span>DUE NOMI.</span><span class="red-words">UN SOLO</span><span>RING.</span></h2><p class="statement-copy reveal">Due sfidanti. Un solo match.</p></div></div>
+      
     </section>
-    <section class="fighters" aria-labelledby="fighters-heading"><div class="section-shell fighters-top"><div class="section-index"><span>02 / THE CONTENDERS</span><span>THE TALE OF THE TAPE</span></div><h2 id="fighters-heading" class="visually-hidden">I due sfidanti</h2></div>
-      <div class="fighter-grid">
+    <section class="fighters" id="fighters" aria-labelledby="fighters-heading"><div class="section-shell fighters-top"><div class="section-index"><span>02 / THE CONTENDERS</span><span>GRB_IMISAJ / OELOVES</span></div><h2 id="fighters-heading" class="visually-hidden">I due sfidanti</h2></div>
+      <div class="fighters-scroll" id="fighters-scroll">
+      <div class="fighter-grid" id="fighter-grid" aria-label="Presentazione cinematografica dei combattenti">
         <article class="fighter fighter-red reveal-fighter" data-fighter="grb">
           <div class="fighter-art" aria-hidden="true"><div class="fighter-stripe"></div><div class="fighter-watermark">01</div><img data-portrait="grb" src="./media/grb-imisaj.webp" alt="" loading="lazy" decoding="async"><div class="fighter-shadow"></div></div>
-          <div class="fighter-content"><span class="fighter-number">01 <span>RED CORNER</span></span><div class="fighter-heading"><span class="fighter-label">GRB</span><h3>GRB<span>_imisaj</span></h3></div><div class="fighter-bottom"><span>PRESSURE FORWARD</span><span class="corner-symbol" aria-hidden="true">✳</span></div></div>
+          <div class="fighter-content"><span class="fighter-number">01 <span>RED CORNER</span></span><div class="fighter-heading"><span class="fighter-label">GRB</span><h3>GRB<span>_imisaj</span></h3></div><div class="fighter-bottom"><span>GRB_IMISAJ</span><span class="corner-symbol" aria-hidden="true">✳</span></div></div>
         </article>
         <article class="fighter fighter-cream reveal-fighter" data-fighter="oe">
           <div class="fighter-art" aria-hidden="true"><div class="fighter-stripe"></div><div class="fighter-watermark">02</div><img data-portrait="oe" src="./media/oeloves.webp" alt="" loading="lazy" decoding="async"><div class="fighter-shadow"></div></div>
-          <div class="fighter-content"><span class="fighter-number">02 <span>BLACK CORNER</span></span><div class="fighter-heading"><span class="fighter-label">OELOVES</span><h3>Oeloves</h3></div><div class="fighter-bottom"><span>COLD FOCUS</span><span class="corner-symbol" aria-hidden="true">✳</span></div></div>
+          <div class="fighter-content"><span class="fighter-number">02 <span>BLACK CORNER</span></span><div class="fighter-heading"><span class="fighter-label">OELOVES</span><h3>Oeloves</h3></div><div class="fighter-bottom"><span>OELOVES</span><span class="corner-symbol" aria-hidden="true">✳</span></div></div>
         </article>
-      </div>
-      <div class="match-banner"><div><span>OFFICIAL MATCH CARD</span><strong>GRB_imisaj <em>VS</em> Oeloves</strong></div><span>OCTOBER 30, 2026</span></div>
+        <div class="fighters-center-vs" aria-hidden="true">VS</div>
+        <div class="fighter-film-progress" aria-hidden="true"><span></span></div>
+        <div class="fighter-film-hint" aria-hidden="true">SCORRI PER IL PROSSIMO SFIDANTE <span>↓</span></div>
+      </div></div>
+      <div class="match-banner"><div><span>30 OCT · 19:00</span><strong>GRB_imisaj <em>VS</em> Oeloves</strong></div><span>CASA DI FARI</span></div>
     </section>
     <section class="faceoff section-shell" id="faceoff" aria-labelledby="faceoff-heading">
       <div class="section-index reveal"><span>03 / THE FACEOFF</span><span>EYE TO EYE</span></div>
-      <div class="faceoff-head"><div><p class="kicker reveal">STAREDOWN.</p><h2 id="faceoff-heading" class="section-title reveal">THE<br><i>FACE</i>OFF<span class="period">.</span></h2></div><p class="section-intro reveal">Il momento prima del caos.</p></div>
-      <div class="faceoff-stage reveal" id="faceoff-stage"><video class="faceoff-preview" id="faceoff-preview" poster="./media/faceoff-still.jpg" muted playsinline loop preload="none" aria-hidden="true"></video><div class="stage-vignette" aria-hidden="true"></div><div class="stage-chrome"><span>OFFICIAL FACEOFF FILM</span><span>FILM 02 / 02</span></div><div class="stage-names"><span>GRB_IMISAJ</span><span>OELOVES</span></div><div class="stage-cta"><button type="button" class="outline-action media-trigger" data-media="faceoff" disabled><span class="button-play" aria-hidden="true">▶</span><span data-media-label="faceoff">GUARDA IL FACEOFF</span><span aria-hidden="true">↗</span></button></div></div>
+      <div class="faceoff-head"><div><p class="kicker reveal">STAREDOWN.</p><h2 id="faceoff-heading" class="section-title reveal">THE<br><i>FACE</i>OFF<span class="period">.</span></h2></div></div>
+      <div class="faceoff-stage reveal" id="faceoff-stage"><video class="faceoff-preview" id="faceoff-preview" poster="./media/faceoff-still.jpg" muted playsinline loop preload="none" aria-hidden="true"></video><div class="stage-vignette" aria-hidden="true"></div><div class="film-frame-light" aria-hidden="true"></div><div class="stage-chrome"><span>BIRIMANIA / FACEOFF</span><span>02 / 02</span></div><div class="stage-cta"><button type="button" class="outline-action media-trigger" data-media="faceoff" disabled><span class="button-play" aria-hidden="true">▶</span><span data-media-label="faceoff">GUARDA IL FACEOFF</span><span aria-hidden="true">↗</span></button></div></div>
     </section>
     <section class="odds-section" id="odds" aria-labelledby="odds-heading"><div class="section-shell"><div class="section-index reveal"><span>04 / THE ODDS</span><span>THE NUMBERS</span></div>
       <div class="odds-heading"><div><p class="kicker reveal">PICK YOUR SIDE.</p><h2 id="odds-heading" class="section-title reveal">WHO<br><i>WINS?</i></h2></div><p class="section-intro reveal">I numeri raccontano una storia.<br>Il ring ne scriverà un'altra.</p></div>
@@ -93,11 +106,15 @@
         <div class="market-footnote"><span>QUOTE EDITORIALI DIMOSTRATIVE — NESSUNA ATTIVITÀ DI GIOCO O RACCOLTA DI DENARO.</span><span>AGGIORNATE MANUALMENTE</span></div>
       </div>
     </div></section>
-    <section class="finale" id="event" aria-labelledby="finale-heading"><div class="finale-spotlight" aria-hidden="true"></div><div class="section-shell finale-inner"><div class="section-index reveal"><span>05 / FIGHT NIGHT</span><span>THE FINAL COUNTDOWN</span></div><p class="kicker finale-kicker reveal">ALL ROADS LEAD HERE.</p><h2 id="finale-heading" class="finale-title reveal">30<br><span>OTTOBRE</span></h2><div class="event-details"><div><span>DATE</span><strong>VENERDÌ 30<br>OTTOBRE 2026</strong></div><div><span>TIME</span><strong>DALLE 19:00<br>IN POI</strong></div><div><span>LOCATION</span><strong>CASA DI FARI</strong></div></div>
+    <section class="finale" id="event" aria-labelledby="finale-heading"><div class="finale-spotlight" aria-hidden="true"></div><div class="section-shell finale-inner"><div class="section-index reveal"><span>05 / FIGHT NIGHT</span><span>THE FINAL COUNTDOWN</span></div><p class="kicker finale-kicker reveal">FIGHT NIGHT</p><h2 id="finale-heading" class="finale-title scene-words"><span>30</span><span>OTTOBRE</span></h2><div class="event-details"><div><span>DATE</span><strong>VENERDÌ 30<br>OTTOBRE 2026</strong></div><div><span>TIME</span><strong>DALLE 19:00<br>IN POI</strong></div><div><span>LOCATION</span><strong>CASA DI FARI</strong></div></div>
         <div class="countdown-wrapper" aria-label="Conto alla rovescia fino al 30 ottobre alle 19:00"><div class="countdown-top"><span id="countdown-label">COUNTDOWN TO FIGHT NIGHT</span><span>EUROPE / ROME</span></div><div class="countdown" id="countdown"><div><strong id="days">00</strong><span>DAYS</span></div><b>:</b><div><strong id="hours">00</strong><span>HOURS</span></div><b>:</b><div><strong id="minutes">00</strong><span>MINUTES</span></div><b>:</b><div><strong id="seconds">00</strong><span>SECONDS</span></div></div></div><div class="finale-cta"><span>ONE NIGHT. TWO NAMES. NO REWIND.</span><button type="button" id="share-event" class="share-action">CONDIVIDI EVENTO <span aria-hidden="true">↗</span></button></div></div></section>
   </main>
   <footer class="site-footer"><div class="footer-main"><span class="footer-wordmark">BIRIMANIA<span>.</span></span><span>GRB_IMISAJ <i>VS</i> OELOVES</span></div><div class="footer-bottom"><span>AN ORIGINAL SWADYASPACE EVENT · 2026</span><a href="#top">BACK TO TOP ↑</a><span>BUILT FOR FIGHT NIGHT.</span></div></footer>
-  <dialog id="video-dialog" class="video-dialog" aria-labelledby="video-dialog-title"><div class="video-dialog-inner"><div class="video-dialog-head"><span id="video-dialog-title">OFFICIAL FILM / BIRIMANIA</span><button class="dialog-close" id="video-close" type="button" aria-label="Chiudi video">CHIUDI <span aria-hidden="true">×</span></button></div><div class="video-container"><video id="featured-video" controls playsinline preload="none"></video></div><div class="dialog-bottom"><span id="video-description">SWADYASPACE PRESENTS</span><span>30 / 10 / 2026</span></div></div></dialog>
+  <dialog id="video-dialog" class="video-dialog" aria-labelledby="video-dialog-title"><div class="video-dialog-inner">
+    <div class="video-dialog-head"><span id="video-dialog-title">OFFICIAL FILM / BIRIMANIA</span><button class="dialog-close" id="video-close" type="button" aria-label="Chiudi video">✕ <span>CHIUDI</span></button></div>
+    <div class="video-container" id="cinema-video-wrap"><video id="featured-video" playsinline preload="none" aria-label="Filmato BIRIMANIA"></video><button class="cinema-big-play" id="cinema-big-play" type="button" aria-label="Riproduci o metti in pausa"><span>▶</span></button></div>
+    <div class="cinema-player-bar"><button id="film-play" type="button" aria-label="Metti in pausa">Ⅱ</button><span id="film-time">00:00</span><input id="film-progress" type="range" min="0" max="1000" value="0" aria-label="Posizione del video"><span id="film-duration">00:00</span><button id="film-mute" type="button" aria-label="Disattiva audio">◖</button><button id="film-fullscreen" type="button" aria-label="Schermo intero">⛶</button></div>
+    <div class="dialog-bottom"><span id="video-description">SWADYASPACE PRESENTS</span><span>30 / 10 / 2026</span></div></div></dialog>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 </body>
 </html>
