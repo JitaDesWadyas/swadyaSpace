@@ -225,36 +225,53 @@
     switchSoundtrack(chosenFilm());
   }
   function requestAmbient(){if(!audioFrame)audioFrame=requestAnimationFrame(syncAmbient);}
-  const unlockOnGesture = () => {
-    if(document.hidden||videoDialog?.open)return;
-    if(audioUnlocked) {if(soundtracks[activeFilm||'trailer']?.paused) soundtracks[activeFilm||'trailer'].play().catch(()=>{});return;}
-    // This direct call, in the actual pointer gesture, is the primary path.
-    const trailer=soundtracks.trailer,faceoff=soundtracks.faceoff;
-    if(!trailer)return;
-    audioUnlocked=true;
-    const initial=chosenFilm();
-    activeFilm=initial;
-    setSoundVolume('trailer',initial==='trailer'?1:0);
-    setSoundVolume('faceoff',initial==='faceoff'?1:0);
-    // Start trailer unconditionally: music is unlocked by touching anywhere.
-    const started=trailer.play();
-    started?.catch(()=>{audioUnlocked=false;activeFilm=null;});
-    if(faceoff){
-      // Prime faceoff in the same trusted gesture for embedded browsers.
-      faceoff.play().then(()=>{
-        if(activeFilm!=='faceoff'){faceoff.pause();try{faceoff.currentTime=0;}catch{}}
-      }).catch(()=>{});
-    }
-    if(initial==='faceoff') {
-      try{faceoff.currentTime=0;}catch{}
-      previewVideos.faceoff?.play().catch(()=>{});
+  // Mobile autoplay restrictions are explicit: a visible, intentional TAP is
+  // required. Do not unlock audio on scroll/pointerdown or claim it is playing.
+  const startButton = $('#start-fight-audio');
+  const showSoundPrompt = message => {
+    if(!startButton) return;
+    startButton.hidden=false;
+    startButton.classList.remove('is-started');
+    if(message) {
+      const label=startButton.querySelector('small');
+      if(label) label.textContent=message;
     }
   };
-  document.addEventListener('pointerdown',unlockOnGesture,{capture:true,passive:true});
-  document.addEventListener('touchstart',unlockOnGesture,{capture:true,passive:true});
-  document.addEventListener('keydown',event=>{
-    if(['Enter',' ','ArrowDown','PageDown','Tab'].includes(event.key)) unlockOnGesture();
-  },{capture:true});
+  const startOnTap = () => {
+    const trailer=soundtracks.trailer;
+    const faceoff=soundtracks.faceoff;
+    if(!trailer) return;
+    if(audioUnlocked){startButton?.classList.add('is-started');return;}
+    // Both calls happen in the same genuine click event: no await before play().
+    // Once authorised, later soundtrack transitions can start in the background.
+    trailer.muted=false;
+    trailer.loop=true;
+    setSoundVolume('trailer',1);
+    const initial=chosenFilm();
+    const startPromise=trailer.play();
+    if(faceoff){
+      faceoff.muted=false;
+      faceoff.loop=true;
+      setSoundVolume('faceoff',0);
+      const prime=faceoff.play();
+      if(prime && typeof prime.then==='function') prime.then(()=>{
+        if(initial!=='faceoff')faceoff.pause();
+      }).catch(()=>{});
+    }
+    Promise.resolve(startPromise).then(()=>{
+      audioUnlocked=true;
+      activeFilm='trailer';
+      startButton?.classList.add('is-started');
+      document.documentElement.classList.add('audio-is-on');
+      if(initial==='faceoff') switchSoundtrack('faceoff');
+      else requestAmbient();
+    }).catch(()=>{
+      audioUnlocked=false;
+      activeFilm=null;
+      showSoundPrompt('TOCCA PER ATTIVARE AUDIO');
+    });
+  };
+  startButton?.addEventListener('click',startOnTap);
   addEventListener('scroll',requestAmbient,{passive:true});
   addEventListener('resize',requestAmbient,{passive:true});
   document.addEventListener('visibilitychange',()=>{

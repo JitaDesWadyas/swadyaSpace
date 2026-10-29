@@ -23,6 +23,7 @@
   <link rel="stylesheet" href="./v5.css">
   <link rel="stylesheet" href="./v6.css">
   <link rel="stylesheet" href="./v7.css">
+  <link rel="stylesheet" href="./v8.css">
   <script defer src="./app.js"></script>
   <script defer src="./cinema.js"></script>
   <title>BIRIMANIA | GRB_imisaj vs Oeloves</title>
@@ -45,6 +46,9 @@
   </nav>
   <audio id="trailer-soundtrack" src="./media/trailer-audio.m4a" preload="auto" loop aria-hidden="true"></audio>
   <audio id="faceoff-soundtrack" src="./media/faceoff-audio.m4a" preload="auto" loop aria-hidden="true"></audio>
+  <button id="start-fight-audio" class="start-fight-audio" type="button" aria-label="Entra nell’arena e avvia la musica">
+    <span class="start-play" aria-hidden="true">▶</span><span class="start-copy"><strong>ENTRA NELL’ARENA</strong><small>AVVIA LA MUSICA</small></span>
+  </button>
   <main id="main">
     <section class="hero" aria-labelledby="hero-title">
       <div class="hero-noise" aria-hidden="true"></div>
@@ -98,8 +102,10 @@
             </div>
             <strong class="duo-versus" aria-hidden="true">VS</strong>
           </div>
+          <div class="scene-impact" aria-hidden="true"><span>BIRIMANIA</span><strong>VS</strong><span>30.10.26</span></div>
           <div class="intro-solo solo-grb" aria-hidden="true"><div class="solo-glow"></div><img src="./media/grb-imisaj.webp" alt="" decoding="async"><div class="solo-caption"><small>01 / RED CORNER</small><strong>GRB<span>_IMISAJ</span></strong></div></div>
           <div class="intro-solo solo-oe" aria-hidden="true"><div class="solo-glow"></div><img src="./media/oeloves.webp" alt="" decoding="async"><div class="solo-caption"><small>02 / BLACK CORNER</small><strong>OELOVES</strong></div></div>
+          <div class="fighter-seam" aria-hidden="true"></div>
           <div class="fighter-film-progress" aria-hidden="true"><span></span></div>
         </div>
       </div>

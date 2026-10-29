@@ -11,7 +11,7 @@
   const chapter=$('#fighters-scroll'),soloA=$('.solo-grb'),soloB=$('.solo-oe');
   const aImg=soloA?.querySelector('img'),bImg=soloB?.querySelector('img');
   const versus=$('.duo-versus'),duo=$('#fighter-duo'),progressBar=$('.fighter-film-progress span');
-  const stage=$('#fighter-grid');
+  const stage=$('#fighter-grid'),impact=$('.scene-impact');
   let raf=0;
   for(const heading of $$('.scene-words')){
     if('IntersectionObserver' in window && !reduced){
@@ -26,27 +26,39 @@
     const rect=chapter.getBoundingClientRect(),h=innerHeight;
     if(rect.bottom<0||rect.top>h)return;
     const p=clamp(-rect.top/Math.max(1,rect.height-h));
-    // PHASE 1 - GRB alone, large cinematic push-in.
-    // PHASE 2 - Oeloves crosses over from right, holds, then exits upwards.
-    // PHASE 3 - final diagonal two-up composition, both figures complete.
-    const moveA=smooth((p-.24)/.16);
-    const enterB=smooth((p-.28)/.17);
-    const exitB=smooth((p-.61)/.18);
-    const revealFinal=smooth((p-.67)/.18);
-    soloA.style.opacity=String(1-moveA);
-    soloA.style.transform=`translate3d(${(-102*moveA).toFixed(2)}%,0,0)`;
-    soloB.style.opacity=String(enterB*(1-exitB));
-    soloB.style.transform=`translate3d(${(104*(1-enterB)).toFixed(2)}%,${(-103*exitB).toFixed(2)}%,0)`;
-    if(aImg)aImg.style.transform=`translate3d(0,${(-2*smooth(p/.30)).toFixed(2)}%,0) scale(${(1.12+.28*smooth(p/.37)).toFixed(3)})`;
-    if(bImg)bImg.style.transform=`translate3d(0,${(-2*smooth((p-.30)/.35)).toFixed(2)}%,0) scale(${(1.14+.24*smooth((p-.30)/.44)).toFixed(3)})`;
-    duo.style.opacity=String(.72+.28*revealFinal);
-    if(versus)versus.style.transform=`translate(-50%,-50%) scale(${(.80+.20*revealFinal).toFixed(3)})`;
+
+    // One opaque layer per camera shot. Never crossfade two full-size faces:
+    // overlapping portraits are what caused the V7 "ghost" transition.
+    // Act I: GRB with a pronounced zoom (0..0.3).
+    // Act II: Oeloves replaces GRB with one diagonal sliding shutter (.32.. .47).
+    // Act III: the solo scene slides UP to reveal the intact two-up composition (.69.. .84).
+    const arrive=smooth((p-.30)/.18);
+    const endSolo=smooth((p-.62)/.14);
+    const final=smooth((p-.76)/.13);
+    const zoomA=smooth(p/.34);
+    const zoomB=smooth((p-.48)/.18);
+    // Exact inverse positions; scroll-back always returns to the same frame.
+    soloA.style.transform=`translate3d(${(-100*arrive).toFixed(3)}%,0,0)`;
+    soloB.style.transform=`translate3d(${(100*(1-arrive)).toFixed(3)}%,${(-102*endSolo).toFixed(3)}%,0)`;
+    soloA.style.opacity='1';
+    soloB.style.opacity='1';
+    duo.style.opacity='1';
+    if(impact)impact.style.transform=`translate3d(0,${(-102*final).toFixed(3)}%,0)`;
+    if(aImg)aImg.style.transform=`translate3d(0,${(-4*zoomA).toFixed(2)}%,0) scale(${(1.07+.36*zoomA).toFixed(3)})`;
+    if(bImg)bImg.style.transform=`translate3d(0,${(-4*zoomB).toFixed(2)}%,0) scale(${(1.07+.33*zoomB).toFixed(3)})`;
+    if(versus)versus.style.transform=`translate(-50%,-50%) scale(${(.92+.08*final).toFixed(3)})`;
+    const slash=document.querySelector('.fighter-seam');
+    if(slash){
+      slash.style.opacity=(arrive>0.01&&arrive<.99)?'1':'0';
+      slash.style.transform=`translate3d(${(110-120*arrive).toFixed(2)}vw,0,0) skewX(-12deg)`;
+    }
     if(progressBar)progressBar.style.transform=`scaleX(${p.toFixed(3)})`;
   }
   function schedule(){if(!raf)raf=requestAnimationFrame(draw)}
   addEventListener('scroll',schedule,{passive:true});
   addEventListener('resize',schedule,{passive:true});
   addEventListener('pageshow',schedule);
-  if(reduced){soloA.style.display='none';soloB.style.display='none';duo.style.opacity='1';}
+  if(reduced){soloA.style.display='none';soloB.style.display='none';duo.style.opacity='1';
+    if(impact)impact.style.transform=`translate3d(0,${(-102*final).toFixed(3)}%,0)`;}
   else schedule();
 })();
