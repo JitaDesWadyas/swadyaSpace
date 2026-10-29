@@ -27,3 +27,18 @@
 
 /* Ensure long editorial copy never establishes a horizontal page scroll. */
 .odds-machine,.calculator,.calculator-left,.calculator-right,.event-details>div{min-width:0}html,body{max-width:100%;overflow-x:clip}
+
+/* BIRIMANIA media edition — real, manually extracted photographs. */
+.hero-cutout{position:absolute;z-index:-1;bottom:0;height:77%;width:43%;object-fit:contain;object-position:center bottom;pointer-events:none;opacity:.43;filter:grayscale(.5) contrast(1.13) brightness(.68);-webkit-mask-image:linear-gradient(180deg,transparent 0%,#000 20%,#000 72%,transparent 99%);mask-image:linear-gradient(180deg,transparent 0%,#000 20%,#000 72%,transparent 99%)}
+.hero-cutout-one{left:-7%}.hero-cutout-two{right:-7%}
+.fighter-art img{object-position:center 0%;filter:contrast(1.07) saturate(.88)}
+.faceoff-preview{filter:brightness(.84) saturate(.86) contrast(1.08)}
+@media(max-width:760px){.hero-cutout{height:66%;width:73%;opacity:.24;filter:grayscale(.66) contrast(1.2) brightness(.56)}.hero-cutout-one{left:-33%}.hero-cutout-two{right:-33%}.fighter-art img{object-position:center 0%}}
+@media(prefers-reduced-motion:reduce){.hero-cutout{transition:none;filter:grayscale(.32) brightness(.6)}}
+
+/* Photo-forward release: keep both real portraits legible even under the film. */
+.hero-cutout{opacity:.55;filter:grayscale(.24) contrast(1.12) brightness(.9)}
+@media(max-width:760px){.hero-cutout{opacity:.42;filter:grayscale(.3) contrast(1.12) brightness(.86)}}
+.poster-action{display:inline-flex;align-items:center;justify-content:center;gap:14px;align-self:center;padding:18px 13px;color:var(--paper);border-bottom:1px solid rgba(255,255,255,.4);font-size:10px;font-weight:800;letter-spacing:.11em;transition:color .2s,border-color .2s}
+.poster-action:hover,.poster-action:focus-visible{color:var(--gold);border-color:var(--gold)}
+@media(max-width:760px){.poster-action{align-self:stretch;justify-content:space-between}}
