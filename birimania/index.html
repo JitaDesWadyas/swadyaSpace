@@ -22,6 +22,7 @@
   <link rel="stylesheet" href="./direction.css">
   <link rel="stylesheet" href="./v5.css">
   <link rel="stylesheet" href="./v6.css">
+  <link rel="stylesheet" href="./v7.css">
   <script defer src="./app.js"></script>
   <script defer src="./cinema.js"></script>
   <title>BIRIMANIA | GRB_imisaj vs Oeloves</title>
@@ -42,6 +43,8 @@
     <a href="#fight"><em>01</em>THE FIGHT</a><a href="#faceoff"><em>02</em>FACEOFF</a><a href="#odds"><em>03</em>THE ODDS</a><a href="#event"><em>04</em>FIGHT NIGHT</a>
     <div class="mobile-menu-bottom">BIRIMANIA <span>SWADYASPACE © 2026</span></div>
   </nav>
+  <audio id="trailer-soundtrack" src="./media/trailer-audio.m4a" preload="auto" loop aria-hidden="true"></audio>
+  <audio id="faceoff-soundtrack" src="./media/faceoff-audio.m4a" preload="auto" loop aria-hidden="true"></audio>
   <main id="main">
     <section class="hero" aria-labelledby="hero-title">
       <div class="hero-noise" aria-hidden="true"></div>
@@ -84,17 +87,19 @@
         <div class="fighter-grid is-cinematic" id="fighter-grid" aria-label="GRB imisaj contro Oeloves, entrambi i combattenti inquadrati">
           <div class="fighter-duo" id="fighter-duo">
             <div class="duo-shot duo-red">
-              <div class="arena-embers" aria-hidden="true"></div><canvas class="stage-fire" width="256" height="140" aria-hidden="true"></canvas>
+              <div class="arena-embers" aria-hidden="true"></div><div class="fire-ribbon" aria-hidden="true"></div><div class="fire-ribbon" aria-hidden="true"></div>
               <img src="./media/grb-imisaj.webp" alt="GRB imisaj in posizione di guardia" loading="lazy" decoding="async">
               <span class="duo-word">GRB<small>_IMISAJ</small></span>
             </div>
             <div class="duo-shot duo-black">
-              <div class="arena-embers" aria-hidden="true"></div><canvas class="stage-fire" width="256" height="140" aria-hidden="true"></canvas>
+              <div class="arena-embers" aria-hidden="true"></div><div class="fire-ribbon" aria-hidden="true"></div><div class="fire-ribbon" aria-hidden="true"></div>
               <img src="./media/oeloves.webp" alt="Oeloves in posizione di guardia" loading="lazy" decoding="async">
               <span class="duo-word">OELOVES</span>
             </div>
             <strong class="duo-versus" aria-hidden="true">VS</strong>
           </div>
+          <div class="intro-solo solo-grb" aria-hidden="true"><div class="solo-glow"></div><img src="./media/grb-imisaj.webp" alt="" decoding="async"><div class="solo-caption"><small>01 / RED CORNER</small><strong>GRB<span>_IMISAJ</span></strong></div></div>
+          <div class="intro-solo solo-oe" aria-hidden="true"><div class="solo-glow"></div><img src="./media/oeloves.webp" alt="" decoding="async"><div class="solo-caption"><small>02 / BLACK CORNER</small><strong>OELOVES</strong></div></div>
           <div class="fighter-film-progress" aria-hidden="true"><span></span></div>
         </div>
       </div>

@@ -120,18 +120,19 @@
   countdown();
   setInterval(countdown, 1000);
 
+  // Native soundtrack players. Crucial: play() is executed synchronously inside
+  // the first trusted pointerdown, not after a Promise/WebAudio resume. The
+  // trailer soundtrack is independent of the muted video preview so it remains
+  // audible while the visitor scrolls away from the hero.
   const videoDialog = $('#video-dialog');
   const featuredVideo = $('#featured-video');
   const videoClose = $('#video-close');
   const availableMedia = new Set();
-  const previewVideos = {trailer:$('#hero-film'),faceoff:$('#faceoff-preview')};
+  const previewVideos = {trailer:$('#hero-film'), faceoff:$('#faceoff-preview')};
   const previews = Object.values(previewVideos).filter(Boolean);
-  const AudioClass = window.AudioContext || window.webkitAudioContext;
-  let audioUnlocked = false, audioContext = null, activeFilm = null, syncPending = false;
-  const gains = {};
-  let fadeTimer = null, handoffVersion = 0;
+  const soundtracks = {trailer:$('#trailer-soundtrack'),faceoff:$('#faceoff-soundtrack')};
+  let audioUnlocked = false, activeFilm = null, transitionFrame = 0, audioFrame = 0, transitionToken = 0;
   const previewAllowed = !reducedMotion && !navigator.connection?.saveData;
-  const clampVolume = amount => Math.min(1,Math.max(0,amount));
   const previewIsVisible = video => {
     if (!video) return false;
     const rect = video.getBoundingClientRect();
@@ -143,13 +144,17 @@
     $$(`[data-media="${key}"]`).forEach(button => button.disabled = false);
     $$(`[data-media-label="${key}"]`).forEach(label => { label.textContent = media[key].label; });
   };
-  // The small MP4s are loaded early: a first gesture cannot unlock sound on a
-  // video with no decoded metadata. Video is allowed to autoplay *muted* only.
+  const faceoffStage = $('#faceoff-stage');
+  const chosenFilm = () => {
+    if (!faceoffStage) return 'trailer';
+    const rect = faceoffStage.getBoundingClientRect();
+    return rect.top < innerHeight * .66 && rect.bottom > innerHeight * .25 ? 'faceoff' : 'trailer';
+  };
   for (const [key, item] of Object.entries(media)) {
     const video = previewVideos[key];
     if (!video) continue;
     video.muted = true;
-    video.volume = 1;
+    video.defaultMuted = true;
     video.loop = true;
     video.playsInline = true;
     video.preload = key === 'trailer' ? 'auto' : 'metadata';
@@ -157,129 +162,110 @@
       activateMedia(key);
       video.classList.add('is-ready');
       if (key === 'trailer') $('.hero')?.classList.add('is-playing');
-      else $('#faceoff-stage')?.classList.add('has-film');
-      requestAmbient();
+      else faceoffStage?.classList.add('has-film');
     });
-    video.addEventListener('error', () => {}, {once:true});
     video.src = item.src;
     video.load();
+    if (!previewAllowed) continue;
+    if ('IntersectionObserver' in window) {
+      const obs = new IntersectionObserver(entries => {
+        if (entries[0]?.isIntersecting && !videoDialog?.open && !document.hidden) video.play().catch(() => {});
+        else video.pause();
+      },{threshold:.12});
+      obs.observe(video);
+    } else video.play().catch(() => {});
   }
-  // Web Audio gain fades work on Android AND iOS, unlike HTMLMediaElement.volume.
-  // If Web Audio is unavailable the media volume remains a safe fallback.
-  const unlockAudio = () => {
-    if (audioUnlocked || document.hidden || videoDialog?.open) return;
-    audioUnlocked = true;
-    if (AudioClass) {
-      try {
-        audioContext = new AudioClass();
-        for (const [key, video] of Object.entries(previewVideos)) {
-          if (!video) continue;
-          const source = audioContext.createMediaElementSource(video);
-          const gain = audioContext.createGain();
-          gain.gain.value = 0;
-          source.connect(gain).connect(audioContext.destination);
-          gains[key] = gain;
-        }
-        audioContext.resume().catch(() => {});
-      } catch (error) { audioContext = null; }
-    }
-    // Prime both media elements inside the same trusted gesture. Safari/WebView
-    // may block a later unmuted play if the second film was never authorized.
-    const wanted = chosenFilm();
-    for (const [key, video] of Object.entries(previewVideos)) {
-      if (!video) continue;
-      video.muted = false;
-      video.play().catch(() => {});
-      if (key !== wanted) fadeGain(key,0,.05);
-    }
-    // Calling play() in the *original pointerdown* is critical; a deferred
-    // callback may lose the browser's transient user activation.
-    syncAmbient(true);
-    const skip = wanted === 'trailer' ? 'faceoff' : 'trailer';
-    setTimeout(() => {
-      if (activeFilm !== skip) previewVideos[skip]?.pause();
-    }, 120);
+
+  const stopFade = () => {
+    transitionToken++;
+    if (transitionFrame) cancelAnimationFrame(transitionFrame);
+    transitionFrame=0;
   };
-  document.addEventListener('pointerdown', unlockAudio, {capture:true,passive:true});
-  document.addEventListener('keydown', event => {
-    if (['Enter',' ','ArrowDown','PageDown'].includes(event.key)) unlockAudio();
-  }, {capture:true});
-  const chosenFilm = () => {
-    const faceoff = $('#faceoff-stage');
-    if (!faceoff) return 'trailer';
-    const rect = faceoff.getBoundingClientRect();
-    // The faceoff becomes the soundtrack only when the movie actually enters.
-    return rect.top < innerHeight * .7 && rect.bottom > innerHeight * .16 ? 'faceoff' : 'trailer';
+  const setSoundVolume = (key,value) => {
+    try {if(soundtracks[key])soundtracks[key].volume=clamp(value,0,1);} catch {}
   };
-  const fadeGain = (key, target, seconds=.45, delay=0) => {
-    const video = previewVideos[key];
-    if (!video) return;
-    const gain = gains[key];
-    if (audioContext && gain) {
-      const t = audioContext.currentTime + delay;
-      gain.gain.cancelScheduledValues(t);
-      gain.gain.setValueAtTime(gain.gain.value, t);
-      gain.gain.linearRampToValueAtTime(target, t + seconds);
-    } else {
-      // volume is sometimes read-only on Safari; gain graph above is preferred.
-      try { video.volume = clampVolume(target); } catch {}
+  const pauseSoundtrack = key => soundtracks[key]?.pause();
+  function switchSoundtrack(next) {
+    if (!audioUnlocked || document.hidden || videoDialog?.open) return;
+    const incoming = soundtracks[next];
+    if (!incoming || activeFilm === next) return;
+    const previous = activeFilm, outgoing = previous ? soundtracks[previous] : null;
+    stopFade();
+    // A faceoff entry starts the film and its soundtrack at the same time.
+    if (next === 'faceoff') {
+      try {incoming.currentTime=0;} catch {}
+      const video=previewVideos.faceoff;
+      if (video) {try{video.currentTime=0;}catch{} video.play().catch(()=>{});}
     }
-  };
-  const silenceAll = () => {
-    clearTimeout(fadeTimer);
-    ++handoffVersion;
-    for (const [key, video] of Object.entries(previewVideos)) {
-      if (!video) continue;
-      fadeGain(key,0,.12);
-      video.pause();
-      video.muted = true;
-    }
-    activeFilm = null;
-  };
-  function syncAmbient(immediateGesture=false) {
-    syncPending = false;
-    if (document.hidden || videoDialog?.open) { silenceAll(); return; }
-    if (!audioUnlocked) {
-      if (!previewAllowed) return;
-      const trailer = previewVideos.trailer;
-      if (trailer && trailer.paused && previewIsVisible(trailer)) trailer.play().catch(()=>{});
+    activeFilm = next;
+    if (!previous) {
+      setSoundVolume(next,1);
+      incoming.play().catch(()=>{audioUnlocked=false;activeFilm=null;});
       return;
     }
-    const key=chosenFilm(),chosen=previewVideos[key];
-    if (!chosen) return;
-    // Remove HTML mute inside the gesture; output is controlled by the gain node.
-    chosen.muted=false;
-    if (immediateGesture) chosen.pause();
-    if (immediateGesture || chosen.paused) chosen.play().catch(() => {
-      // A few embedded browsers require another explicit tap. We never pretend
-      // that playback succeeded; the next pointerdown retries this path.
-      chosen.muted = true;
-      chosen.play().catch(()=>{});
-      audioUnlocked = false;
-    });
-    if (activeFilm === key) return;
-    const old = activeFilm;
-    activeFilm = key;
-    const version=++handoffVersion;
-    clearTimeout(fadeTimer);
-    if (old && previewVideos[old]) fadeGain(old,0,.23);
-    fadeGain(key,.85,old ? .40 : .55, old ? .22 : 0);
-    if (old && previewVideos[old]) {
-      fadeTimer=setTimeout(() => {
-        if (version!==handoffVersion) return;
-        previewVideos[old].pause();
-        previewVideos[old].muted=true;
-      },510);
+    const initialIn = Number(incoming.volume) || 0;
+    const initialOut = Number(outgoing?.volume) || 0;
+    incoming.play().catch(() => {});
+    const token=transitionToken;
+    const start=performance.now(), duration=500;
+    const tick=now=>{
+      if(token!==transitionToken) return;
+      const t=clamp((now-start)/duration,0,1);
+      const ease=t*t*(3-2*t);
+      setSoundVolume(next,initialIn+(1-initialIn)*ease);
+      if(outgoing)setSoundVolume(previous,initialOut*(1-ease));
+      if(t<1) transitionFrame=requestAnimationFrame(tick);
+      else {transitionFrame=0;if(outgoing){outgoing.pause();setSoundVolume(previous,0);}}
+    };
+    transitionFrame=requestAnimationFrame(tick);
+  }
+  function syncAmbient() {
+    audioFrame=0;
+    if(!audioUnlocked || videoDialog?.open || document.hidden)return;
+    switchSoundtrack(chosenFilm());
+  }
+  function requestAmbient(){if(!audioFrame)audioFrame=requestAnimationFrame(syncAmbient);}
+  const unlockOnGesture = () => {
+    if(document.hidden||videoDialog?.open)return;
+    if(audioUnlocked) {if(soundtracks[activeFilm||'trailer']?.paused) soundtracks[activeFilm||'trailer'].play().catch(()=>{});return;}
+    // This direct call, in the actual pointer gesture, is the primary path.
+    const trailer=soundtracks.trailer,faceoff=soundtracks.faceoff;
+    if(!trailer)return;
+    audioUnlocked=true;
+    const initial=chosenFilm();
+    activeFilm=initial;
+    setSoundVolume('trailer',initial==='trailer'?1:0);
+    setSoundVolume('faceoff',initial==='faceoff'?1:0);
+    // Start trailer unconditionally: music is unlocked by touching anywhere.
+    const started=trailer.play();
+    started?.catch(()=>{audioUnlocked=false;activeFilm=null;});
+    if(faceoff){
+      // Prime faceoff in the same trusted gesture for embedded browsers.
+      faceoff.play().then(()=>{
+        if(activeFilm!=='faceoff'){faceoff.pause();try{faceoff.currentTime=0;}catch{}}
+      }).catch(()=>{});
     }
-  }
-  function requestAmbient() {
-    if (syncPending) return;
-    syncPending=true;
-    requestAnimationFrame(() => syncAmbient());
-  }
+    if(initial==='faceoff') {
+      try{faceoff.currentTime=0;}catch{}
+      previewVideos.faceoff?.play().catch(()=>{});
+    }
+  };
+  document.addEventListener('pointerdown',unlockOnGesture,{capture:true,passive:true});
+  document.addEventListener('touchstart',unlockOnGesture,{capture:true,passive:true});
+  document.addEventListener('keydown',event=>{
+    if(['Enter',' ','ArrowDown','PageDown','Tab'].includes(event.key)) unlockOnGesture();
+  },{capture:true});
   addEventListener('scroll',requestAmbient,{passive:true});
   addEventListener('resize',requestAmbient,{passive:true});
-  document.addEventListener('visibilitychange',requestAmbient);
+  document.addEventListener('visibilitychange',()=>{
+    if(document.hidden){stopFade();Object.values(soundtracks).forEach(x=>x?.pause());}
+    else if(audioUnlocked){soundtracks[activeFilm||'trailer']?.play().catch(()=>{});requestAmbient();}
+  });
+  function silenceAll() {
+    stopFade();
+    for(const key of Object.keys(soundtracks)){setSoundVolume(key,0);pauseSoundtrack(key);}
+    activeFilm=null;
+  }
   requestAmbient();
 
   const videoContainer = $('#cinema-video-wrap');
@@ -373,10 +359,11 @@
     featuredVideo.removeAttribute('src');
     featuredVideo.load();
     activeFilm = null;
+    if(audioUnlocked) {const next=chosenFilm();setSoundVolume(next,1);soundtracks[next]?.play().catch(()=>{});activeFilm=next;}
     requestAmbient();
     syncFilm();
   });
-  addEventListener('pagehide', () => { silenceAll(); audioContext?.suspend().catch(()=>{}); });
+  addEventListener('pagehide', () => silenceAll());
 
   Object.entries(portraitSources).forEach(([key, src]) => {
     const target = $(`[data-portrait="${key}"]`);
